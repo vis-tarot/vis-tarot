@@ -124,4 +124,8 @@ function celticCross(svg){
   let coverX = xScale(1) + (cHeight/2);
   let coverY = offset+ (cHeight*1.25);
   cover.attr("transform",`translate(${coverX},${coverY}) rotate(90)`);
+
+  //I need to do some math to figure out where this text should actually go.
+  cover.select("text")
+    .attr("transform",`rotate(-90) translate(-${cHeight*0.5},-${cWidth*0.25})`);
 }
