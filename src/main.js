@@ -1,9 +1,9 @@
-function makeCard(svg,x,y,size){
+function makeCard(svg,x,y,height){
   x = !x ? 0 : x;
   y = !y ? 0 : y;
 
   let h = size;
-  let w = 57.15/88.9 * size;
+  let w = 57.15/88.9 * height;
 
   let numCards = d3.selectAll(".card").size();
 
@@ -32,7 +32,7 @@ function makeCard(svg,x,y,size){
 
 }
 
-function addCardSpace(svg,label,x,y,size){
+function addCardSpace(svg,label,x,y,height){
   x = !x ? 0 : x;
   y = !y ? 0 : y;
 
