@@ -28,6 +28,7 @@ body{
 .description {
   font-family: 'Playfair Display', serif;
   font-size: 12px;
+  text-align: justify;
 }
 
 .margin-bottom {

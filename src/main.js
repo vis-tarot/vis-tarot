@@ -183,7 +183,7 @@ function drawCards(svg, cards, scales, positions) {
     .transition()
     .duration(750)
     .ease(d3.easeLinear);
-  const cardJoin = svg.selectAll('.card').data(cards);
+  const cardJoin = svg.selectAll('.card').data(cards, d => `${d.index}`);
   const card = cardJoin
     .enter()
     .append('g')
@@ -208,6 +208,7 @@ function drawCards(svg, cards, scales, positions) {
       drawCard(this);
       nextCardIdx += 1;
     });
+  cardJoin.exit().remove();
 
   card
     .append('rect')
@@ -234,23 +235,16 @@ function drawCards(svg, cards, scales, positions) {
 function computeCards(data) {
   return [];
 }
+const layoutMethod = {
+  'Celtic Cross': celticCross,
+  'Three Card': threeCard,
+  'One Card': oneCard
+};
 
 function buildLayout(svg, layout, cards) {
   // clear the contents of teh previous layout
   svg.selectAll('*').remove();
-  let generatedLayout = null;
-  switch (layout) {
-    case 'Celtic Cross':
-      generatedLayout = celticCross(svg);
-      break;
-    case 'Three Card':
-      generatedLayout = threeCard(svg);
-      break;
-    case 'One Card':
-      generatedLayout = oneCard(svg);
-      break;
-  }
-  const {scales, positions} = generatedLayout;
+  const {scales, positions} = layoutMethod[layout](svg);
   drawSidebar(svg, scales);
   drawCardSpaces(svg, positions, scales);
   drawCards(svg, cards, scales, positions);
@@ -267,6 +261,13 @@ function setDescription(id, description) {
   document.querySelector(id).innerHTML = description;
 }
 
+function makeFakeCards() {
+  return [...new Array(81)].map((_, idx) => ({
+    pos: idx,
+    index: Math.random()
+  }));
+}
+
 // the main method of the application, all subsequent calls should eminante from here
 function mainEntryPoint() {
   const state = {
@@ -274,7 +275,7 @@ function mainEntryPoint() {
     data: null,
     datasetName: null,
     loading: false,
-    cards: [...new Array(81)].map((_, idx) => ({pos: idx}))
+    cards: makeFakeCards()
   };
   const svg = d3.select('#main-container');
   const container = document.querySelector('.main-content');
@@ -282,6 +283,7 @@ function mainEntryPoint() {
 
   function stateUpdate() {
     if (state.layout && state.data) {
+      state.cards = makeFakeCards();
       removePlaceHolder();
       svg.attr('height', height).attr('width', width);
       buildLayout(svg, state.layout, state.cards);
