@@ -4,12 +4,63 @@
   <title>Vis Tarot</title>
   <meta charset="UTF-8">
   <link rel="stylesheet" href="./src/style.css" />
+  <!-- font -->
+  <link href="https://fonts.googleapis.com/css?family=Playfair+Display&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Pinyon+Script&display=swap" rel="stylesheet">
+
+  <!-- external imports -->
   <script src="https://d3js.org/d3.v4.min.js"></script>
   <script src="http://vega.github.io/datalib/datalib.min.js"></script>
+
+  <!-- internal imports -->
   <script src="./src/main.js"></script>
   <script src="./src/analysis.js"></script>
   <script src="./src/tarot.js"></script>
 </head>
 <body>
+  <div class="flex-down full-height">
+    <div class="header">
+      Sortilège
+    </div>
+    <div class="body flex full-height">
+      <div class="side-bar">
+
+        <div class="flex">
+          <div class="select-label">Data set</div>
+          <select>
+            <option>ONE</option>
+            <option>TWO</option>
+            <option>THREE</option>
+            <option>FOUR</option>
+          </select>
+        </div>
+
+        <div class="description margin-bottom">
+          Description
+          "Cupcake ipsum dolor sit. Amet I love liquorice jujubes pudding croissant I love pudding. Apple pie macaroon toffee jujubes pie tart cookie applicake caramels. Halvah macaroon I love lollipop. Wypas I love pudding brownie cheesecake tart jelly-o. Bear claw cookie chocolate bar jujubes toffee."
+        </div>
+
+        <div class="flex">
+          <div class="select-label">Layout</div>
+          <select>
+            <option>ONE</option>
+            <option>TWO</option>
+            <option>THREE</option>
+            <option>FOUR</option>
+          </select>
+        </div>
+
+        <div class="description">
+          Description
+          "Cupcake ipsum dolor sit. Amet I love liquorice jujubes pudding croissant I love pudding. Apple pie macaroon toffee jujubes pie tart cookie applicake caramels. Halvah macaroon I love lollipop. Wypas I love pudding brownie cheesecake tart jelly-o. Bear claw cookie chocolate bar jujubes toffee."
+        </div>
+
+      </div>
+      <div class="main-content">
+        <h1>PLACE CONTENT HERE</h1>
+        <svg></svg>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
