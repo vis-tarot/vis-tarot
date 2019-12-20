@@ -36,42 +36,6 @@ function makeScales(svg, labels) {
   return {xScale, xWindow, yWindow};
 }
 
-// function makeCard(svg, x, y, height) {
-//   x = !x ? 0 : x;
-//   y = !y ? 0 : y;
-//
-//   let h = size;
-//   let w = (57.15 / 88.9) * height;
-//
-//   let numCards = d3.selectAll('.card').size();
-//
-//   svg
-//     .append('clipPath')
-//     .attr('id', 'card-clip' + numCards)
-//     .append('rect')
-//     .attr('x', x)
-//     .attr('y', y)
-//     .attr('width', w)
-//     .attr('height', h)
-//     .attr('rx', w / 20)
-//     .attr('rx', w / 20);
-//
-//   let card = svg
-//     .append('g')
-//     .attr('clip-path', 'url(#card-clip' + numCards + ')');
-//
-//   card
-//     .append('rect')
-//     .attr('class', 'card')
-//     .attr('x', x)
-//     .attr('y', y)
-//     .attr('width', w)
-//     .attr('height', h)
-//     .attr('fill', '#333');
-//
-//   return card;
-// }
-
 // in our index coordins
 function getCardHeightWidth() {
   const size = 0.2;
@@ -134,7 +98,7 @@ function oneCard(svg) {
   const scales = makeScales(svg, labels);
   return {
     scales,
-    positions: [{x: scales.xScale('EXAMPLE'), y: 0.2, label: 'EXAMPLE'}]
+    positions: [{x: scales.xScale('EXAMPLE'), y: 0.4, label: 'EXAMPLE'}]
   };
 }
 
@@ -143,7 +107,7 @@ function threeCard(svg) {
   const scales = makeScales(svg, labels);
   return {
     scales,
-    positions: labels.map(label => ({x: scales.xScale(label), y: 0.2, label}))
+    positions: labels.map(label => ({x: scales.xScale(label), y: 0.4, label}))
   };
 }
 
