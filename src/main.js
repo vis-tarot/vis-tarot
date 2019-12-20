@@ -165,6 +165,8 @@ const positions = [
 ].map(([x, y], i) => [x, y / 4, labels[i]]);
 //celtic cross spread:
 function celticCross(svg) {
+
+  // Note that we're omitting the "covers"/"challenges"/"context" card here, since we need to treat it separately
   const scales = makeScales(svg, [0, 1, 2, 3]);
   const {yWindow, xWindow, xScale} = scales;
   const cWidth = xScale.bandwidth();
