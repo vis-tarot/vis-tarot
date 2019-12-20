@@ -1,3 +1,4 @@
+console.log(faces);
 // spray additional data into the global name space
 let tarotData = {};
 let tarotDataLoaded = false;
@@ -7,42 +8,6 @@ fetch('./src/tarot-data.json')
     dataLoaded = true;
     tarotData = d;
   });
-
-function makeScales(svg, labels) {
-  const width = parseInt(svg.style('width'));
-  const height = parseInt(svg.style('height'));
-  const margin = {
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0
-  };
-  const xWindow = d3
-    .scaleLinear()
-    .domain([0, 1.2])
-    .range([margin.left, width - margin.left - margin.right]);
-  const yWindow = d3
-    .scaleLinear()
-    .domain([0, 1])
-    .range([margin.top, height - margin.bottom - margin.top]);
-
-  const xScale = d3
-    .scaleBand()
-    .domain(labels)
-    .range([0.05, 1 - 0.05])
-    .paddingOuter(0.1)
-    .paddingInner(0.05);
-
-  return {xScale, xWindow, yWindow};
-}
-
-// in our index coordins
-function getCardHeightWidth() {
-  const size = 0.2;
-  let h = size;
-  let w = (57.15 / 88.9) * size;
-  return {h, w};
-}
 
 function drawCardSpaces(svg, cards, scales) {
   const {xWindow, yWindow} = scales;
@@ -96,51 +61,6 @@ function drawCardSpaces(svg, cards, scales) {
     .html(d => `<div class="tooltip">${tarotData.layouts[d.label]}</div>`);
 }
 
-//Card spreads
-function oneCard(svg) {
-  // basically just the three card with two cards that are never drawn
-  const labels = ['Background', 'EXAMPLE', 'Advice'];
-  const scales = makeScales(svg, labels);
-  return {
-    scales,
-    positions: [{x: scales.xScale('EXAMPLE'), y: 0.4, label: 'EXAMPLE'}]
-  };
-}
-
-function threeCard(svg) {
-  const labels = ['Background', 'Problem', 'Advice'];
-  const scales = makeScales(svg, labels);
-  return {
-    scales,
-    positions: labels.map(label => ({x: scales.xScale(label), y: 0.4, label}))
-  };
-}
-
-function celticCross(svg) {
-  const positions = [
-    {x: 1, y: 1.9, label: 'Challenges', rotate: true},
-    {x: 1, y: 1.5, label: 'Present'},
-    {x: 2, y: 1.5, label: 'Goal'},
-    {x: 1, y: 2.5, label: 'Past'},
-    {x: 1, y: 0.5, label: 'Context'},
-    {x: 0, y: 1.5, label: 'Future'},
-    {x: 3, y: 3, label: 'Querent'},
-    {x: 3, y: 2, label: 'Environment'},
-    {x: 3, y: 1, label: 'Mind'},
-    {x: 3, y: 0, label: 'Outcome'}
-  ];
-  const scales = makeScales(svg, [0, 1, 2, 3]);
-  return {
-    scales,
-    positions: positions.map(({x, y, label, rotate}) => ({
-      x: scales.xScale(x),
-      y: y / 4,
-      label,
-      rotate
-    }))
-  };
-}
-
 function drawSidebar(svg, scales) {
   const {xWindow, yWindow} = scales;
   svg
@@ -187,6 +107,8 @@ function drawCards(svg, cards, scales, positions) {
       if (!nextCard) {
         return;
       }
+      const cardFront = findAppropriateCard(nextCard);
+      cardFront(this, d, scales);
       d3.select(this)
         .transition(t)
         .attr('transform', d => {
@@ -198,7 +120,6 @@ function drawCards(svg, cards, scales, positions) {
           return `translate(${xPos - 0.5 * xWindow(w)},${yPos +
             xWindow(w) * 1.12}) rotate(-90)`;
         });
-      drawCard(this);
       nextCardIdx += 1;
     });
   cardJoin.exit().remove();

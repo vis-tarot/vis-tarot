@@ -4,7 +4,7 @@
   <title>Vis Tarot</title>
   <meta charset="UTF-8">
   <link rel="stylesheet" href="./src/style.css" />
-  <!-- font -->
+  <!-- fonts -->
   <link href="https://fonts.googleapis.com/css?family=Playfair+Display&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Pinyon+Script&display=swap" rel="stylesheet">
 
@@ -12,10 +12,12 @@
   <script src="https://d3js.org/d3.v5.min.js"></script>
   <script src="http://vega.github.io/datalib/datalib.min.js"></script>
 
-  <!-- internal imports -->
-  <script src="./src/main.js"></script>
+  <!-- internal imports, order is important -->
+  <script src="./src/utils.js"></script>
   <script src="./src/analysis.js"></script>
   <script src="./src/tarot.js"></script>
+  <script src="./src/layouts.js"></script>
+  <script src="./src/main.js"></script>
 </head>
 <body>
   <div class="flex-down full-height">
