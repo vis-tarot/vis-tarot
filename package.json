@@ -4,7 +4,7 @@
   "description": "Data Visualization Tarot",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "eslint ."
   },
   "repository": {
     "type": "git",
@@ -21,8 +21,5 @@
     "eslint-config-prettier": "^6.7.0",
     "eslint-plugin-prettier": "^3.1.2",
     "prettier": "^1.19.1"
-  },
-  "scripts": {
-    "lint": "eslint ."
   }
 }

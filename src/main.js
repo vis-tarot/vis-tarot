@@ -89,7 +89,9 @@ function threeCard(svg) {
 
 //celtic cross spread:
 function celticCross(svg) {
-  //Note that we're omitting the "covers"/"challenges"/"context" card here, since we need to treat it separately
+/*
+  Note that we're omitting the "covers"/"challenges"/"context" card here, since we need to treat it separately
+*/
   var labels = [
     'Present',
     'Goal',
