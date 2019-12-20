@@ -1,14 +1,31 @@
+// spray additional data into the global name space
+let tarotData = {};
+let tarotDataLoaded = false;
+fetch('./src/tarot-data.json')
+  .then(d => d.json())
+  .then(d => {
+    console.log(d);
+    dataLoaded = true;
+    tarotData = d;
+  });
+
 function makeScales(svg, labels) {
   const width = parseInt(svg.style('width'));
   const height = parseInt(svg.style('height'));
+  const margin = {
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0
+  };
   const xWindow = d3
     .scaleLinear()
     .domain([0, 1])
-    .range([0, width]);
+    .range([margin.left, width - margin.left - margin.right]);
   const yWindow = d3
     .scaleLinear()
     .domain([0, 1])
-    .range([0, height]);
+    .range([margin.top, height - margin.bottom - margin.top]);
 
   const xScale = d3
     .scaleBand()
@@ -40,7 +57,7 @@ function makeCard(svg, x, y, height) {
     .attr('rx', w / 20)
     .attr('rx', w / 20);
 
-  var card = svg
+  let card = svg
     .append('g')
     .attr('clip-path', 'url(#card-clip' + numCards + ')');
 
@@ -56,15 +73,13 @@ function makeCard(svg, x, y, height) {
   return card;
 }
 
-function addCardSpace(svg, label, x, y, height, scales) {
+function addCardSpace(svg, label, x, y, scales) {
   const {xWindow, yWindow} = scales;
-  // x = !x ? 0 : x;
-  // y = !y ? 0 : y;
-  const size = 0.3;
+  const size = 0.2;
   let h = size;
   let w = (57.15 / 88.9) * size;
 
-  var cardSpace = svg
+  let cardSpace = svg
     .append('g')
     .attr('transform', `translate(${xWindow(x)}, ${yWindow(y)})`)
     .attr('class', 'cardcontainer');
@@ -110,18 +125,17 @@ function addCardSpace(svg, label, x, y, height, scales) {
 
 //Card spreads
 function oneCard(svg) {
-  var labels = ['Background', 'EXAMPLE', 'Advice'];
+  // basically just the three card with two cards that are never drawn
+  const labels = ['Background', 'EXAMPLE', 'Advice'];
   const scales = makeScales(svg, labels);
-  const cWidth = scales.xScale.bandwidth();
-  addCardSpace(svg, 'EXAMPLE', scales.xScale('EXAMPLE'), 0.05, cWidth, scales);
+  addCardSpace(svg, 'EXAMPLE', scales.xScale('EXAMPLE'), 0.2, scales);
 }
 
 function threeCard(svg) {
-  var labels = ['Background', 'Problem', 'Advice'];
+  const labels = ['Background', 'Problem', 'Advice'];
   const scales = makeScales(svg, labels);
-  const cWidth = scales.xScale.bandwidth();
   labels.forEach(label =>
-    addCardSpace(svg, label, scales.xScale(label), 0.05, cWidth, scales)
+    addCardSpace(svg, label, scales.xScale(label), 0.2, scales)
   );
 }
 
@@ -148,7 +162,7 @@ const positions = [
   [3, 2],
   [3, 1],
   [3, 0]
-].map(([x, y], i) => [x, y, labels[i]]);
+].map(([x, y], i) => [x, y / 4, labels[i]]);
 //celtic cross spread:
 function celticCross(svg) {
   const scales = makeScales(svg, [0, 1, 2, 3]);
@@ -157,20 +171,13 @@ function celticCross(svg) {
   const cHeight = (88.9 / 57.15) * cWidth;
 
   positions.forEach(([x, y, label]) => {
-    addCardSpace(
-      svg,
-      label,
-      scales.xScale(x),
-      0.05 + cHeight * y,
-      cWidth,
-      scales
-    );
+    addCardSpace(svg, label, scales.xScale(x), y, scales);
   });
 
   //Deal with the rotated card that "Covers" the question
-  const cover = addCardSpace(svg, 'Challenges', 0, 0, cWidth, scales);
+  const cover = addCardSpace(svg, 'Challenges', 0, 0, scales);
   const coverX = xScale(1) + cHeight / 2;
-  const coverY = 0.05 + cHeight * 1.25;
+  const coverY = cHeight * 1.25;
   cover.attr(
     'transform',
     `translate(${xWindow(coverX)},${scales.yWindow(coverY)}) rotate(90)`
@@ -215,6 +222,10 @@ function removePlaceHolder() {
   }
 }
 
+function setDescription(id, description) {
+  document.querySelector(id).innerHTML = description;
+}
+
 // the main method of the application, all subsequent calls should eminante from here
 function mainEntryPoint() {
   const state = {
@@ -242,6 +253,12 @@ function mainEntryPoint() {
     .addEventListener('change', event => {
       state.layout = event.target.value;
       stateUpdate();
+
+      // update the description text
+      setDescription(
+        '#layout-description',
+        tarotData.layoutAnnotations[state.layout]
+      );
     });
   document
     .querySelector('#dataset-selector')
@@ -258,6 +275,12 @@ function mainEntryPoint() {
         // TODO also do the data processing here
         stateUpdate();
       });
+
+      // update the description text
+      setDescription(
+        '#dataset-description',
+        tarotData.datasetAnnotations[state.datasetName]
+      );
     });
 }
 
