@@ -52,14 +52,7 @@ function drawCardSpaces(svg, cards, scales) {
   const cardContainers = containers
     .enter()
     .append('g')
-    .attr('transform', d => {
-      return `translate(${xWindow(d.x)}, ${yWindow(d.y)})`;
-      // if (!d.rotate) {
-      // }
-      // return `translate(${xWindow(d.x) + xWindow(w) * 1.5}, ${yWindow(
-      //   d.y
-      // )})  rotate(90)`;
-    })
+    .attr('transform', d => `translate(${xWindow(d.x)}, ${yWindow(d.y)})`)
     .attr('class', 'cardcontainer');
   const cardSpace = cardContainers
     .append('g')
