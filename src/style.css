@@ -1,10 +1,129 @@
-body {
+/* GENERAL PROPS */
+
+html,
+body{
   font-family: Futura, sans-serif;
   width: 100%;
   height: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-down {
+  display: flex;
+  flex-direction: column;
+}
+
+.full-width {
+  width: 100%;
+}
+.full-height {
+  height: 100%;
+}
+
+.description {
+  font-family: 'Playfair Display', serif;
+  font-size: 12px;
+}
+
+.margin-bottom {
+  margin-bottom: 30px;
+}
+
+
+
+/* SECTIONS */
+
+.header {
+  align-items: center;
+  background: #333333;
+  color: white;
+  display: flex;
+  font-family: 'Pinyon Script', cursive;
+  font-size: 35px;
+  height: 50px;
+  padding: 0 30px;
+}
+
+
+.side-bar {
+  background: #eee;
+  max-width: 250px;
+  min-width: 250px;
+  width: 250px;
+  padding: 30px;
+}
+
+.main-content {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: center;
+  width: 100%;
 }
 
 .cardspace {
-    fill: none;
+    fill: gray;
+    fill-opacity: 0;
     outline: 2px dashed #333;
+    transition: fill-opacity 1s;
+}
+.cardspace:hover {
+    fill-opacity: 1;
+}
+.cardcontainer .tooltip-container {
+  pointer-events: none;
+  opacity: 0;
+
+}
+.cardcontainer:hover .tooltip-container {
+  pointer-events: all;
+  opacity: 1;
+}
+
+.tooltip {
+  background: #333333;
+  color: white;
+    font-family: 'Playfair Display', serif;
+  font-size: 12px;
+  padding: 10px;
+  border-radius: 5px;
+    z-index: 1;
+}
+
+
+/* SELECT STYLING */
+.select-label {
+  white-space: nowrap;
+
+}
+
+select {
+  background-color: rgba(0, 0, 0, 0);
+  border: 0;
+  color: #333333;
+	display: flex;
+	font-size: 15px;
+	font-weight: 700;
+  margin: 0;
+  text-transform: uppercase;
+  text-align-last: right;
+	width: 100%;
+}
+select::-ms-expand {
+	display: none;
+}
+select:focus {
+	border-color: #aaa;
+	color: #222;
+	outline: none;
+}
+select option {
+	font-weight: normal;
+  text-transform: none;
 }
