@@ -1,3 +1,25 @@
+function makeScales(svg, labels) {
+  const width = parseInt(svg.style('width'));
+  const height = parseInt(svg.style('height'));
+  const xWindow = d3
+    .scaleLinear()
+    .domain([0, 1])
+    .range([0, width]);
+  const yWindow = d3
+    .scaleLinear()
+    .domain([0, 1])
+    .range([0, height]);
+
+  const xScale = d3
+    .scaleBand()
+    .domain(labels)
+    .range([0.05, 1 - 0.05])
+    .paddingOuter(0.1)
+    .paddingInner(0.05);
+
+  return {xScale, xWindow, yWindow};
+}
+
 function makeCard(svg, x, y, height) {
   x = !x ? 0 : x;
   y = !y ? 0 : y;
@@ -34,124 +56,135 @@ function makeCard(svg, x, y, height) {
   return card;
 }
 
-function addCardSpace(svg, label, x, y, height) {
-  x = !x ? 0 : x;
-  y = !y ? 0 : y;
-
-  const size = 0.9 * height;
+function addCardSpace(svg, label, x, y, height, scales) {
+  const {xWindow, yWindow} = scales;
+  // x = !x ? 0 : x;
+  // y = !y ? 0 : y;
+  const size = 0.3;
   let h = size;
   let w = (57.15 / 88.9) * size;
 
-  var cardSpace = svg.append('g');
+  var cardSpace = svg
+    .append('g')
+    .attr('transform', `translate(${xWindow(x)}, ${yWindow(y)})`)
+    .attr('class', 'cardcontainer');
 
   cardSpace
     .append('rect')
     .attr('class', 'cardspace')
-    .attr('x', x)
-    .attr('y', y)
-    .attr('width', w)
-    .attr('height', h)
+    .attr('width', xWindow(w))
+    .attr('height', yWindow(h))
     .attr('fill', '#333');
 
   cardSpace
     .append('text')
-    .attr('x', x + w / 2)
-    .attr('y', y + h / 2)
+    .attr('x', xWindow(w / 2))
+    .attr('y', yWindow(h / 2))
     .attr('text-anchor', 'middle')
     .text(label);
+
+  const TOOLTIP_WIDTH = 200;
+  const TOOLTIP_HEIGHT = 200;
+  const tooltipContainer = cardSpace
+    .append('g')
+    .attr('class', 'tooltip-container')
+    .attr(
+      'transform',
+      `translate(${xWindow(w / 2) - TOOLTIP_WIDTH / 2}, ${yWindow(h) -
+        TOOLTIP_HEIGHT / 2})`
+    );
+
+  const tooltipMsgContainer = tooltipContainer
+    .append('foreignObject')
+    .attr('x', 0)
+    .attr('y', 0)
+    .attr('height', TOOLTIP_HEIGHT)
+    .attr('width', TOOLTIP_WIDTH);
+
+  const exampleMsg =
+    'COOL EXAMPLE MESSAGE JUST FOR THIS CARD WOW!! COOL EXAMPLE MESSAGE JUST FOR THIS CARD WOW!! COOL EXAMPLE MESSAGE JUST FOR THIS CARD WOW!!';
+  tooltipMsgContainer.html(`<div class="tooltip">${exampleMsg}</div>`);
 
   return cardSpace;
 }
 
 //Card spreads
-
-//three card spread:
-function threeCard(svg) {
-  var labels = ['Background', 'Problem', 'Advice'];
-
-  var svgWidth = parseInt(svg.style('width'));
-  var svgHeight = parseInt(svg.style('height'));
-
-  var offset = 5;
-
-  var xScale = d3
-    .scaleBand()
-    .domain(labels)
-    .range([offset, svgWidth - offset])
-    .paddingOuter(0.1)
-    .paddingInner(0.05);
-
-  var cWidth = xScale.bandwidth();
-
-  labels.forEach(function(d) {
-    addCardSpace(svg, d, xScale(d), offset, cWidth);
-  });
+function oneCard(svg) {
+  var labels = ['Background', 'EXAMPLE', 'Advice'];
+  const scales = makeScales(svg, labels);
+  const cWidth = scales.xScale.bandwidth();
+  addCardSpace(svg, 'EXAMPLE', scales.xScale('EXAMPLE'), 0.05, cWidth, scales);
 }
 
+function threeCard(svg) {
+  var labels = ['Background', 'Problem', 'Advice'];
+  const scales = makeScales(svg, labels);
+  const cWidth = scales.xScale.bandwidth();
+  labels.forEach(label =>
+    addCardSpace(svg, label, scales.xScale(label), 0.05, cWidth, scales)
+  );
+}
+
+// Note that we're omitting the "covers"/"challenges"/"context" card here,
+// since we need to treat it separately
+const labels = [
+  'Present',
+  'Goal',
+  'Past',
+  'Context',
+  'Future',
+  'Querent',
+  'Environment',
+  'Mind',
+  'Outcome'
+];
+const positions = [
+  [1, 1.5],
+  [2, 1.5],
+  [1, 2.5],
+  [1, 0.5],
+  [0, 1.5],
+  [3, 3],
+  [3, 2],
+  [3, 1],
+  [3, 0]
+].map(([x, y], i) => [x, y, labels[i]]);
 //celtic cross spread:
 function celticCross(svg) {
-  //Note that we're omitting the "covers"/"challenges"/"context" card here, since we need to treat it separately
-  var labels = [
-    'Present',
-    'Goal',
-    'Past',
-    'Context',
-    'Future',
-    'Querent',
-    'Environment',
-    'Mind',
-    'Outcome'
-  ];
-  var positions = [
-    [1, 1.5],
-    [2, 1.5],
-    [1, 2.5],
-    [1, 0.5],
-    [0, 1.5],
-    [3, 3],
-    [3, 2],
-    [3, 1],
-    [3, 0]
-  ];
+  const scales = makeScales(svg, [0, 1, 2, 3]);
+  const {yWindow, xWindow, xScale} = scales;
+  const cWidth = xScale.bandwidth();
+  const cHeight = (88.9 / 57.15) * cWidth;
 
-  var svgWidth = parseInt(svg.style('width'));
-  var svgHeight = parseInt(svg.style('height'));
-
-  var offset = 5;
-
-  var xScale = d3
-    .scaleBand()
-    .domain([0, 1, 2, 3])
-    .range([offset, svgWidth - offset])
-    .paddingOuter(0.1)
-    .paddingInner(0.05);
-
-  var cWidth = xScale.bandwidth();
-
-  var cHeight = (88.9 / 57.15) * cWidth;
-
-  labels.forEach(function(d, i) {
+  positions.forEach(([x, y, label]) => {
     addCardSpace(
       svg,
-      d,
-      xScale(positions[i][0]),
-      offset + cHeight * positions[i][1],
-      cWidth
+      label,
+      scales.xScale(x),
+      0.05 + cHeight * y,
+      cWidth,
+      scales
     );
   });
 
   //Deal with the rotated card that "Covers" the question
-  var cover = addCardSpace(svg, 'Challenges', 0, 0, cWidth);
-  let coverX = xScale(1) + cHeight / 2;
-  let coverY = offset + cHeight * 1.25;
-  cover.attr('transform', `translate(${coverX},${coverY}) rotate(90)`);
+  const cover = addCardSpace(svg, 'Challenges', 0, 0, cWidth, scales);
+  const coverX = xScale(1) + cHeight / 2;
+  const coverY = 0.05 + cHeight * 1.25;
+  cover.attr(
+    'transform',
+    `translate(${xWindow(coverX)},${scales.yWindow(coverY)}) rotate(90)`
+  );
 
-  //I need to do some math to figure out where this text should actually go.
+  // TODO I need to do some math to figure out where this text should actually go.
+  // TODO i'm not sure how to do this responsively.
   cover
     .select('text')
     .attr(
       'transform',
-      `rotate(-90) translate(-${cHeight * 0.5},-${cWidth * 0.25})`
+      `rotate(-90) translate(-${xWindow(cHeight * 0.5)},-${yWindow(
+        cWidth * 0.25
+      )})`
     );
 }
 
@@ -165,10 +198,13 @@ function buildLayout(svg, layout) {
   switch (layout) {
     case 'Celtic Cross':
       celticCross(svg);
+      return;
     case 'Three Card':
       threeCard(svg);
+      return;
     case 'One Card':
-      console.log('TODO!');
+      oneCard(svg);
+      return;
   }
 }
 
@@ -191,6 +227,7 @@ function mainEntryPoint() {
   const svg = d3.select('#main-container');
   const container = document.querySelector('.main-content');
   const {height, width} = container.getBoundingClientRect();
+
   function stateUpdate() {
     if (state.layout && state.data) {
       removePlaceHolder();
@@ -199,19 +236,6 @@ function mainEntryPoint() {
       state.cards = computeCards([]);
     }
   }
-
-  const listener = key => ({target: value}) => {
-    state[key] = value;
-    stateUpdate();
-    if (key === 'datasetName') {
-      state.loading = true;
-      d3.csv(`data/${state[key]}`).then(d => {
-        state.loading = true;
-        state.data = d;
-        stateUpdate();
-      });
-    }
-  };
 
   document
     .querySelector('#layout-selector')
