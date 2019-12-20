@@ -61,6 +61,11 @@ function drawCardSpaces(svg, cards, scales) {
   cardSpace
     .append('rect')
     .attr('class', 'cardspace')
+    .attr(
+      'transform',
+      d =>
+        d.rotate && `translate(${-xWindow(w) / 2}, ${yWindow(w)}) rotate(-90)`
+    )
     .attr('width', xWindow(w))
     .attr('height', yWindow(h))
     .attr('fill', '#333');
@@ -111,63 +116,27 @@ function threeCard(svg) {
   };
 }
 
-// Note that we're omitting the "covers"/"challenges"/"context" card here,
-// since we need to treat it separately
-const labels = [
-  'Present',
-  'Goal',
-  'Past',
-  'Context',
-  'Future',
-  'Querent',
-  'Environment',
-  'Mind',
-  'Outcome'
-];
-const positions = [
-  [1, 1.5],
-  [2, 1.5],
-  [1, 2.5],
-  [1, 0.5],
-  [0, 1.5],
-  [3, 3],
-  [3, 2],
-  [3, 1],
-  [3, 0]
-].map(([x, y], i) => [x, y / 4, labels[i]]);
-
 function celticCross(svg) {
+  const positions = [
+    {x: 1, y: 1.9, label: 'Challenges', rotate: true},
+    {x: 1, y: 1.5, label: 'Present'},
+    {x: 2, y: 1.5, label: 'Goal'},
+    {x: 1, y: 2.5, label: 'Past'},
+    {x: 1, y: 0.5, label: 'Context'},
+    {x: 0, y: 1.5, label: 'Future'},
+    {x: 3, y: 3, label: 'Querent'},
+    {x: 3, y: 2, label: 'Environment'},
+    {x: 3, y: 1, label: 'Mind'},
+    {x: 3, y: 0, label: 'Outcome'}
+  ];
   const scales = makeScales(svg, [0, 1, 2, 3]);
-  const {yWindow, xWindow, xScale} = scales;
-  const cWidth = xScale.bandwidth();
-  const cHeight = (88.9 / 57.15) * cWidth;
-
-  // TODO FIX
-  // //Deal with the rotated card that "Covers" the question
-  // const cover = addCardSpace(svg, 'Challenges', 0, 0, scales);
-  // const coverX = xScale(1) + cHeight / 2;
-  // const coverY = cHeight * 1.25;
-  // cover.attr(
-  //   'transform',
-  //   `translate(${xWindow(coverX)},${scales.yWindow(coverY)}) rotate(90)`
-  // );
-  //
-  // // TODO I need to do some math to figure out where this text should actually go.
-  // // TODO i'm not sure how to do this responsively.
-  // cover
-  //   .select('text')
-  //   .attr(
-  //     'transform',
-  //     `rotate(-90) translate(-${xWindow(cHeight * 0.5)},-${yWindow(
-  //       cWidth * 0.25
-  //     )})`
-  //   );
   return {
     scales,
-    positions: positions.map(([x, y, label]) => ({
+    positions: positions.map(({x, y, label, rotate}) => ({
       x: scales.xScale(x),
-      y,
-      label
+      y: y / 4,
+      label,
+      rotate
     }))
   };
 }
@@ -196,6 +165,7 @@ function drawCard(card) {
 }
 
 function drawCards(svg, cards, scales, positions) {
+  const {h, w} = getCardHeightWidth();
   const {xWindow, yWindow} = scales;
   let nextCardIdx = 0;
   cards.forEach((card, idx) => {
@@ -206,7 +176,7 @@ function drawCards(svg, cards, scales, positions) {
     .transition()
     .duration(750)
     .ease(d3.easeLinear);
-  const cardJoin = svg.selectAll('.card').data(cards);
+  const cardJoin = svg.selectAll('.card').data(cards, d => `${d.index}`);
   const card = cardJoin
     .enter()
     .append('g')
@@ -219,15 +189,19 @@ function drawCards(svg, cards, scales, positions) {
       }
       d3.select(this)
         .transition(t)
-        .attr(
-          'transform',
-          d => `translate(${xWindow(nextCard.x)},${yWindow(nextCard.y)})`
-        );
+        .attr('transform', d => {
+          const xPos = xWindow(nextCard.x);
+          const yPos = yWindow(nextCard.y);
+          if (!nextCard.rotate) {
+            return `translate(${xPos},${yWindow(nextCard.y)})`;
+          }
+          return `translate(${xPos - 0.5 * xWindow(w)},${yPos +
+            xWindow(w) * 1.12}) rotate(-90)`;
+        });
       drawCard(this);
       nextCardIdx += 1;
     });
-
-  const {h, w} = getCardHeightWidth();
+  cardJoin.exit().remove();
 
   card
     .append('rect')
@@ -254,23 +228,16 @@ function drawCards(svg, cards, scales, positions) {
 function computeCards(data) {
   return [];
 }
+const layoutMethod = {
+  'Celtic Cross': celticCross,
+  'Three Card': threeCard,
+  'One Card': oneCard
+};
 
 function buildLayout(svg, layout, cards) {
   // clear the contents of teh previous layout
   svg.selectAll('*').remove();
-  let generatedLayout = null;
-  switch (layout) {
-    case 'Celtic Cross':
-      generatedLayout = celticCross(svg);
-      break;
-    case 'Three Card':
-      generatedLayout = threeCard(svg);
-      break;
-    case 'One Card':
-      generatedLayout = oneCard(svg);
-      break;
-  }
-  const {scales, positions} = generatedLayout;
+  const {scales, positions} = layoutMethod[layout](svg);
   drawSidebar(svg, scales);
   drawCardSpaces(svg, positions, scales);
   drawCards(svg, cards, scales, positions);
@@ -287,6 +254,13 @@ function setDescription(id, description) {
   document.querySelector(id).innerHTML = description;
 }
 
+function makeFakeCards() {
+  return [...new Array(81)].map((_, idx) => ({
+    pos: idx,
+    index: Math.random()
+  }));
+}
+
 // the main method of the application, all subsequent calls should eminante from here
 function mainEntryPoint() {
   const state = {
@@ -294,7 +268,7 @@ function mainEntryPoint() {
     data: null,
     datasetName: null,
     loading: false,
-    cards: [...new Array(81)].map((_, idx) => ({pos: idx}))
+    cards: makeFakeCards()
   };
   const svg = d3.select('#main-container');
   const container = document.querySelector('.main-content');
@@ -302,6 +276,7 @@ function mainEntryPoint() {
 
   function stateUpdate() {
     if (state.layout && state.data) {
+      state.cards = makeFakeCards();
       removePlaceHolder();
       svg.attr('height', height).attr('width', width);
       buildLayout(svg, state.layout, state.cards);
