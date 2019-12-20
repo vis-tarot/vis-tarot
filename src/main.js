@@ -4,7 +4,6 @@ let tarotDataLoaded = false;
 fetch('./src/tarot-data.json')
   .then(d => d.json())
   .then(d => {
-    console.log(d);
     dataLoaded = true;
     tarotData = d;
   });
@@ -20,7 +19,7 @@ function makeScales(svg, labels) {
   };
   const xWindow = d3
     .scaleLinear()
-    .domain([0, 1])
+    .domain([0, 1.2])
     .range([margin.left, width - margin.left - margin.right]);
   const yWindow = d3
     .scaleLinear()
@@ -73,11 +72,17 @@ function makeCard(svg, x, y, height) {
   return card;
 }
 
-function addCardSpace(svg, label, x, y, scales) {
-  const {xWindow, yWindow} = scales;
+// in our index coordins
+function getCardHeightWidth() {
   const size = 0.2;
   let h = size;
   let w = (57.15 / 88.9) * size;
+  return {h, w};
+}
+
+function addCardSpace(svg, label, x, y, scales) {
+  const {xWindow, yWindow} = scales;
+  const {h, w} = getCardHeightWidth();
 
   let cardSpace = svg
     .append('g')
@@ -116,9 +121,9 @@ function addCardSpace(svg, label, x, y, scales) {
     .attr('height', TOOLTIP_HEIGHT)
     .attr('width', TOOLTIP_WIDTH);
 
-  const exampleMsg =
-    'COOL EXAMPLE MESSAGE JUST FOR THIS CARD WOW!! COOL EXAMPLE MESSAGE JUST FOR THIS CARD WOW!! COOL EXAMPLE MESSAGE JUST FOR THIS CARD WOW!!';
-  tooltipMsgContainer.html(`<div class="tooltip">${exampleMsg}</div>`);
+  tooltipMsgContainer.html(
+    `<div class="tooltip">${tarotData.layouts[label]}</div>`
+  );
 
   return cardSpace;
 }
@@ -129,6 +134,7 @@ function oneCard(svg) {
   const labels = ['Background', 'EXAMPLE', 'Advice'];
   const scales = makeScales(svg, labels);
   addCardSpace(svg, 'EXAMPLE', scales.xScale('EXAMPLE'), 0.2, scales);
+  return scales;
 }
 
 function threeCard(svg) {
@@ -137,6 +143,7 @@ function threeCard(svg) {
   labels.forEach(label =>
     addCardSpace(svg, label, scales.xScale(label), 0.2, scales)
   );
+  return scales;
 }
 
 // Note that we're omitting the "covers"/"challenges"/"context" card here,
@@ -165,7 +172,6 @@ const positions = [
 ].map(([x, y], i) => [x, y / 4, labels[i]]);
 //celtic cross spread:
 function celticCross(svg) {
-
   // Note that we're omitting the "covers"/"challenges"/"context" card here, since we need to treat it separately
   const scales = makeScales(svg, [0, 1, 2, 3]);
   const {yWindow, xWindow, xScale} = scales;
@@ -195,26 +201,67 @@ function celticCross(svg) {
         cWidth * 0.25
       )})`
     );
+  return scales;
+}
+
+function drawSidebar(svg, scales, cards) {
+  console.log(scales);
+  const {xWindow, yWindow} = scales;
+  svg
+    .append('rect')
+    .attr('x', xWindow(0.9))
+    .attr('y', yWindow(0))
+    .attr('height', yWindow(1))
+    .attr('width', xWindow(1.2) - xWindow(0.9))
+    .attr('fill', 'lightgray');
+
+  cards.forEach((card, idx) => {
+    card.x = 0.95 + (idx / 81) * 0.03;
+    card.y = 0.6 + (idx / 81) * 0.03;
+  });
+  const JOIN = svg.selectAll('.card').data(cards);
+  const ENTER = JOIN.enter()
+    .append('g')
+    .attr('class', 'card')
+    .attr(
+      'transform',
+      d => `translate(${xWindow(d.x)},${scales.yWindow(d.y)})`
+    );
+  const {h, w} = getCardHeightWidth();
+  ENTER.append('rect')
+    .attr('x', 0)
+    .attr('y', 0)
+    .attr('height', yWindow(h))
+    .attr('width', xWindow(w))
+    .attr('stroke', 'black')
+    .attr('fill', 'red');
+
+  // cards.forEach(card => {
+  //   drawCard(card, scales);
+  // });
 }
 
 function computeCards(data) {
   return [];
 }
 
-function buildLayout(svg, layout) {
+function buildLayout(svg, layout, cards) {
   // clear the contents of teh previous layout
   svg.selectAll('*').remove();
+  let scales = null;
   switch (layout) {
     case 'Celtic Cross':
-      celticCross(svg);
-      return;
+      scales = celticCross(svg);
+      break;
     case 'Three Card':
-      threeCard(svg);
-      return;
+      scales = threeCard(svg);
+      break;
     case 'One Card':
-      oneCard(svg);
-      return;
+      scales = oneCard(svg);
+      break;
   }
+  console.log(scales);
+  drawSidebar(svg, scales, cards);
 }
 
 function removePlaceHolder() {
@@ -235,7 +282,7 @@ function mainEntryPoint() {
     data: null,
     datasetName: null,
     loading: false,
-    cards: []
+    cards: [...new Array(81)].map((_, idx) => ({pos: idx}))
   };
   const svg = d3.select('#main-container');
   const container = document.querySelector('.main-content');
@@ -245,7 +292,7 @@ function mainEntryPoint() {
     if (state.layout && state.data) {
       removePlaceHolder();
       svg.attr('height', height).attr('width', width);
-      buildLayout(svg, state.layout);
+      buildLayout(svg, state.layout, state.cards);
       state.cards = computeCards([]);
     }
   }
@@ -254,13 +301,13 @@ function mainEntryPoint() {
     .querySelector('#layout-selector')
     .addEventListener('change', event => {
       state.layout = event.target.value;
-      stateUpdate();
-
       // update the description text
       setDescription(
         '#layout-description',
         tarotData.layoutAnnotations[state.layout]
       );
+
+      stateUpdate();
     });
   document
     .querySelector('#dataset-selector')
@@ -269,7 +316,7 @@ function mainEntryPoint() {
       // update the chosen name
       state.datasetName = datasetName;
       state.loading = true;
-      stateUpdate();
+
       // start loading the data
       d3.csv(`data/${datasetName}`).then(d => {
         state.loading = true;
@@ -283,6 +330,7 @@ function mainEntryPoint() {
         '#dataset-description',
         tarotData.datasetAnnotations[state.datasetName]
       );
+      stateUpdate();
     });
 }
 
