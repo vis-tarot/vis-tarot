@@ -8,8 +8,14 @@
     "Celtic Cross": "The Celtic Cross spread is the oldest known and without a doubt, the most popular pattern for Tarot readings. It is said that the survival of this spread is due to the energy from the amount of people who use this particular spread daily, and the decades of use throughout the world.\n\n\nIt is divided into two sections, namely the “Circle/Cross” on the left side, made up of two crosses – a central one (two cards) nested within a larger cross (six cards), and the Staff on the right side, as shown in the above diagram. The “Circle/Cross” stems from the Celtic cross which can be found throughout the country of Ireland. It symbolizes the unity of all events."
   },
   "layouts": {
-    "One Card": [],
-    "Three Card": [],
-    "Celtic Cross": []
+    "Present": "Extremely good descriptions of Present! Just a good one, but not too long.",
+    "Goal": "Extremely good descriptions of Goal! Just a good one, but not too long.",
+    "Past": "Extremely good descriptions of Past! Just a good one, but not too long.",
+    "Context": "Extremely good descriptions of Context! Just a good one, but not too long.",
+    "Future": "Extremely good descriptions of Future! Just a good one, but not too long.",
+    "Querent": "Extremely good descriptions of Querent! Just a good one, but not too long.",
+    "Environment": "Extremely good descriptions of Environment! Just a good one, but not too long.",
+    "Mind": "Extremely good descriptions of Mind! Just a good one, but not too long.",
+    "Outcome": "Extremely good descriptions of Outcome! Just a good one, but not too long."
   }
 }
