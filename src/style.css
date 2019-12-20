@@ -40,7 +40,7 @@ body{
 
 .header {
   align-items: center;
-  background: black;
+  background: #333333;
   color: white;
   display: flex;
   font-family: 'Pinyon Script', cursive;
@@ -51,7 +51,9 @@ body{
 
 
 .side-bar {
-  background: grey;
+  background: #eee;
+  max-width: 250px;
+  min-width: 250px;
   width: 250px;
   padding: 30px;
 }
@@ -81,7 +83,7 @@ body{
 select {
   background-color: rgba(0, 0, 0, 0);
   border: 0;
-  color: black;
+  color: #333333;
 	display: flex;
 	font-size: 15px;
 	font-weight: 700;

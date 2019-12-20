@@ -38,6 +38,7 @@ function addCardSpace(svg, label, x, y, height) {
   x = !x ? 0 : x;
   y = !y ? 0 : y;
 
+  const size = 0.9 * height;
   let h = size;
   let w = (57.15 / 88.9) * size;
 
@@ -153,3 +154,87 @@ function celticCross(svg) {
       `rotate(-90) translate(-${cHeight * 0.5},-${cWidth * 0.25})`
     );
 }
+
+function computeCards(data) {
+  return [];
+}
+
+function buildLayout(svg, layout) {
+  // clear the contents of teh previous layout
+  svg.selectAll('*').remove();
+  switch (layout) {
+    case 'Celtic Cross':
+      celticCross(svg);
+    case 'Three Card':
+      threeCard(svg);
+    case 'One Card':
+      console.log('TODO!');
+  }
+}
+
+function removePlaceHolder() {
+  const placeHolder = document.querySelector('#load-msg');
+  if (placeHolder) {
+    placeHolder.remove();
+  }
+}
+
+// the main method of the application, all subsequent calls should eminante from here
+function mainEntryPoint() {
+  const state = {
+    layout: null,
+    data: null,
+    datasetName: null,
+    loading: false,
+    cards: []
+  };
+  const svg = d3.select('#main-container');
+  const container = document.querySelector('.main-content');
+  const {height, width} = container.getBoundingClientRect();
+  function stateUpdate() {
+    if (state.layout && state.data) {
+      removePlaceHolder();
+      svg.attr('height', height).attr('width', width);
+      buildLayout(svg, state.layout);
+      state.cards = computeCards([]);
+    }
+  }
+
+  const listener = key => ({target: value}) => {
+    state[key] = value;
+    stateUpdate();
+    if (key === 'datasetName') {
+      state.loading = true;
+      d3.csv(`data/${state[key]}`).then(d => {
+        state.loading = true;
+        state.data = d;
+        stateUpdate();
+      });
+    }
+  };
+
+  document
+    .querySelector('#layout-selector')
+    .addEventListener('change', event => {
+      state.layout = event.target.value;
+      stateUpdate();
+    });
+  document
+    .querySelector('#dataset-selector')
+    .addEventListener('change', event => {
+      const datasetName = event.target.value;
+      // update the chosen name
+      state.datasetName = datasetName;
+      state.loading = true;
+      stateUpdate();
+      // start loading the data
+      d3.csv(`data/${datasetName}`).then(d => {
+        state.loading = true;
+        state.data = d;
+        // TODO also do the data processing here
+        stateUpdate();
+      });
+    });
+}
+
+document.addEventListener('DOMContentLoaded', mainEntryPoint);
