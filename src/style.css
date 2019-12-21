@@ -77,12 +77,14 @@ body{
 .cardspace:hover {
     fill-opacity: 1;
 }
-.cardspacecontainer .tooltip-container {
+.cardspacecontainer .tooltip-container,
+.cardfront-container .tooltip-container {
   opacity: 0;
   pointer-events: none;
 
 }
-.cardspacecontainer:hover .tooltip-container {
+.cardspacecontainer:hover .tooltip-container,
+.cardfront-container:hover .tooltip-container {
   opacity: 1;
   /* pointer-events: all; */
 }

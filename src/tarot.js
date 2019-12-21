@@ -34,6 +34,7 @@ function exampleCardFront(domNode, card, scales) {
   const {h, w} = getCardHeightWidth();
   const svg = d3.select(domNode);
   svg.selectAll('*').remove();
+  svg.attr('class', 'cardfront-container');
   svg
     .append('rect')
     .attr('x', 0)
@@ -60,6 +61,24 @@ function exampleCardFront(domNode, card, scales) {
     .attr('text-anchor', 'middle')
     .attr('font-size', 40)
     .text(emojii[card.pos % emojii.length]);
+  const TOOLTIP_WIDTH = 200;
+  const TOOLTIP_HEIGHT = 100;
+  const toolTipContainer = svg
+    .append('g')
+    .attr('class', 'tooltip-container')
+    .attr(
+      'transform',
+      `translate(${xWindow(w / 2) - TOOLTIP_WIDTH / 2}, ${yWindow(h) -
+        TOOLTIP_HEIGHT / 2})`
+    );
+  toolTipContainer
+    .append('foreignObject')
+    .attr('class', 'tooltip')
+    .attr('x', 0)
+    .attr('y', 0)
+    .attr('height', TOOLTIP_HEIGHT)
+    .attr('width', TOOLTIP_WIDTH)
+    .html(d => `<div class="tooltip">INTERPRET ME</div>`);
 }
 
 // this function will select the appropriate design function
