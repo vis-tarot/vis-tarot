@@ -29,13 +29,36 @@ const emojii = [
   '👭'
 ];
 
-function exampleCardFront(domNode, card, scales) {
+function scatterplot(xDim, yDim, height, width, datasetName) {
+  return {
+    $schema: 'https://vega.github.io/schema/vega-lite/v4.json',
+    transform: [],
+    data: {url: `data/${datasetName}.csv`},
+    mark: {type: 'circle', tooltip: true},
+    encoding: {
+      x: {
+        field: xDim,
+        type: 'quantitative',
+        scale: {zero: false}
+      },
+      y: {
+        field: yDim,
+        type: 'quantitative',
+        scale: {zero: false}
+      }
+    },
+    height: height,
+    width: width
+  };
+}
+
+function cardCommon(domNode, card, scales) {
   const {xWindow, yWindow} = scales;
   const {h, w} = getCardHeightWidth();
-  const svg = d3.select(domNode);
-  svg.selectAll('*').remove();
-  svg.attr('class', 'cardfront-container');
-  svg
+  const cardSvg = d3.select(domNode).attr('id', `card-${card.pos}`);
+  cardSvg.selectAll('*').remove();
+  cardSvg.attr('class', 'cardfront-container');
+  cardSvg
     .append('rect')
     .attr('x', 0)
     .attr('y', 0)
@@ -47,23 +70,16 @@ function exampleCardFront(domNode, card, scales) {
     .attr('rx', 10)
     .attr('rx', 10);
 
-  svg
+  cardSvg
     .append('text')
     .attr('x', xWindow(w / 2))
     .attr('y', yWindow(h * 0.8))
     .attr('text-anchor', 'middle')
     .text('EXAMPLE');
 
-  svg
-    .append('text')
-    .attr('x', xWindow(w / 2))
-    .attr('y', yWindow(h * 0.5))
-    .attr('text-anchor', 'middle')
-    .attr('font-size', 40)
-    .text(emojii[card.pos % emojii.length]);
   const TOOLTIP_WIDTH = 200;
   const TOOLTIP_HEIGHT = 100;
-  const toolTipContainer = svg
+  const toolTipContainer = cardSvg
     .append('g')
     .attr('class', 'tooltip-container')
     .attr(
@@ -79,11 +95,56 @@ function exampleCardFront(domNode, card, scales) {
     .attr('height', TOOLTIP_HEIGHT)
     .attr('width', TOOLTIP_WIDTH)
     .html(d => `<div class="tooltip">INTERPRET ME</div>`);
+  return cardSvg;
+}
+
+function exampleCardFrontScatterplot(domNode, card, scales) {
+  const {xWindow, yWindow} = scales;
+  const {h, w} = getCardHeightWidth();
+  const cardSvg = cardCommon(domNode, card, scales);
+  cardSvg
+    .append('foreignObject')
+    .attr('height', yWindow(h))
+    .attr('width', xWindow(w))
+    .html(d => `<div class="vega-container"></div>`);
+  const examplexDim = 'Pg Assists';
+  const exampleyDim = 'Pg Blocks';
+  vegaEmbed(
+    `#card-${card.pos} .vega-container`,
+    scatterplot(
+      examplexDim,
+      exampleyDim,
+      yWindow(h) * 0.8,
+      xWindow(w),
+      'per_game_data'
+    )
+  )
+    // .then(function(result) {
+    //   // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
+    //   console.log('view', result);
+    // })
+    .catch(console.error);
+}
+
+function exampleCardFrontEmoji(domNode, card, scales) {
+  const {xWindow, yWindow} = scales;
+  const {h, w} = getCardHeightWidth();
+  const cardSvg = cardCommon(domNode, card, scales);
+  cardSvg
+    .append('text')
+    .attr('x', xWindow(w / 2))
+    .attr('y', yWindow(h * 0.5))
+    .attr('text-anchor', 'middle')
+    .attr('font-size', 40)
+    .text(emojii[card.pos % emojii.length]);
 }
 
 // this function will select the appropriate design function
 // a d3 chart if it's the minor arcana, and the major arcana emojii
 // thing if it's major
+let counter = 0;
 function findAppropriateCard(card) {
-  return exampleCardFront;
+  counter += 1;
+  console.log(card);
+  return counter % 2 ? exampleCardFrontEmoji : exampleCardFrontScatterplot;
 }
