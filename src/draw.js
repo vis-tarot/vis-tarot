@@ -45,13 +45,7 @@ function drawCardSpaces(container, positions, scales) {
   cardSpace
     .append('div')
     .attr('class', 'cardspace')
-    // TODO this is wrong and doesnt handle the sideways one right
-    .style('transform', d => {
-      if (d.rotate) {
-        return `translate(${-xWindow(w) / 2}, ${yWindow(w)}) rotate(-90)`;
-      }
-      return `translate(${xWindow(w) * 0.05}, ${yWindow(h) * 0.05})`;
-    })
+    .style('transform', d => d.rotate && 'rotate(-90deg)')
     .style('width', `${xWindow(w) * 0.95}px`)
     .style('height', `${yWindow(h) * 0.95}px`);
 
@@ -97,11 +91,8 @@ function drawCards(container, positions, scales, cards) {
       .style('transform', () => {
         const xPos = xWindow(nextCardPos.x);
         const yPos = yWindow(nextCardPos.y);
-        if (!nextCardPos.rotate) {
-          return `translate(${xPos}px,${yPos}px)`;
-        }
-        return `translate(${xPos - 0.5 * xWindow(w)}px,${yPos +
-          xWindow(w) * 1.12}px) rotate(-90)`;
+        const rotate = nextCardPos.rotate ? 90 : 0;
+        return `translate(${xPos}px,${yPos}px) rotate(-${rotate}deg)`;
       });
     nextCardIdx += 1;
   }
@@ -147,11 +138,12 @@ function drawCards(container, positions, scales, cards) {
  */
 function oneCard(container) {
   // TODO select what we want EXAMPLE to be instead
-  const labels = ['*', 'EXAMPLE', '*'];
+  const CARD_NAME = 'EXAMPLE';
+  const labels = ['*', CARD_NAME, '*'];
   const scales = makeScales(container, labels);
   return {
     scales,
-    positions: [{x: scales.xScale('EXAMPLE'), y: 0.4, label: 'EXAMPLE'}]
+    positions: [{x: scales.xScale(CARD_NAME), y: 0.4, label: CARD_NAME}]
   };
 }
 

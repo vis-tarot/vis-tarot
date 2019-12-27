@@ -110,6 +110,7 @@ body{
     background: white;
     outline: 2px dashed #333;
     transition: background 0.5s;
+    z-index: 0;
 }
 .cardspace:hover {
     background: gray;
@@ -125,6 +126,7 @@ body{
   position: absolute;
   width: 200px;
   display: none;
+  z-index: 1000;
 }
 .cardfront-container {
   position: relative;
