@@ -37,12 +37,14 @@ function makeScales(container, labels) {
 
 /**
  * Util method for determining the size in index space of the cards, returns an object
+ * scales object that comes from make scales
  */
-function getCardHeightWidth() {
-  const size = 0.3;
-  let h = size;
-  let w = (57.15 / 88.9) * size;
-  return {h, w};
+function getCardHeightWidth(scales) {
+  const DESIRED_WIDTH = 175;
+  return {
+    h: scales.yWindow.invert(DESIRED_WIDTH * (88.9 / 57.15)),
+    w: scales.xWindow.invert(DESIRED_WIDTH)
+  };
 }
 
 /**

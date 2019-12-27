@@ -17,7 +17,7 @@ fetch('./data/tarot-data.json')
  */
 function drawCardSpaces(container, positions, scales) {
   const {xWindow, yWindow} = scales;
-  const {h, w} = getCardHeightWidth();
+  const {h, w} = getCardHeightWidth(scales);
 
   const containers = container.selectAll('.cardspacecontainer').data(positions);
   const cardContainers = containers
@@ -77,7 +77,7 @@ function drawCardSpaces(container, positions, scales) {
  * positions - an array of objects describing the positioning and metadata with the card spaces
  */
 function drawCards(container, positions, scales, cards) {
-  const {h, w} = getCardHeightWidth();
+  const {h, w} = getCardHeightWidth(scales);
   const {xWindow, yWindow} = scales;
   // stateful incrementer of how deep into the draw we are, as the user draws more cards we increment this idx
   let nextCardIdx = 0;
@@ -126,7 +126,7 @@ function drawCards(container, positions, scales, cards) {
     .append('div')
     .attr('class', 'card')
     .style('left', '-275px')
-    .style('bottom', '20%')
+    .style('bottom', '10%')
     .style('transform', d => `translate(${d.x}px,${d.y}px)`)
     .on('click', onCardClick);
   cardJoin.exit().remove();

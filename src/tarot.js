@@ -34,7 +34,7 @@ const emojii = [
  */
 function cardCommon(domNode, card, scales, middleContent) {
   const {xWindow, yWindow} = scales;
-  const {h, w} = getCardHeightWidth();
+  const {h, w} = getCardHeightWidth(scales);
   // tooltip defined after the container, but the container needs referece to it shruggie
   let tooltipNode = null;
 
@@ -84,22 +84,10 @@ function cardCommon(domNode, card, scales, middleContent) {
       .style('width', `${xWindow(w)}px`)
       .html(() => `<div class="card-title">${card.cardtitle}</div>`);
   }
-  //
-  // const TOOLTIP_WIDTH = 200;
-  // const TOOLTIP_HEIGHT = 100;
+
   tooltipNode = cardContainer
-    // .append('div')
-    // .attr('class', 'tooltip-container')
-    // .style(
-    //   'transform',
-    //   `translate(${xWindow(w / 2) - TOOLTIP_WIDTH / 2}, ${yWindow(h) -
-    //     TOOLTIP_HEIGHT / 2})`
-    // )
     .append('div')
     .attr('class', 'tooltip')
-    // .style('height', `${TOOLTIP_HEIGHT}px`)
-    // .style('width', `${TOOLTIP_WIDTH}px`)
-
     .html(`<div><b>${card.cardtitle}</b>: ${card.tip}</div>`);
 }
 
@@ -110,8 +98,9 @@ function cardCommon(domNode, card, scales, middleContent) {
  * card - an object containing the cards data
  * scales - an object of the scales for positioning things
  */
-function minorArcana(domNode, card, {xWindow, yWindow}) {
-  const {h, w} = getCardHeightWidth();
+function minorArcana(domNode, card, scales) {
+  const {xWindow, yWindow} = scales;
+  const {h, w} = getCardHeightWidth(scales);
 
   domNode
     .append('div')

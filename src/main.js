@@ -133,7 +133,6 @@ function main() {
   // initialize everything
   const mainContainer = d3.select('#main-container');
   const container = document.querySelector('.main-content');
-  const {height, width} = container.getBoundingClientRect();
 
   // update the state of the system based on changed inputs
   function stateUpdate() {
@@ -151,7 +150,7 @@ function main() {
     }
 
     // size the mainContainer correctly
-    // TODO: AGHHHHH
+    const {height, width} = container.getBoundingClientRect();
     mainContainer.style('height', `${height}px`);
     mainContainer.style('width', `${width}px`);
 
@@ -193,6 +192,7 @@ function main() {
     });
 
   // TODO add listeners that allow user to upload a file here
+  window.onresize = stateUpdate;
 }
 
 // start the application after the content has loaded

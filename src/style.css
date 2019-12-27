@@ -116,6 +116,12 @@ body{
 }
 
 .tooltip {
+  background: #333333;
+  border-radius: 5px;
+  color: white;
+    font-family: 'Playfair Display', serif;
+  font-size: 12px;
+  padding: 10px;
   position: absolute;
   width: 200px;
   display: none;
@@ -156,16 +162,6 @@ body{
 
 .card {
   cursor: pointer;
-}
-
-.tooltip {
-  background: #333333;
-  border-radius: 5px;
-  color: white;
-    font-family: 'Playfair Display', serif;
-  font-size: 12px;
-  padding: 10px;
-  /* z-index: 10000; */
 }
 
 
