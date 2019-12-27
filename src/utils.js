@@ -4,12 +4,12 @@
  *
  * the xWindow and yWindow scales refer to the full viewing pane, and use index coordinates (e.g. 0 to 1)
  *
- * svg - the d3 selection for the full svg pane
+ * container - the d3 selection for the full container pane
  * labels - an array of entities (strings, numbers whatever) to determine the behaviour of the band scale
  */
-function makeScales(svg, labels) {
-  const width = parseInt(svg.style('width'));
-  const height = parseInt(svg.style('height'));
+function makeScales(container, labels) {
+  const width = parseInt(container.style('width'));
+  const height = parseInt(container.style('height'));
   const margin = {
     left: 0,
     right: 0,
@@ -18,7 +18,7 @@ function makeScales(svg, labels) {
   };
   const xWindow = d3
     .scaleLinear()
-    .domain([0, 1.2])
+    .domain([0, 1])
     .range([margin.left, width - margin.left - margin.right]);
   const yWindow = d3
     .scaleLinear()

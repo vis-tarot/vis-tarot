@@ -31,79 +31,70 @@ const emojii = [
  * domNode - the dom node that is relevent to the card
  * card - an object containing the cards data
  * scales - an object of the scales for positioning things
+ * middleContent - function to construct the content in the middle of the card
  */
-function cardCommon(domNode, card, scales) {
+function cardCommon(domNode, card, scales, middleContent) {
   const {xWindow, yWindow} = scales;
   const {h, w} = getCardHeightWidth();
-  const svg = d3.select(domNode).attr('id', `card-${card.pos}`);
-  svg.selectAll('*').remove();
-  const cardSvg = svg.append('g');
+  const container = d3.select(domNode).attr('id', `card-${card.pos}`);
+  container.selectAll('*').remove();
+  let cardContainer = container
+    .append('div')
+    .style('height', `${yWindow(h)}px`)
+    .style('width', `${xWindow(w)}px`);
 
-  cardSvg
+  cardContainer
     .attr('class', `cardfront-container`)
-    .attr(
+    .style(
       'transform',
       card.reversed
         ? `rotate(-180) translate(-${xWindow(w)}, -${yWindow(h)})`
         : ''
     );
-  cardSvg
-    .append('rect')
-    .attr('x', 0)
-    .attr('y', 0)
-    .attr('height', yWindow(h))
-    .attr('width', xWindow(w))
-    .attr('stroke', 'black')
-    .attr('stroke-width', 7)
-    .attr('fill', 'white')
-    .attr('rx', 10)
-    .attr('rx', 10);
+  // background
+  cardContainer.append('div').attr('class', 'cardfront-background');
 
-  cardSvg
-    .append('text')
-    .attr('x', xWindow(w / 2))
-    .attr('y', yWindow(h * 0.1))
-    .attr('font-size', 10)
-    .attr('text-anchor', 'middle')
+  cardContainer = cardContainer.append('div').attr('class', 'cardfront-main');
+  // label
+  cardContainer
+    .append('div')
+    .attr('class', 'cardfront-label')
     .text(d =>
       card.suit === 'major arcana'
         ? `${toRomanNumeral(d.cardnum)}. ${d.tradname}`
         : card.cardtitle
     );
 
-  cardSvg
-    .append('foreignObject')
-    .attr('x', 0)
-    .attr('y', yWindow(h * 0.8))
-    .attr('height', yWindow(h) * 0.2)
-    .attr('width', xWindow(w))
-    .html(d =>
-      card.suit === 'major arcana'
-        ? `<div class="card-title">${d.cardtitle}</div>`
-        : ''
-    );
+  middleContent(cardContainer, card, scales);
+
+  // main label
+  if (card.suit === 'major arcana') {
+    cardContainer
+      .append('div')
+      .style('height', `${yWindow(h) * 0.2}px`)
+      .style('width', `${xWindow(w)}px`)
+      .html(() => `<div class="card-title">${card.cardtitle}</div>`);
+  }
 
   const TOOLTIP_WIDTH = 200;
   const TOOLTIP_HEIGHT = 100;
-  const toolTipContainer = cardSvg
-    .append('g')
+  const toolTipContainer = cardContainer
+    .append('div')
     .attr('class', 'tooltip-container')
-    .attr(
+    .style(
       'transform',
       `translate(${xWindow(w / 2) - TOOLTIP_WIDTH / 2}, ${yWindow(h) -
         TOOLTIP_HEIGHT / 2})`
     );
   toolTipContainer
-    .append('foreignObject')
+    .append('div')
     .attr('class', 'tooltip')
-    .attr('x', 0)
-    .attr('y', 0)
-    .attr('height', TOOLTIP_HEIGHT)
-    .attr('width', TOOLTIP_WIDTH)
+    .style('height', `${TOOLTIP_HEIGHT}px`)
+    .style('width', `${TOOLTIP_WIDTH}px`)
     .html(
       () => `<div class="tooltip"><b>${card.cardtitle}</b>: ${card.tip}</div>`
     );
-  return cardSvg;
+  return cardContainer;
 }
 
 /**
@@ -113,18 +104,16 @@ function cardCommon(domNode, card, scales) {
  * card - an object containing the cards data
  * scales - an object of the scales for positioning things
  */
-function minorArcana(domNode, card, scales) {
-  const {xWindow, yWindow} = scales;
+function minorArcana(domNode, card, {xWindow, yWindow}) {
   const {h, w} = getCardHeightWidth();
-  const cardSvg = cardCommon(domNode, card, scales);
-  cardSvg
-    .append('foreignObject')
-    .attr('height', yWindow(h))
-    .attr('width', xWindow(w))
-    .html(
-      () =>
-        `<div class="vega-container"><div class="lds-dual-ring"></div></div>`
-    );
+
+  domNode
+    .append('div')
+    .style('height', `${yWindow(h)}`)
+    .style('width', `${xWindow(w)}`)
+    .attr('class', 'vega-container')
+    .append('div')
+    .attr('class', 'lds-dual-ring');
 
   console.log('???', card);
   const spec = CHART_LOOKUP[card.charttype](
@@ -134,7 +123,7 @@ function minorArcana(domNode, card, scales) {
     'per_game_data'
   );
   setTimeout(() => {
-    vegaEmbed(`#card-${card.pos} .vega-container`, spec)
+    vegaEmbed(`#card-${card.pos} .vega-container`, spec, {actions: false})
       // .then(function(result) {
       //   domNode.querySelector('.lds-dual-ring').remove();
       //   // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
@@ -151,16 +140,12 @@ function minorArcana(domNode, card, scales) {
  * card - an object containing the cards data
  * scales - an object of the scales for positioning things
  */
-function exampleCardFrontEmoji(domNode, card, scales) {
-  const {xWindow, yWindow} = scales;
-  const {h, w} = getCardHeightWidth();
-  const cardSvg = cardCommon(domNode, card, scales);
-  cardSvg
-    .append('text')
-    .attr('x', xWindow(w / 2))
-    .attr('y', yWindow(h * 0.5))
-    .attr('text-anchor', 'middle')
-    .attr('font-size', 40)
+function exampleCardFrontEmoji(domNode, card) {
+  domNode
+    .append('div')
+    .attr('class', 'emoji-label')
+    .style('text-anchor', 'middle')
+    .style('font-size', 40)
     .text(emojii[card.pos % emojii.length]);
 }
 
@@ -171,38 +156,26 @@ function exampleCardFrontEmoji(domNode, card, scales) {
  * card - an object containing the cards data
  * scales - an object of the scales for positioning things
  */
-function majorArcana(domNode, card, scales) {
-  const {xWindow, yWindow} = scales;
-  const {h, w} = getCardHeightWidth();
-  const cardSvg = cardCommon(domNode, card, scales);
-
-  cardSvg
-    .append('foreignObject')
-    .attr('height', yWindow(h))
-    .attr('width', xWindow(w))
-    .html(
-      `<div class="major-arcana-img-container"><img src="assets/major-arcana-imgs/${card.image}"/></div>`
-    );
+function majorArcana(domNode, card) {
+  domNode
+    .append('div')
+    .attr('class', 'major-arcana-img-container')
+    .append('img')
+    .attr('src', `assets/major-arcana-imgs/${card.image}`);
 }
 
 /**
- * Inspects the card object to determine what type of card should be rendered and returns
- * a function for rendering that type of card
+ * Inspects the card object to determine what type of card should be rendered and then does that
  *
  * domNode - the dom node that is relevent to the card
  * card - an object containing the cards data
  * scales - an object of the scales for positioning things
  */
 function renderAppropriateCard(domNode, card, scales) {
-  console.log(card);
-  switch (card.suit) {
-    case 'pentacles':
-    case 'swords':
-    case 'wands':
-    case 'cups':
-      return minorArcana(domNode, card, scales);
-    default:
-    case 'major arcana':
-      return majorArcana(domNode, card, scales);
-  }
+  cardCommon(
+    domNode,
+    card,
+    scales,
+    card.suit === 'major arcana' ? majorArcana : minorArcana
+  );
 }

@@ -11,96 +11,102 @@ fetch('./data/tarot-data.json')
 /**
  * draws the empty card spaces, including the tooltips
  *
- * svg - the d3 selection for the full svg pane
+ * container - the d3 selection for the full container pane
  * positions - an array of objects describing the positioning and metadata with the card spaces
  * scales - an object of scales
  */
-function drawCardSpaces(svg, positions, scales) {
+function drawCardSpaces(container, positions, scales) {
   const {xWindow, yWindow} = scales;
   const {h, w} = getCardHeightWidth();
 
-  const containers = svg.selectAll('.cardspacecontainer').data(positions);
+  const containers = container.selectAll('.cardspacecontainer').data(positions);
   const cardContainers = containers
     .enter()
-    .append('g')
-    .attr('transform', d => `translate(${xWindow(d.x)}, ${yWindow(d.y)})`)
+    .append('div')
+    .style('transform', d => `translate(${xWindow(d.x)}px, ${yWindow(d.y)}px)`)
     .attr('class', 'cardcontainer');
   const cardSpace = cardContainers
-    .append('g')
+    .append('div')
     .attr('class', 'cardspacecontainer');
 
   cardSpace
-    .append('rect')
+    .append('div')
     .attr('class', 'cardspace')
-    .attr(
+    // TODO this is wrong and doesnt handle the sideways one right
+    .style(
       'transform',
-      // TODO this is wrong and doesnt handle the sideways one right
       d =>
         (d.rotate &&
           `translate(${-xWindow(w) / 2}, ${yWindow(w)}) rotate(-90)`) ||
         `translate(${xWindow(w) * 0.05}, ${yWindow(h) * 0.05})`
     )
-    .attr('width', xWindow(w) * 0.95)
-    .attr('height', yWindow(h) * 0.95)
-    .attr('fill', '#333');
+    .style('width', d => {
+      console.log(d, xWindow(w) * 0.95, `${xWindow(w) * 0.95}px`);
+      return `${xWindow(w) * 0.95}px`;
+    })
+    .style('height', `${yWindow(h) * 0.95}px`)
+    .style('fill', '#333');
+
   cardSpace
-    .append('text')
-    .attr('x', xWindow(w / 2))
-    .attr('y', yWindow(h / 2))
+    .append('div')
+    .attr('class', 'cardspace-title')
+    // .attr('x', xWindow(w / 2))
+    // .attr('y', yWindow(h / 2))
     .attr('text-anchor', 'middle')
     .text(d => d.label);
 
-  const TOOLTIP_WIDTH = 200;
-  const TOOLTIP_HEIGHT = 100;
-  const toolTipContainer = cardSpace
-    .append('g')
-    .attr('class', 'tooltip-container')
-    .attr(
-      'transform',
-      `translate(${xWindow(w / 2) - TOOLTIP_WIDTH / 2}, ${yWindow(h) -
-        TOOLTIP_HEIGHT / 2})`
-    );
-  toolTipContainer
-    .append('foreignObject')
-    .attr('class', 'tooltip')
-    .attr('x', 0)
-    .attr('y', 0)
-    .attr('height', TOOLTIP_HEIGHT)
-    .attr('width', TOOLTIP_WIDTH)
-    .html(d => `<div class="tooltip">${tarotData.layouts[d.label]}</div>`);
+  // const TOOLTIP_WIDTH = 200;
+  // const TOOLTIP_HEIGHT = 100;
+  // const toolTipContainer = cardSpace
+  //   .append('div')
+  //   .attr('class', 'tooltip-container')
+  //   .attr(
+  //     'transform',
+  //     `translate(${xWindow(w / 2) - TOOLTIP_WIDTH / 2}, ${yWindow(h) -
+  //       TOOLTIP_HEIGHT / 2})`
+  //   );
+  // toolTipContainer
+  //   .append('foreignObject')
+  //   .attr('class', 'tooltip')
+  //   .attr('x', 0)
+  //   .attr('y', 0)
+  //   .attr('height', TOOLTIP_HEIGHT)
+  //   .attr('width', TOOLTIP_WIDTH)
+  //   .html(d => `<div class="tooltip">${tarotData.layouts[d.label]}</div>`);
 }
 
-function drawSidebar(svg, scales) {
-  const {xWindow, yWindow} = scales;
-  svg
-    .append('rect')
-    .attr('x', xWindow(0.9))
-    .attr('y', yWindow(0))
-    .attr('height', yWindow(1))
-    .attr('width', xWindow(1.2) - xWindow(0.9))
-    .attr('fill', 'lightgray');
-
-  svg
-    .append('foreignObject')
-    .attr(
-      'transform',
-      () => `translate(${xWindow(0.95)},${yWindow(0.6) - 100})`
-    )
-    .attr('width', 200)
-    .attr('height', 100)
-    .append('xhtml:div')
-    .html('Click the deck to draw a card');
-}
+// UNUSED IN REFACTOR
+// function drawSidebar(container, scales) {
+//   const {xWindow, yWindow} = scales;
+//   container
+//     .append('rect')
+//     .attr('x', xWindow(0.9))
+//     .attr('y', yWindow(0))
+//     .attr('height', yWindow(1))
+//     .attr('width', xWindow(1.2) - xWindow(0.9))
+//     .attr('fill', 'lightgray');
+//
+//   container
+//     .append('foreignObject')
+//     .attr(
+//       'transform',
+//       () => `translate(${xWindow(0.95)},${yWindow(0.6) - 100})`
+//     )
+//     .attr('width', 200)
+//     .attr('height', 100)
+//     .append('xhtml:div')
+//     .html('Click the deck to draw a card');
+// }
 
 /**
  * draws the cards themselves, also contains state relevant to how many cards have been drawn
  *
- * svg - the d3 selection for the full svg pane
+ * container - the d3 selection for the full container pane
  * cards - an array of object with each individual card data
  * scales - an object of scales
  * positions - an array of objects describing the positioning and metadata with the card spaces
  */
-function drawCards(svg, cards, scales, positions) {
+function drawCards(container, cards, scales, positions) {
   const {h, w} = getCardHeightWidth();
   const {xWindow, yWindow} = scales;
   // stateful incrementer of how deep into the draw we are, as the user draws more cards we increment this idx
@@ -112,25 +118,30 @@ function drawCards(svg, cards, scales, positions) {
     if (!nextCardPos) {
       return;
     }
+    console.log(card);
     renderAppropriateCard(this, card, scales);
     d3.select(this)
       .transition(t)
-      .attr('transform', () => {
+      .style('left', null)
+      .style('bottom', null)
+      .style('transform', () => {
         const xPos = xWindow(nextCardPos.x);
         const yPos = yWindow(nextCardPos.y);
         if (!nextCardPos.rotate) {
-          return `translate(${xPos},${yWindow(nextCardPos.y)})`;
+          return `translate(${xPos}px,${yPos}px)`;
         }
-        return `translate(${xPos - 0.5 * xWindow(w)},${yPos +
-          xWindow(w) * 1.12}) rotate(-90)`;
+        return `translate(${xPos - 0.5 * xWindow(w)}px,${yPos +
+          xWindow(w) * 1.12}px) rotate(-90)`;
       });
     nextCardIdx += 1;
   }
 
   // give the cards initial positioning to make it look like are in a pile
   cards.forEach((card, idx) => {
-    card.x = 0.95 + (idx / 81) * 0.03;
-    card.y = 0.6 + (idx / 81) * 0.03;
+    // card.x = 0.95 + (idx / 81) * 0.03;
+    // card.y = 0.6 + (idx / 81) * 0.03;
+    card.x = idx;
+    card.y = idx;
   });
 
   // our transition for drawing cards
@@ -140,36 +151,25 @@ function drawCards(svg, cards, scales, positions) {
     .ease(d3.easeLinear);
 
   // the draw code
-  const cardJoin = svg.selectAll('.card').data(cards, d => `${d.index}`);
+  const cardJoin = container.selectAll('.card').data(cards, d => `${d.index}`);
   // card container
   const card = cardJoin
     .enter()
-    .append('g')
+    .append('div')
     .attr('class', 'card')
-    .attr('transform', d => `translate(${xWindow(d.x)},${yWindow(d.y)})`)
+    .style('left', '-275px')
+    .style('bottom', '20%')
+    .style('transform', d => `translate(${d.x}px,${d.y}px)`)
     .on('click', onCardClick);
   cardJoin.exit().remove();
 
-  // the border of the card
   card
-    .append('rect')
-    .attr('x', 0)
-    .attr('y', 0)
-    .attr('height', yWindow(h))
-    .attr('width', xWindow(w))
-    .attr('stroke', 'black')
-    .attr('fill', 'black')
-    .attr('rx', 10)
-    .attr('rx', 10);
-  // the background image on the card
-  card
-    .append('foreignObject')
-    .attr('x', xWindow(h) * 0.02)
-    .attr('y', yWindow(h) * 0.02)
-    .attr('width', xWindow(w) * 0.94)
-    .attr('height', yWindow(h) * 0.96)
-    .append('xhtml:div')
-    .attr('class', 'cardback-img')
+    .append('div')
+    .attr('class', 'card-back')
+    // .attr('x', 0)
+    // .attr('y', 0)
+    .style('height', `${yWindow(h)}px`)
+    .style('width', `${xWindow(w)}px`)
     .append('img')
     .attr('src', './assets/card-back.png');
 }
@@ -177,12 +177,12 @@ function drawCards(svg, cards, scales, positions) {
 /**
  * The one card layout.
  * Works the same as the three card with two cards that are never drawn
- * svg - the d3 selection for the full svg pane
+ * container - the d3 selection for the full container pane
  */
-function oneCard(svg) {
+function oneCard(container) {
   // TODO select what we want EXAMPLE to be instead
   const labels = ['*', 'EXAMPLE', '*'];
-  const scales = makeScales(svg, labels);
+  const scales = makeScales(container, labels);
   return {
     scales,
     positions: [{x: scales.xScale('EXAMPLE'), y: 0.4, label: 'EXAMPLE'}]
@@ -191,11 +191,11 @@ function oneCard(svg) {
 
 /**
  * The three card layout
- * svg - the d3 selection for the full svg pane
+ * container - the d3 selection for the full container pane
  */
-function threeCard(svg) {
+function threeCard(container) {
   const labels = ['Background', 'Problem', 'Advice'];
-  const scales = makeScales(svg, labels);
+  const scales = makeScales(container, labels);
   return {
     scales,
     positions: labels.map(label => ({x: scales.xScale(label), y: 0.4, label}))
@@ -204,9 +204,9 @@ function threeCard(svg) {
 
 /**
  * The celtic cross layout
- * svg - the d3 selection for the full svg pane
+ * container - the d3 selection for the full container pane
  */
-function celticCross(svg) {
+function celticCross(container) {
   const positions = [
     {x: 1, y: 1.9, label: 'Challenges', rotate: true},
     {x: 1, y: 1.5, label: 'Present'},
@@ -219,7 +219,7 @@ function celticCross(svg) {
     {x: 3, y: 1, label: 'Mind'},
     {x: 3, y: 0, label: 'Outcome'}
   ];
-  const scales = makeScales(svg, [0, 1, 2, 3]);
+  const scales = makeScales(container, [0, 1, 2, 3]);
   return {
     scales,
     positions: positions.map(({x, y, label, rotate}) => ({
@@ -241,15 +241,15 @@ const layoutMethod = {
  * The main drawing step. Clears out previous content, identifies the relevant layout
  * draws everything
  *
- * svg - the d3 selection for the full svg pane
+ * container - the d3 selection for the full container pane
  * layout - a string specifying the layout
  * cards - an array of object with each individual card data
  */
-function buildLayout(svg, layout, cards) {
+function buildLayout(container, layout, cards) {
   // clear the contents of teh previous layout
-  svg.selectAll('*').remove();
-  const {scales, positions} = layoutMethod[layout](svg);
-  drawSidebar(svg, scales);
-  drawCardSpaces(svg, positions, scales);
-  drawCards(svg, cards, scales, positions);
+  container.selectAll('*').remove();
+  const {scales, positions} = layoutMethod[layout](container);
+  // drawSidebar(container, scales);
+  drawCardSpaces(container, positions, scales);
+  drawCards(container, cards, scales, positions);
 }

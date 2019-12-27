@@ -36,7 +36,7 @@
         <div class="flex">
           <div class="select-label">Data set</div>
           <select id="dataset-selector">
-            <option disabled selected value> -- select an option -- </option>
+            <option disabled selected value> select a dataset </option>
             <option>per_game_data.csv</option>
             <option>per_game_data.csv</option>
             <option>per_game_data.csv</option>
@@ -44,15 +44,15 @@
           </select>
         </div>
 
-        <div class="description margin-bottom">
+        <!-- <div class="description margin-bottom">
           <h3>Description</h3>
-          <div id="dataset-description"></div>
-        </div>
+          <div id="dataset-description">Select a layout & Dataset to begin</div>
+        </div> -->
 
         <div class="flex">
           <div class="select-label">Layout</div>
           <select id="layout-selector">
-            <option disabled selected value> -- select an option -- </option>
+            <option disabled selected value> select a layout </option>
             <option value="One Card">One Card</option>
             <option value="Three Card">Three Card</option>
             <option value="Celtic Cross">Celtic Cross</option>
@@ -61,14 +61,15 @@
 
         <div class="description">
           <h3>Description</h3>
-          <div id="layout-description"></div>
+          <div id="layout-description">Select a layout & Dataset to begin</div>
         </div>
-
       </div>
       <div class="main-content">
         <h1 id="load-msg">SELECT A DATASET & LAYOUT TO BEGIN</h1>
-        <svg id="main-container"></svg>
+        <div id="main-container"></div>
       </div>
+
+
     </div>
   </div>
 </body>
