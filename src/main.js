@@ -134,7 +134,6 @@ function main() {
   const mainContainer = d3.select('#main-container');
   const container = document.querySelector('.main-content');
   const {height, width} = container.getBoundingClientRect();
-  console.log(height, width);
 
   // update the state of the system based on changed inputs
   function stateUpdate() {

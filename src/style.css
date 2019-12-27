@@ -55,11 +55,18 @@ body{
   height: 100%;
   width: 100%;
 }
-
-.cardspace-title {
-  align-items: center;
+.cardspacecontainer {
   display: flex;
+  align-items: center;
   justify-content: center;
+  position: relative;
+}
+.cardspace-title {
+  /* align-items: center;
+  display: flex;
+  justify-content: center; */
+  position: absolute;
+
 }
 
 
@@ -100,39 +107,30 @@ body{
 }
 
 .cardspace {
-    fill: gray;
-    fill-opacity: 0;
+    background: white;
     outline: 2px dashed #333;
-    transition: fill-opacity 1s;
+    transition: background 0.5s;
 }
 .cardspace:hover {
-    fill-opacity: 1;
+    background: gray;
 }
 
-.tooltip-container {
+.tooltip {
   position: absolute;
-}
-.cardspacecontainer .tooltip-container,
-.cardfront-container .tooltip-container {
-  opacity: 0;
-  pointer-events: none;
-
-}
-.cardspacecontainer:hover .tooltip-container,
-.cardfront-container:hover .tooltip-container {
-  opacity: 1;
+  width: 200px;
+  display: none;
 }
 .cardfront-container {
   position: relative;
 }
 
 .cardfront-background {
-  border: 7px solid black;
   background: white;
-  height: 100%;
-  width: 100%;
+  border: 7px solid black;
   border-radius: 10px;
+  height: 100%;
   position: absolute;
+  width: 100%;
   z-index: 0;
 
 }
@@ -153,9 +151,7 @@ body{
 }
 
 .cardfront-label {
-
   font-size: 10px;
-  /* text-anchor: middle; */
 }
 
 .card {

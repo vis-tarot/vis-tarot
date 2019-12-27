@@ -26,7 +26,6 @@ const emojii = [
 
 /**
  * Handles the parts of the card layout which are common to all cards.
- * Returns a d3 selection of the partially constructed card
  *
  * domNode - the dom node that is relevent to the card
  * card - an object containing the cards data
@@ -36,21 +35,31 @@ const emojii = [
 function cardCommon(domNode, card, scales, middleContent) {
   const {xWindow, yWindow} = scales;
   const {h, w} = getCardHeightWidth();
-  const container = d3.select(domNode).attr('id', `card-${card.pos}`);
+  // tooltip defined after the container, but the container needs referece to it shruggie
+  let tooltipNode = null;
+
+  const container = d3
+    .select(domNode)
+    .attr('id', `card-${card.pos}`)
+    .on('mousemove', function tooltip() {
+      const [xPos, yPos] = d3.mouse(this);
+      tooltipNode
+        .style('display', 'block')
+        .style('transform', `translate(${xPos}px, ${yPos}px)`);
+    })
+    .on('mouseout', () => tooltipNode.style('display', 'none'));
+
   container.selectAll('*').remove();
   let cardContainer = container
     .append('div')
     .style('height', `${yWindow(h)}px`)
     .style('width', `${xWindow(w)}px`);
 
+  // reverse trans not current used
+  const reverseTrans = `rotate(-180) translate(-${xWindow(w)}, -${yWindow(h)})`;
   cardContainer
     .attr('class', `cardfront-container`)
-    .style(
-      'transform',
-      card.reversed
-        ? `rotate(-180) translate(-${xWindow(w)}, -${yWindow(h)})`
-        : ''
-    );
+    .style('transform', card.reversed ? reverseTrans : '');
   // background
   cardContainer.append('div').attr('class', 'cardfront-background');
 
@@ -75,26 +84,23 @@ function cardCommon(domNode, card, scales, middleContent) {
       .style('width', `${xWindow(w)}px`)
       .html(() => `<div class="card-title">${card.cardtitle}</div>`);
   }
-
-  const TOOLTIP_WIDTH = 200;
-  const TOOLTIP_HEIGHT = 100;
-  const toolTipContainer = cardContainer
-    .append('div')
-    .attr('class', 'tooltip-container')
-    .style(
-      'transform',
-      `translate(${xWindow(w / 2) - TOOLTIP_WIDTH / 2}, ${yWindow(h) -
-        TOOLTIP_HEIGHT / 2})`
-    );
-  toolTipContainer
+  //
+  // const TOOLTIP_WIDTH = 200;
+  // const TOOLTIP_HEIGHT = 100;
+  tooltipNode = cardContainer
+    // .append('div')
+    // .attr('class', 'tooltip-container')
+    // .style(
+    //   'transform',
+    //   `translate(${xWindow(w / 2) - TOOLTIP_WIDTH / 2}, ${yWindow(h) -
+    //     TOOLTIP_HEIGHT / 2})`
+    // )
     .append('div')
     .attr('class', 'tooltip')
-    .style('height', `${TOOLTIP_HEIGHT}px`)
-    .style('width', `${TOOLTIP_WIDTH}px`)
-    .html(
-      () => `<div class="tooltip"><b>${card.cardtitle}</b>: ${card.tip}</div>`
-    );
-  return cardContainer;
+    // .style('height', `${TOOLTIP_HEIGHT}px`)
+    // .style('width', `${TOOLTIP_WIDTH}px`)
+
+    .html(`<div><b>${card.cardtitle}</b>: ${card.tip}</div>`);
 }
 
 /**

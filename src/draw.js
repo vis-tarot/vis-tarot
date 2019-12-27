@@ -24,79 +24,49 @@ function drawCardSpaces(container, positions, scales) {
     .enter()
     .append('div')
     .style('transform', d => `translate(${xWindow(d.x)}px, ${yWindow(d.y)}px)`)
-    .attr('class', 'cardcontainer');
+    .attr('class', 'cardcontainer')
+    .on('mousemove', function tooltiper() {
+      const [xPos, yPos] = d3.mouse(this);
+      d3.select(this)
+        .select('.tooltip')
+        .style('display', 'block')
+        .style('transform', `translate(${xPos}px, ${yPos}px)`);
+    })
+    .on('mouseout', function untip() {
+      d3.select(this)
+        .select('.tooltip')
+        .style('display', 'none');
+    });
   const cardSpace = cardContainers
     .append('div')
     .attr('class', 'cardspacecontainer');
 
+  // outline
   cardSpace
     .append('div')
     .attr('class', 'cardspace')
     // TODO this is wrong and doesnt handle the sideways one right
-    .style(
-      'transform',
-      d =>
-        (d.rotate &&
-          `translate(${-xWindow(w) / 2}, ${yWindow(w)}) rotate(-90)`) ||
-        `translate(${xWindow(w) * 0.05}, ${yWindow(h) * 0.05})`
-    )
-    .style('width', d => {
-      console.log(d, xWindow(w) * 0.95, `${xWindow(w) * 0.95}px`);
-      return `${xWindow(w) * 0.95}px`;
+    .style('transform', d => {
+      if (d.rotate) {
+        return `translate(${-xWindow(w) / 2}, ${yWindow(w)}) rotate(-90)`;
+      }
+      return `translate(${xWindow(w) * 0.05}, ${yWindow(h) * 0.05})`;
     })
-    .style('height', `${yWindow(h) * 0.95}px`)
-    .style('fill', '#333');
+    .style('width', `${xWindow(w) * 0.95}px`)
+    .style('height', `${yWindow(h) * 0.95}px`);
 
+  // title
   cardSpace
     .append('div')
     .attr('class', 'cardspace-title')
-    // .attr('x', xWindow(w / 2))
-    // .attr('y', yWindow(h / 2))
-    .attr('text-anchor', 'middle')
     .text(d => d.label);
 
-  // const TOOLTIP_WIDTH = 200;
-  // const TOOLTIP_HEIGHT = 100;
-  // const toolTipContainer = cardSpace
-  //   .append('div')
-  //   .attr('class', 'tooltip-container')
-  //   .attr(
-  //     'transform',
-  //     `translate(${xWindow(w / 2) - TOOLTIP_WIDTH / 2}, ${yWindow(h) -
-  //       TOOLTIP_HEIGHT / 2})`
-  //   );
-  // toolTipContainer
-  //   .append('foreignObject')
-  //   .attr('class', 'tooltip')
-  //   .attr('x', 0)
-  //   .attr('y', 0)
-  //   .attr('height', TOOLTIP_HEIGHT)
-  //   .attr('width', TOOLTIP_WIDTH)
-  //   .html(d => `<div class="tooltip">${tarotData.layouts[d.label]}</div>`);
+  // tooltip
+  cardSpace
+    .append('div')
+    .attr('class', 'tooltip')
+    .text(d => tarotData.layouts[d.label] || 'TODO: TOOLTIP FILL IN');
 }
-
-// UNUSED IN REFACTOR
-// function drawSidebar(container, scales) {
-//   const {xWindow, yWindow} = scales;
-//   container
-//     .append('rect')
-//     .attr('x', xWindow(0.9))
-//     .attr('y', yWindow(0))
-//     .attr('height', yWindow(1))
-//     .attr('width', xWindow(1.2) - xWindow(0.9))
-//     .attr('fill', 'lightgray');
-//
-//   container
-//     .append('foreignObject')
-//     .attr(
-//       'transform',
-//       () => `translate(${xWindow(0.95)},${yWindow(0.6) - 100})`
-//     )
-//     .attr('width', 200)
-//     .attr('height', 100)
-//     .append('xhtml:div')
-//     .html('Click the deck to draw a card');
-// }
 
 /**
  * draws the cards themselves, also contains state relevant to how many cards have been drawn
@@ -106,7 +76,7 @@ function drawCardSpaces(container, positions, scales) {
  * scales - an object of scales
  * positions - an array of objects describing the positioning and metadata with the card spaces
  */
-function drawCards(container, cards, scales, positions) {
+function drawCards(container, positions, scales, cards) {
   const {h, w} = getCardHeightWidth();
   const {xWindow, yWindow} = scales;
   // stateful incrementer of how deep into the draw we are, as the user draws more cards we increment this idx
@@ -138,8 +108,6 @@ function drawCards(container, cards, scales, positions) {
 
   // give the cards initial positioning to make it look like are in a pile
   cards.forEach((card, idx) => {
-    // card.x = 0.95 + (idx / 81) * 0.03;
-    // card.y = 0.6 + (idx / 81) * 0.03;
     card.x = idx;
     card.y = idx;
   });
@@ -166,8 +134,6 @@ function drawCards(container, cards, scales, positions) {
   card
     .append('div')
     .attr('class', 'card-back')
-    // .attr('x', 0)
-    // .attr('y', 0)
     .style('height', `${yWindow(h)}px`)
     .style('width', `${xWindow(w)}px`)
     .append('img')
@@ -249,7 +215,6 @@ function buildLayout(container, layout, cards) {
   // clear the contents of teh previous layout
   container.selectAll('*').remove();
   const {scales, positions} = layoutMethod[layout](container);
-  // drawSidebar(container, scales);
   drawCardSpaces(container, positions, scales);
-  drawCards(container, cards, scales, positions);
+  drawCards(container, positions, scales, cards);
 }
