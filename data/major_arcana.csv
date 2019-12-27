@@ -1,0 +1,23 @@
+﻿cardnum,tradname,cardtitle,tip,image
+0,The Fool,The Question,Did you consider developing a specific research question?,00_fool.svg
+1,The Magician,The Analyst,Did you seek advice from a statistical expert before analyzing your data?,01_magician.svg
+2,The High Priestess,Quorum,Would others interpret the data they same way you do?,02_priestess.svg
+3,The Empress,Sufficiency,Do you have enough data to arrive at a reasonable conclusion?,03_empress.svg
+4,The Emperor,The Domain Expert,Have you engaged a domain expert to be sure you understand the data?,04_emporer.svg
+5,The Hierophant,Statistical Assumptions,Do you understand the assumptions made by the statistical analysis?,05_hierophant.svg
+6,The Lovers,Attribute Linkages,Did you consider the functional dependencies in your data?,06_lovers.svg
+7,The Chariot,Summarization,Is the level of aggregation data aggregation approperiate?,07_chariot.svg
+8,Justice,Validity,Can you assess the internal and ecological validity of these results?,08_justice.svg
+9,The Hermit,Confounders,Have you accounted for the presence of hidden confounders in your data?,09_hermit.svg
+10,Wheel of Fortune,Reproducibility,Could you reproduce these results at a later date?,10_fortuna.svg
+11,Strength,Missingness,Does your data have any quality issues?,11_strength.svg
+12,The Hanged Man,Model Choices,Did you use deep learning when logistic regression would have sufficed?,12_hangedman.svg
+13,Death,Alternatives Explanations,Have you considered alternative interpretations of these results?,13_death.svg
+14,Temperance,Uncertainty,Do you know what the uncertainty is in these results?,14_temperance.svg
+15,The Devil,Biases,Have you considered potential sources of bias in your data collection?,15_devil.svg
+16,The Tower,Chance,Have you considered how likely is it that these results are due purely to chance?,16_tower.svg
+17,The Star,Causality,Are you mistaking a correlative relationship for a causal one?,17_star.svg
+18,The Moon,Missingness,Have you considered whether there is missing data?,18_moon.svg
+19,The Sun,Representativness,How representative is your data sample relative to the population it was drawn from?,19_sun.svg
+20,Judgement,Consistency,Are you applying a consistent criteria for analyzing your results?,20_judgement.svg
+21,The World,Independence,Have you considered the role of seasonality or intrasample correlation in your data?,21_world.svg

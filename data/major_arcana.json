@@ -1,0 +1,156 @@
+[
+  {
+    "cardnum": 0,
+    "tradname": "The Fool",
+    "cardtitle": "The Question",
+    "tip": "Did you consider developing a specific research question?",
+    "image": "00_fool.svg"
+  },
+  {
+    "cardnum": 1,
+    "tradname": "The Magician",
+    "cardtitle": "The Analyst",
+    "tip": "Did you seek advice from a statistical expert before analyzing your data?",
+    "image": "01_magician.svg"
+  },
+  {
+    "cardnum": 2,
+    "tradname": "The High Priestess",
+    "cardtitle": "Quorum",
+    "tip": "Would others interpret the data they same way you do?",
+    "image": "02_priestess.svg"
+  },
+  {
+    "cardnum": 3,
+    "tradname": "The Empress",
+    "cardtitle": "Sufficiency",
+    "tip": "Do you have enough data to arrive at a reasonable conclusion?",
+    "image": "03_empress.svg"
+  },
+  {
+    "cardnum": 4,
+    "tradname": "The Emperor",
+    "cardtitle": "The Domain Expert",
+    "tip": "Have you engaged a domain expert to be sure you understand the data?",
+    "image": "04_emporer.svg"
+  },
+  {
+    "cardnum": 5,
+    "tradname": "The Hierophant",
+    "cardtitle": "Statistical Assumptions",
+    "tip": "Do you understand the assumptions made by the statistical analysis?",
+    "image": "05_hierophant.svg"
+  },
+  {
+    "cardnum": 6,
+    "tradname": "The Lovers",
+    "cardtitle": "Attribute Linkages",
+    "tip": "Did you consider the functional dependencies in your data?",
+    "image": "06_lovers.svg"
+  },
+  {
+    "cardnum": 7,
+    "tradname": "The Chariot",
+    "cardtitle": "Summarization",
+    "tip": "Is the level of aggregation data aggregation approperiate?",
+    "image": "07_chariot.svg"
+  },
+  {
+    "cardnum": 8,
+    "tradname": "Justice",
+    "cardtitle": "Validity",
+    "tip": "Can you assess the internal and ecological validity of these results?",
+    "image": "08_justice.svg"
+  },
+  {
+    "cardnum": 9,
+    "tradname": "The Hermit",
+    "cardtitle": "Confounders",
+    "tip": "Have you accounted for the presence of hidden confounders in your data?",
+    "image": "09_hermit.svg"
+  },
+  {
+    "cardnum": 10,
+    "tradname": "Wheel of Fortune",
+    "cardtitle": "Reproducibility",
+    "tip": "Could you reproduce these results at a later date?",
+    "image": "10_fortuna.svg"
+  },
+  {
+    "cardnum": 11,
+    "tradname": "Strength",
+    "cardtitle": "Missingness",
+    "tip": "Does your data have any quality issues?",
+    "image": "11_strength.svg"
+  },
+  {
+    "cardnum": 12,
+    "tradname": "The Hanged Man",
+    "cardtitle": "Model Choices",
+    "tip": "Did you use deep learning when logistic regression would have sufficed?",
+    "image": "12_hangedman.svg"
+  },
+  {
+    "cardnum": 13,
+    "tradname": "Death",
+    "cardtitle": "Alternatives Explanations",
+    "tip": "Have you considered alternative interpretations of these results?",
+    "image": "13_death.svg"
+  },
+  {
+    "cardnum": 14,
+    "tradname": "Temperance",
+    "cardtitle": "Uncertainty",
+    "tip": "Do you know what the uncertainty is in these results?",
+    "image": "14_temperance.svg"
+  },
+  {
+    "cardnum": 15,
+    "tradname": "The Devil",
+    "cardtitle": "Biases",
+    "tip": "Have you considered potential sources of bias in your data collection?",
+    "image": "15_devil.svg"
+  },
+  {
+    "cardnum": 16,
+    "tradname": "The Tower",
+    "cardtitle": "Chance",
+    "tip": "Have you considered how likely is it that these results are due purely to chance?",
+    "image": "16_tower.svg"
+  },
+  {
+    "cardnum": 17,
+    "tradname": "The Star",
+    "cardtitle": "Causality",
+    "tip": "Are you mistaking a correlative relationship for a causal one?",
+    "image": "17_star.svg"
+  },
+  {
+    "cardnum": 18,
+    "tradname": "The Moon",
+    "cardtitle": "Missingness",
+    "tip": "Have you considered whether there is missing data?",
+    "image": "18_moon.svg"
+  },
+  {
+    "cardnum": 19,
+    "tradname": "The Sun",
+    "cardtitle": "Representativness",
+    "tip": "How representative is your data sample relative to the population it was drawn from?",
+    "image": "19_sun.svg"
+  },
+  {
+    "cardnum": 20,
+    "tradname": "Judgement",
+    "cardtitle": "Consistency",
+    "tip": "Are you applying a consistent criteria for analyzing your results?",
+    "image": "20_judgement.svg"
+  },
+  {
+    "cardnum": 21,
+    "tradname": "The World",
+    "cardtitle": "Independence",
+    "tip": "Have you considered the role of seasonality or intrasample correlation in your data?",
+    "image": "21_world.svg"
+  }
+]
