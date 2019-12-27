@@ -1,6 +1,5 @@
 const suits = ['Wands', 'Cups', 'Swords', 'Pentacles'];
 const faces = ['Page', 'Knight', 'Queen', 'King'];
-
 const emojii = [
   '🚘',
   '🔪',
@@ -25,10 +24,20 @@ const emojii = [
   '👭'
 ];
 
-function scatterplot(xDim, yDim, height, width, datasetName) {
+/**
+ * Build a vega-lite scatterplot
+ *
+ * dimensions - object containing the necessary configuration to specify the chart
+ * height - the height of the chart
+ * width - the width of the chart
+ * datasetName - the name of the dataset
+ */
+function scatterplot(dimensions, height, width, datasetName) {
+  const {xDim, yDim} = dimensions;
   return {
     $schema: 'https://vega.github.io/schema/vega-lite/v4.json',
     transform: [],
+    // TODO this should also support user uploaded dataset
     data: {url: `data/${datasetName}.csv`},
     mark: {type: 'circle', tooltip: true},
     encoding: {
@@ -48,13 +57,21 @@ function scatterplot(xDim, yDim, height, width, datasetName) {
   };
 }
 
+/**
+ * Handles the parts of the card layout which are common to all cards.
+ * Returns a d3 selection of the partially constructed card
+ *
+ * domNode - the dom node that is relevent to the card
+ * card - an object containing the cards data
+ * scales - an object of the scales for positioning things
+ */
 function cardCommon(domNode, card, scales) {
   const {xWindow, yWindow} = scales;
   const {h, w} = getCardHeightWidth();
   const svg = d3.select(domNode).attr('id', `card-${card.pos}`);
   svg.selectAll('*').remove();
   const cardSvg = svg.append('g');
-  console.log(card.reversed);
+
   cardSvg
     .attr('class', `cardfront-container`)
     .attr(
@@ -114,7 +131,14 @@ function cardCommon(domNode, card, scales) {
   return cardSvg;
 }
 
-function exampleCardFrontScatterplot(domNode, card, scales) {
+/**
+ * Constructs a minor aracana (TODO SUIT HERE) scatterplot
+ *
+ * domNode - the dom node that is relevent to the card
+ * card - an object containing the cards data
+ * scales - an object of the scales for positioning things
+ */
+function minorArcanaCupsScatterplot(domNode, card, scales) {
   const {xWindow, yWindow} = scales;
   const {h, w} = getCardHeightWidth();
   const cardSvg = cardCommon(domNode, card, scales);
@@ -128,8 +152,7 @@ function exampleCardFrontScatterplot(domNode, card, scales) {
   vegaEmbed(
     `#card-${card.pos} .vega-container`,
     scatterplot(
-      examplexDim,
-      exampleyDim,
+      {xDim: examplexDim, yDim: exampleyDim},
       yWindow(h) * 0.8,
       xWindow(w),
       'per_game_data'
@@ -142,7 +165,13 @@ function exampleCardFrontScatterplot(domNode, card, scales) {
     .catch(console.error);
 }
 
-// unused
+/**
+ * Constructs a emojii card, unused
+ *
+ * domNode - the dom node that is relevent to the card
+ * card - an object containing the cards data
+ * scales - an object of the scales for positioning things
+ */
 function exampleCardFrontEmoji(domNode, card, scales) {
   const {xWindow, yWindow} = scales;
   const {h, w} = getCardHeightWidth();
@@ -156,6 +185,13 @@ function exampleCardFrontEmoji(domNode, card, scales) {
     .text(emojii[card.pos % emojii.length]);
 }
 
+/**
+ * Constructs a major aracana card
+ *
+ * domNode - the dom node that is relevent to the card
+ * card - an object containing the cards data
+ * scales - an object of the scales for positioning things
+ */
 function majorArcana(domNode, card, scales) {
   const {xWindow, yWindow} = scales;
   const {h, w} = getCardHeightWidth();
@@ -170,15 +206,14 @@ function majorArcana(domNode, card, scales) {
     );
 }
 
-// this function will select the appropriate design function
-// a d3 chart if it's the minor arcana, and the major arcana emojii
-// thing if it's major
-let counter = 0;
-function findAppropriateCard(pos, card) {
-  counter += 1;
-  console.log(card, pos);
-  return majorArcana;
-  // return counter % 2 ? exampleCardFrontEmoji : exampleCardFrontScatterplot;
+/**
+ * Inspects the card object to determine what type of card should be rendered and returns
+ * a function for rendering that type of card
+ *
+ * domNode - the dom node that is relevent to the card
+ * card - an object containing the cards data
+ * scales - an object of the scales for positioning things
+ */
+function renderAppropriateCard(domNode, card, scales) {
+  return majorArcana(domNode, card, scales);
 }
-
-function buildDeck() {}

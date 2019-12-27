@@ -1,3 +1,4 @@
+// load in the major arcana data, make it available in the global name space
 let majorArcanaData = null;
 let majorArcanaLoaded = false;
 fetch('./data/major_arcana.json')
@@ -7,9 +8,15 @@ fetch('./data/major_arcana.json')
     majorArcanaLoaded = true;
   });
 
+/**
+ * Compute the cards in the deck
+ *
+ * data - the the data be analyzed by the system
+ */
 function computeCards(data) {
+  // TODO add the minor arcana content
   return shuffle(majorArcanaData).map((x, idx) => ({
-    // eslint-disable-line
+    // eslint appears to not like this line
     ...x,
     pos: idx,
     index: Math.random(),
@@ -19,12 +26,21 @@ function computeCards(data) {
   }));
 }
 
-function setDescription(id, description) {
-  document.querySelector(id).innerHTML = description;
+/**
+ * add text to a target query selector
+ *
+ * queryString - the selector to be queried
+ * description - the text to be added
+ */
+function setDescription(queryString, description) {
+  document.querySelector(queryString).innerHTML = description;
 }
 
-// the main method of the application, all subsequent calls should eminante from here
+/**
+ * the main method of the application, all subsequent calls should eminante from here
+ */
 function main() {
+  // the state container
   const state = {
     layout: null,
     data: null,
@@ -32,20 +48,35 @@ function main() {
     loading: false,
     cards: []
   };
+
+  // initialize everything
   const svg = d3.select('#main-container');
   const container = document.querySelector('.main-content');
   const {height, width} = container.getBoundingClientRect();
 
+  // update the state of the system based on changed inputs
   function stateUpdate() {
-    if (state.layout && state.data) {
-      state.cards = computeCards(state.data);
-      removePlaceHolder();
-      svg.attr('height', height).attr('width', width);
-      buildLayout(svg, state.layout, state.cards);
-      state.cards = computeCards([]);
+    // if layout and data aren't specified don't do anything
+    if (!(state.layout && state.data)) {
+      return;
     }
+    // compute the cards
+    state.cards = computeCards(state.data);
+
+    // remove the placeholder content
+    const placeHolder = document.querySelector('#load-msg');
+    if (placeHolder) {
+      placeHolder.remove();
+    }
+
+    // size the svg correctly
+    svg.attr('height', height).attr('width', width);
+
+    // draw the layout
+    buildLayout(svg, state.layout, state.cards);
   }
 
+  // listener for the layout selector
   document
     .querySelector('#layout-selector')
     .addEventListener('change', event => {
@@ -58,6 +89,8 @@ function main() {
 
       stateUpdate();
     });
+
+  // listener for the data selector
   document
     .querySelector('#dataset-selector')
     .addEventListener('change', event => {
@@ -81,6 +114,9 @@ function main() {
       );
       stateUpdate();
     });
+
+  // TODO add listeners that allow user to upload a file here
 }
 
+// start the application after the content has loaded
 document.addEventListener('DOMContentLoaded', main);
