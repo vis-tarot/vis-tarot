@@ -4,6 +4,7 @@
     "tradname": "The Fool",
     "cardtitle": "The Question",
     "tip": "Did you consider developing a specific research question?",
+    "suit": "major arcana",
     "image": "00_fool.svg"
   },
   {
@@ -11,6 +12,7 @@
     "tradname": "The Magician",
     "cardtitle": "The Analyst",
     "tip": "Did you seek advice from a statistical expert before analyzing your data?",
+    "suit": "major arcana",
     "image": "01_magician.svg"
   },
   {
@@ -18,6 +20,7 @@
     "tradname": "The High Priestess",
     "cardtitle": "Quorum",
     "tip": "Would others interpret the data they same way you do?",
+    "suit": "major arcana",
     "image": "02_priestess.svg"
   },
   {
@@ -25,6 +28,7 @@
     "tradname": "The Empress",
     "cardtitle": "Sufficiency",
     "tip": "Do you have enough data to arrive at a reasonable conclusion?",
+    "suit": "major arcana",
     "image": "03_empress.svg"
   },
   {
@@ -32,6 +36,7 @@
     "tradname": "The Emperor",
     "cardtitle": "The Domain Expert",
     "tip": "Have you engaged a domain expert to be sure you understand the data?",
+    "suit": "major arcana",
     "image": "04_emporer.svg"
   },
   {
@@ -39,6 +44,7 @@
     "tradname": "The Hierophant",
     "cardtitle": "Statistical Assumptions",
     "tip": "Do you understand the assumptions made by the statistical analysis?",
+    "suit": "major arcana",
     "image": "05_hierophant.svg"
   },
   {
@@ -46,6 +52,7 @@
     "tradname": "The Lovers",
     "cardtitle": "Attribute Linkages",
     "tip": "Did you consider the functional dependencies in your data?",
+    "suit": "major arcana",
     "image": "06_lovers.svg"
   },
   {
@@ -53,6 +60,7 @@
     "tradname": "The Chariot",
     "cardtitle": "Summarization",
     "tip": "Is the level of aggregation data aggregation approperiate?",
+    "suit": "major arcana",
     "image": "07_chariot.svg"
   },
   {
@@ -60,6 +68,7 @@
     "tradname": "Justice",
     "cardtitle": "Validity",
     "tip": "Can you assess the internal and ecological validity of these results?",
+    "suit": "major arcana",
     "image": "08_justice.svg"
   },
   {
@@ -67,6 +76,7 @@
     "tradname": "The Hermit",
     "cardtitle": "Confounders",
     "tip": "Have you accounted for the presence of hidden confounders in your data?",
+    "suit": "major arcana",
     "image": "09_hermit.svg"
   },
   {
@@ -74,6 +84,7 @@
     "tradname": "Wheel of Fortune",
     "cardtitle": "Reproducibility",
     "tip": "Could you reproduce these results at a later date?",
+    "suit": "major arcana",
     "image": "10_fortuna.svg"
   },
   {
@@ -81,6 +92,7 @@
     "tradname": "Strength",
     "cardtitle": "Missingness",
     "tip": "Does your data have any quality issues?",
+    "suit": "major arcana",
     "image": "11_strength.svg"
   },
   {
@@ -88,6 +100,7 @@
     "tradname": "The Hanged Man",
     "cardtitle": "Model Choices",
     "tip": "Did you use deep learning when logistic regression would have sufficed?",
+    "suit": "major arcana",
     "image": "12_hangedman.svg"
   },
   {
@@ -95,6 +108,7 @@
     "tradname": "Death",
     "cardtitle": "Alternatives Explanations",
     "tip": "Have you considered alternative interpretations of these results?",
+    "suit": "major arcana",
     "image": "13_death.svg"
   },
   {
@@ -102,6 +116,7 @@
     "tradname": "Temperance",
     "cardtitle": "Uncertainty",
     "tip": "Do you know what the uncertainty is in these results?",
+    "suit": "major arcana",
     "image": "14_temperance.svg"
   },
   {
@@ -109,6 +124,7 @@
     "tradname": "The Devil",
     "cardtitle": "Biases",
     "tip": "Have you considered potential sources of bias in your data collection?",
+    "suit": "major arcana",
     "image": "15_devil.svg"
   },
   {
@@ -116,6 +132,7 @@
     "tradname": "The Tower",
     "cardtitle": "Chance",
     "tip": "Have you considered how likely is it that these results are due purely to chance?",
+    "suit": "major arcana",
     "image": "16_tower.svg"
   },
   {
@@ -123,6 +140,7 @@
     "tradname": "The Star",
     "cardtitle": "Causality",
     "tip": "Are you mistaking a correlative relationship for a causal one?",
+    "suit": "major arcana",
     "image": "17_star.svg"
   },
   {
@@ -130,6 +148,7 @@
     "tradname": "The Moon",
     "cardtitle": "Missingness",
     "tip": "Have you considered whether there is missing data?",
+    "suit": "major arcana",
     "image": "18_moon.svg"
   },
   {
@@ -137,6 +156,7 @@
     "tradname": "The Sun",
     "cardtitle": "Representativness",
     "tip": "How representative is your data sample relative to the population it was drawn from?",
+    "suit": "major arcana",
     "image": "19_sun.svg"
   },
   {
@@ -144,6 +164,7 @@
     "tradname": "Judgement",
     "cardtitle": "Consistency",
     "tip": "Are you applying a consistent criteria for analyzing your results?",
+    "suit": "major arcana",
     "image": "20_judgement.svg"
   },
   {
@@ -151,6 +172,7 @@
     "tradname": "The World",
     "cardtitle": "Independence",
     "tip": "Have you considered the role of seasonality or intrasample correlation in your data?",
+    "suit": "major arcana",
     "image": "21_world.svg"
   }
 ]

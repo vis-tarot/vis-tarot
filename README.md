@@ -1,6 +1,8 @@
 # vis-tarot
 Data Visualization Tarot
 
+You can see the application [here](https://mcorrell.github.io/vis-tarot/)
+
 
 
 ## Development

@@ -4,18 +4,26 @@
   <title>Vis Tarot</title>
   <meta charset="UTF-8">
   <link rel="stylesheet" href="./src/style.css" />
-  <!-- font -->
+  <!-- fonts -->
   <link href="https://fonts.googleapis.com/css?family=Playfair+Display&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Pinyon+Script&display=swap" rel="stylesheet">
 
   <!-- external imports -->
   <script src="https://d3js.org/d3.v5.min.js"></script>
   <script src="http://vega.github.io/datalib/datalib.min.js"></script>
+  <!-- Import Vega 5 & Vega-Lite 3 (does not have to be from CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/vega@5.9.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@4.0.2"></script>
+  <!-- Import vega-embed -->
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.2.1"></script>
 
-  <!-- internal imports -->
-  <script src="./src/main.js"></script>
+  <!-- internal imports, order is important -->
+  <script src="./src/utils.js"></script>
   <script src="./src/analysis.js"></script>
+  <script src="./src/charts.js"></script>
   <script src="./src/tarot.js"></script>
+  <script src="./src/draw.js"></script>
+  <script src="./src/main.js"></script>
 </head>
 <body>
   <div class="flex-down full-height">
