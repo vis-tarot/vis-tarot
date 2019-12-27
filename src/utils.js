@@ -83,3 +83,9 @@ const ROMAN_NUM_LOOKUP = [
 function toRomanNumeral(idx) {
   return ROMAN_NUM_LOOKUP[idx];
 }
+
+// monkey patchting but was available as copy pasta so whatever
+// https://flaviocopes.com/how-to-uppercase-first-letter-javascript/
+String.prototype.capitalize = function() {
+  return this.charAt(0).toUpperCase() + this.slice(1);
+};

@@ -25,39 +25,6 @@ const emojii = [
 ];
 
 /**
- * Build a vega-lite scatterplot
- *
- * dimensions - object containing the necessary configuration to specify the chart
- * height - the height of the chart
- * width - the width of the chart
- * datasetName - the name of the dataset
- */
-function scatterplot(dimensions, height, width, datasetName) {
-  const {xDim, yDim} = dimensions;
-  return {
-    $schema: 'https://vega.github.io/schema/vega-lite/v4.json',
-    transform: [],
-    // TODO this should also support user uploaded dataset
-    data: {url: `data/${datasetName}.csv`},
-    mark: {type: 'circle', tooltip: true},
-    encoding: {
-      x: {
-        field: xDim,
-        type: 'quantitative',
-        scale: {zero: false}
-      },
-      y: {
-        field: yDim,
-        type: 'quantitative',
-        scale: {zero: false}
-      }
-    },
-    height: height,
-    width: width
-  };
-}
-
-/**
  * Handles the parts of the card layout which are common to all cards.
  * Returns a d3 selection of the partially constructed card
  *
@@ -98,7 +65,11 @@ function cardCommon(domNode, card, scales) {
     .attr('y', yWindow(h * 0.1))
     .attr('font-size', 10)
     .attr('text-anchor', 'middle')
-    .text(d => `${toRomanNumeral(d.cardnum)}. ${d.tradname}`);
+    .text(d =>
+      card.suit === 'major arcana'
+        ? `${toRomanNumeral(d.cardnum)}. ${d.tradname}`
+        : card.cardtitle
+    );
 
   cardSvg
     .append('foreignObject')
@@ -106,7 +77,11 @@ function cardCommon(domNode, card, scales) {
     .attr('y', yWindow(h * 0.8))
     .attr('height', yWindow(h) * 0.2)
     .attr('width', xWindow(w))
-    .html(() => `<div class="card-title">${card.cardtitle}</div>`);
+    .html(d =>
+      card.suit === 'major arcana'
+        ? `<div class="card-title">${d.cardtitle}</div>`
+        : ''
+    );
 
   const TOOLTIP_WIDTH = 200;
   const TOOLTIP_HEIGHT = 100;
@@ -132,13 +107,13 @@ function cardCommon(domNode, card, scales) {
 }
 
 /**
- * Constructs a minor aracana (TODO SUIT HERE) scatterplot
+ * Constructs a minor aracana card
  *
  * domNode - the dom node that is relevent to the card
  * card - an object containing the cards data
  * scales - an object of the scales for positioning things
  */
-function minorArcanaCupsScatterplot(domNode, card, scales) {
+function minorArcana(domNode, card, scales) {
   const {xWindow, yWindow} = scales;
   const {h, w} = getCardHeightWidth();
   const cardSvg = cardCommon(domNode, card, scales);
@@ -146,27 +121,31 @@ function minorArcanaCupsScatterplot(domNode, card, scales) {
     .append('foreignObject')
     .attr('height', yWindow(h))
     .attr('width', xWindow(w))
-    .html(() => `<div class="vega-container"></div>`);
-  const examplexDim = 'Pg Assists';
-  const exampleyDim = 'Pg Blocks';
-  vegaEmbed(
-    `#card-${card.pos} .vega-container`,
-    scatterplot(
-      {xDim: examplexDim, yDim: exampleyDim},
-      yWindow(h) * 0.8,
-      xWindow(w),
-      'per_game_data'
-    )
-  )
-    // .then(function(result) {
-    //   // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
-    //   console.log('view', result);
-    // })
-    .catch(console.error);
+    .html(
+      () =>
+        `<div class="vega-container"><div class="lds-dual-ring"></div></div>`
+    );
+
+  console.log('???', card);
+  const spec = CHART_LOOKUP[card.charttype](
+    card.dims,
+    yWindow(h) * 0.8,
+    xWindow(w),
+    'per_game_data'
+  );
+  setTimeout(() => {
+    vegaEmbed(`#card-${card.pos} .vega-container`, spec)
+      // .then(function(result) {
+      //   domNode.querySelector('.lds-dual-ring').remove();
+      //   // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
+      //   console.log('view', result);
+      // })
+      .catch(console.error);
+  }, 750);
 }
 
 /**
- * Constructs a emojii card, unused
+ * Constructs a emojii card, placholder stuff
  *
  * domNode - the dom node that is relevent to the card
  * card - an object containing the cards data
@@ -215,5 +194,15 @@ function majorArcana(domNode, card, scales) {
  * scales - an object of the scales for positioning things
  */
 function renderAppropriateCard(domNode, card, scales) {
-  return majorArcana(domNode, card, scales);
+  console.log(card);
+  switch (card.suit) {
+    case 'pentacles':
+    case 'swords':
+    case 'wands':
+    case 'cups':
+      return minorArcana(domNode, card, scales);
+    default:
+    case 'major arcana':
+      return majorArcana(domNode, card, scales);
+  }
 }

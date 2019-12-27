@@ -8,14 +8,94 @@ fetch('./data/major_arcana.json')
     majorArcanaLoaded = true;
   });
 
+const values = [
+  '1',
+  '2',
+  '3',
+  '4',
+  '5',
+  '6',
+  '7',
+  '8',
+  '9',
+  '10',
+  'page',
+  'knight',
+  'queen',
+  'king'
+];
+const EXAMPLES = {
+  swords: {
+    charttype: 'boxplot',
+    dims: {
+      yDim: 'Pg Blocks'
+    }
+  },
+  cups: {
+    charttype: 'scatterplot',
+    dims: {
+      xDim: 'Pg Assists',
+      yDim: 'Pg Blocks'
+    }
+  },
+  pentacles: {
+    charttype: 'scatterplot',
+    dims: {
+      xDim: 'Pg Assists',
+      yDim: 'Pg Blocks'
+    }
+  },
+  wands: {
+    charttype: 'scatterplot',
+    dims: {
+      xDim: 'Pg Assists',
+      yDim: 'Pg Blocks'
+    }
+  }
+};
+function emptyMinorArcana() {
+  return ['swords', 'wands', 'pentacles', 'cups'].reduce((acc, suit) => {
+    const suitOfCards = values.map((value, idx) => {
+      return {
+        suit,
+        cardtitle: `${value.capitalize()} of ${suit.capitalize()}`,
+        cardvalue: idx,
+        tip: `This is the ${value} of ${suit}`,
+        ...EXAMPLES[suit]
+      };
+    });
+
+    return acc.concat(suitOfCards);
+  }, []);
+}
+
 /**
  * Compute the cards in the deck
+ * cards have types like
+   {
+     common to all:
+       "cardtitle": string, (our name for the card)
+       "tip": string, (the associated tooltip)
+       "suit": string (cups, pentacles, wands, swords, "major arcana")
+
+     if major arcana:
+       "cardnum": number,
+       "tradname": string,
+       "image": image name
+
+     if minor arcana:
+      "charttype": the chart type to be used, see charts.js
+       "dims": {ANY} the necessary information to render teh relevant chart
+       "cardvalue": number, the value of the card
+   },
  *
  * data - the the data be analyzed by the system
  */
 function computeCards(data) {
-  // TODO add the minor arcana content
-  return shuffle(majorArcanaData).map((x, idx) => ({
+  // majorArcanaData.concat(emptyMinorArcana())
+  const deck = majorArcanaData.concat(emptyMinorArcana());
+  // const deck = emptyMinorArcana();
+  return shuffle(deck).map((x, idx) => ({
     // eslint appears to not like this line
     ...x,
     pos: idx,

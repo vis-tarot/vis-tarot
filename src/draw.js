@@ -79,7 +79,10 @@ function drawSidebar(svg, scales) {
 
   svg
     .append('foreignObject')
-    .attr('transform', d => `translate(${xWindow(0.95)},${yWindow(0.6) - 100})`)
+    .attr(
+      'transform',
+      () => `translate(${xWindow(0.95)},${yWindow(0.6) - 100})`
+    )
     .attr('width', 200)
     .attr('height', 100)
     .append('xhtml:div')
