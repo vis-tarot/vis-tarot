@@ -34,11 +34,14 @@ function drawCardSpaces(svg, positions, scales) {
     .attr('class', 'cardspace')
     .attr(
       'transform',
+      // TODO this is wrong and doesnt handle the sideways one right
       d =>
-        d.rotate && `translate(${-xWindow(w) / 2}, ${yWindow(w)}) rotate(-90)`
+        (d.rotate &&
+          `translate(${-xWindow(w) / 2}, ${yWindow(w)}) rotate(-90)`) ||
+        `translate(${xWindow(w) * 0.05}, ${yWindow(h) * 0.05})`
     )
-    .attr('width', xWindow(w))
-    .attr('height', yWindow(h))
+    .attr('width', xWindow(w) * 0.95)
+    .attr('height', yWindow(h) * 0.95)
     .attr('fill', '#333');
   cardSpace
     .append('text')
