@@ -28,8 +28,40 @@ function makeScales(svg, labels) {
 
 // in our index coordins
 function getCardHeightWidth() {
-  const size = 0.2;
+  const size = 0.3;
   let h = size;
   let w = (57.15 / 88.9) * size;
   return {h, w};
+}
+
+function shuffle(arr) {
+  return arr.sort(() => Math.sign(Math.random() - 0.5));
+}
+
+const ROMAN_NUM_LOOKUP = [
+  'I',
+  'II',
+  'III',
+  'IV',
+  'V',
+  'VI',
+  'VII',
+  'VIII',
+  'IX',
+  'X',
+  'XI',
+  'XII',
+  'XIII',
+  'XIV',
+  'XV',
+  'XVI',
+  'XVII',
+  'XVIII',
+  'XIX',
+  'XX',
+  'XXI',
+  'XXII'
+];
+function toRomanNumeral(idx) {
+  return ROMAN_NUM_LOOKUP[idx];
 }

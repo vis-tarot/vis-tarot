@@ -1,10 +1,6 @@
 const suits = ['Wands', 'Cups', 'Swords', 'Pentacles'];
 const faces = ['Page', 'Knight', 'Queen', 'King'];
 
-function majorArcana(domNode, card, scales) {
-  console.log(domNode);
-}
-
 const emojii = [
   '🚘',
   '🔪',
@@ -55,9 +51,18 @@ function scatterplot(xDim, yDim, height, width, datasetName) {
 function cardCommon(domNode, card, scales) {
   const {xWindow, yWindow} = scales;
   const {h, w} = getCardHeightWidth();
-  const cardSvg = d3.select(domNode).attr('id', `card-${card.pos}`);
-  cardSvg.selectAll('*').remove();
-  cardSvg.attr('class', 'cardfront-container');
+  const svg = d3.select(domNode).attr('id', `card-${card.pos}`);
+  svg.selectAll('*').remove();
+  const cardSvg = svg.append('g');
+  console.log(card.reversed);
+  cardSvg
+    .attr('class', `cardfront-container`)
+    .attr(
+      'transform',
+      card.reversed
+        ? `rotate(-180) translate(-${xWindow(w)}, -${yWindow(h)})`
+        : ''
+    );
   cardSvg
     .append('rect')
     .attr('x', 0)
@@ -73,9 +78,18 @@ function cardCommon(domNode, card, scales) {
   cardSvg
     .append('text')
     .attr('x', xWindow(w / 2))
-    .attr('y', yWindow(h * 0.8))
+    .attr('y', yWindow(h * 0.1))
+    .attr('font-size', 10)
     .attr('text-anchor', 'middle')
-    .text('EXAMPLE');
+    .text(d => `${toRomanNumeral(d.cardnum)}. ${d.tradname}`);
+
+  cardSvg
+    .append('foreignObject')
+    .attr('x', 0)
+    .attr('y', yWindow(h * 0.8))
+    .attr('height', yWindow(h) * 0.2)
+    .attr('width', xWindow(w))
+    .html(() => `<div class="card-title">${card.cardtitle}</div>`);
 
   const TOOLTIP_WIDTH = 200;
   const TOOLTIP_HEIGHT = 100;
@@ -94,7 +108,9 @@ function cardCommon(domNode, card, scales) {
     .attr('y', 0)
     .attr('height', TOOLTIP_HEIGHT)
     .attr('width', TOOLTIP_WIDTH)
-    .html(d => `<div class="tooltip">INTERPRET ME</div>`);
+    .html(
+      () => `<div class="tooltip"><b>${card.cardtitle}</b>: ${card.tip}</div>`
+    );
   return cardSvg;
 }
 
@@ -106,7 +122,7 @@ function exampleCardFrontScatterplot(domNode, card, scales) {
     .append('foreignObject')
     .attr('height', yWindow(h))
     .attr('width', xWindow(w))
-    .html(d => `<div class="vega-container"></div>`);
+    .html(() => `<div class="vega-container"></div>`);
   const examplexDim = 'Pg Assists';
   const exampleyDim = 'Pg Blocks';
   vegaEmbed(
@@ -126,6 +142,7 @@ function exampleCardFrontScatterplot(domNode, card, scales) {
     .catch(console.error);
 }
 
+// unused
 function exampleCardFrontEmoji(domNode, card, scales) {
   const {xWindow, yWindow} = scales;
   const {h, w} = getCardHeightWidth();
@@ -139,12 +156,29 @@ function exampleCardFrontEmoji(domNode, card, scales) {
     .text(emojii[card.pos % emojii.length]);
 }
 
+function majorArcana(domNode, card, scales) {
+  const {xWindow, yWindow} = scales;
+  const {h, w} = getCardHeightWidth();
+  const cardSvg = cardCommon(domNode, card, scales);
+
+  cardSvg
+    .append('foreignObject')
+    .attr('height', yWindow(h))
+    .attr('width', xWindow(w))
+    .html(
+      `<div class="major-arcana-img-container"><img src="assets/major-arcana-imgs/${card.image}"/></div>`
+    );
+}
+
 // this function will select the appropriate design function
 // a d3 chart if it's the minor arcana, and the major arcana emojii
 // thing if it's major
 let counter = 0;
-function findAppropriateCard(card) {
+function findAppropriateCard(pos, card) {
   counter += 1;
-  console.log(card);
-  return counter % 2 ? exampleCardFrontEmoji : exampleCardFrontScatterplot;
+  console.log(card, pos);
+  return majorArcana;
+  // return counter % 2 ? exampleCardFrontEmoji : exampleCardFrontScatterplot;
 }
+
+function buildDeck() {}
