@@ -118,17 +118,14 @@ body{
   background: #333333;
   border-radius: 5px;
   color: white;
-    font-family: 'Playfair Display', serif;
+  display: none;
+  font-family: 'Playfair Display', serif;
   font-size: 12px;
   padding: 10px;
   position: absolute;
   pointer-events: none;
   width: 200px;
-  display: none;
   z-index: 1000;
-}
-.cardfront-container {
-  /* position: relative; */
 }
 
 .cardfront-background {
@@ -151,9 +148,7 @@ body{
   width: calc(100% - 20px);
   padding: 20px;
 }
-/* .cardfront-main { */
-  /* pointer-events: none; */
-/* } */
+
 .cardfront-background,
 .cardfront-main {
   left: -10px;

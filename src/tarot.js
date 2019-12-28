@@ -44,7 +44,6 @@ function cardCommon(domNode, card, scales, cardContent) {
       const targetingChart = event.vegaType;
       const xPos = event.layerX;
       const yPos = event.layerY;
-      console.log(event, xPos, yPos);
       d3.select('#tooltip')
         .style('display', targetingChart ? 'none' : 'block')
         .style('left', `${xPos}px`)
@@ -109,13 +108,9 @@ function minorArcana(domNode, card, scales) {
     'per_game_data'
   );
   setTimeout(() => {
-    vegaEmbed(`#card-${card.pos} .vega-container`, spec, {actions: false})
-      // .then(function(result) {
-      //   domNode.querySelector('.lds-dual-ring').remove();
-      //   // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
-      //   console.log('view', result);
-      // })
-      .catch(console.error);
+    vegaEmbed(`#card-${card.pos} .vega-container`, spec, {
+      actions: false
+    }).catch(console.error);
   }, 750);
 }
 
