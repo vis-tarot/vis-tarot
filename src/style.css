@@ -110,9 +110,9 @@ body{
     transition: background 0.5s;
     z-index: 0;
 }
-/* .cardspace:hover {
+.cardspace:hover {
     background: gray;
-} */
+}
 
 #tooltip {
   background: #333333;
