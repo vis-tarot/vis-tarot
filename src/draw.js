@@ -25,17 +25,18 @@ function drawCardSpaces(container, positions, scales) {
     .append('div')
     .style('transform', d => `translate(${xWindow(d.x)}px, ${yWindow(d.y)}px)`)
     .attr('class', 'cardcontainer')
-    .on('mousemove', function tooltiper() {
-      const [xPos, yPos] = d3.mouse(this);
-      d3.select(this)
-        .select('.tooltip')
+    .on('mousemove', function tooltiper(d) {
+      const event = d3.event;
+      const xPos = event.layerX;
+      const yPos = event.layerY;
+      d3.select('#tooltip')
         .style('display', 'block')
-        .style('transform', `translate(${xPos}px, ${yPos}px)`);
+        .style('left', `${xPos}px`)
+        .style('top', `${yPos}px`)
+        .text(tarotData.layouts[d.label] || 'TODO: TOOLTIP FILL IN');
     })
     .on('mouseout', function untip() {
-      d3.select(this)
-        .select('.tooltip')
-        .style('display', 'none');
+      d3.select('#tooltip').style('display', 'none');
     });
   const cardSpace = cardContainers
     .append('div')
@@ -54,12 +55,6 @@ function drawCardSpaces(container, positions, scales) {
     .append('div')
     .attr('class', 'cardspace-title')
     .text(d => d.label);
-
-  // tooltip
-  cardSpace
-    .append('div')
-    .attr('class', 'tooltip')
-    .text(d => tarotData.layouts[d.label] || 'TODO: TOOLTIP FILL IN');
 }
 
 /**

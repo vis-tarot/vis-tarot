@@ -93,8 +93,8 @@ function emptyMinorArcana() {
  */
 function computeCards(data) {
   // majorArcanaData.concat(emptyMinorArcana())
-  // const deck = majorArcanaData.concat(emptyMinorArcana());
-  const deck = emptyMinorArcana();
+  const deck = majorArcanaData.concat(emptyMinorArcana());
+  // const deck = emptyMinorArcana();
   // const deck = majorArcanaData;
   return shuffle(deck).map((x, idx) => ({
     // eslint appears to not like this line

@@ -62,10 +62,8 @@ body{
   position: relative;
 }
 .cardspace-title {
-  /* align-items: center;
-  display: flex;
-  justify-content: center; */
   position: absolute;
+  pointer-events: none;
 
 }
 
@@ -112,11 +110,11 @@ body{
     transition: background 0.5s;
     z-index: 0;
 }
-.cardspace:hover {
+/* .cardspace:hover {
     background: gray;
-}
+} */
 
-.tooltip {
+#tooltip {
   background: #333333;
   border-radius: 5px;
   color: white;
@@ -124,12 +122,13 @@ body{
   font-size: 12px;
   padding: 10px;
   position: absolute;
+  pointer-events: none;
   width: 200px;
   display: none;
   z-index: 1000;
 }
 .cardfront-container {
-  position: relative;
+  /* position: relative; */
 }
 
 .cardfront-background {
@@ -152,6 +151,9 @@ body{
   width: calc(100% - 20px);
   padding: 20px;
 }
+/* .cardfront-main { */
+  /* pointer-events: none; */
+/* } */
 .cardfront-background,
 .cardfront-main {
   left: -10px;
@@ -171,6 +173,7 @@ body{
   display: flex;
   align-items: center;
   justify-content: center;
+  pointer-events: none;
   height: 100%;
   width: 100%;
 }
@@ -178,8 +181,6 @@ body{
 .card-title {
   display: flex;
   justify-content: center;
-  width: 100%;
-  height: 100%;
   text-align: center;
 }
 
