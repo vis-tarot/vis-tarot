@@ -35,6 +35,37 @@ body{
   margin-bottom: 30px;
 }
 
+.main-container {
+  position: relative;
+}
+
+.cardcontainer {
+  position: absolute;
+}
+
+.card {
+  position: absolute;
+}
+.card-back {
+  border: thin solid black;
+  background: black;
+  border-radius: 10px;
+}
+.card-back img {
+  height: 100%;
+  width: 100%;
+}
+.cardspacecontainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.cardspace-title {
+  position: absolute;
+  pointer-events: none;
+
+}
 
 
 /* SECTIONS */
@@ -59,59 +90,77 @@ body{
   padding: 30px;
 }
 
+#deck-holder {
+  position: absolute;
+}
+
 .main-content {
   align-items: center;
   display: flex;
   flex-direction: column;
   height: 100%;
+  position: relative;
   justify-content: center;
   width: 100%;
 }
 
 .cardspace {
-    fill: gray;
-    fill-opacity: 0;
+    background: white;
     outline: 2px dashed #333;
-    transition: fill-opacity 1s;
+    transition: background 0.5s;
+    z-index: 0;
 }
 .cardspace:hover {
-    fill-opacity: 1;
+    background: gray;
 }
-.cardspacecontainer .tooltip-container,
-.cardfront-container .tooltip-container {
-  opacity: 0;
+
+#tooltip {
+  background: #333333;
+  border-radius: 5px;
+  color: white;
+  display: none;
+  font-family: 'Playfair Display', serif;
+  font-size: 12px;
+  padding: 10px;
+  position: absolute;
   pointer-events: none;
+  width: 200px;
+  z-index: 1000;
+}
+
+.cardfront-background {
+  background: white;
+  border: 7px solid black;
+  border-radius: 10px;
+  height: 100%;
+  position: absolute;
+  width: 100%;
+  z-index: 0;
 
 }
-.cardspacecontainer:hover .tooltip-container,
-.cardfront-container:hover .tooltip-container {
-  opacity: 1;
-  /* pointer-events: all; */
+.cardfront-main {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  height: calc(100% - 20px);
+  width: calc(100% - 20px);
+  padding: 20px;
+}
+
+.cardfront-background,
+.cardfront-main {
+  left: -10px;
+  top: -6px
+}
+
+.cardfront-label {
+  font-size: 10px;
 }
 
 .card {
   cursor: pointer;
-}
-
-.cardback-img {
-  height: 100%;
-  width: 100%;
-  /* background: green; */
-  overflow: hidden;
-}
-
-.cardback-img img {
-  width: 100%;
-}
-
-.tooltip {
-  background: #333333;
-  border-radius: 5px;
-  color: white;
-    font-family: 'Playfair Display', serif;
-  font-size: 12px;
-  padding: 10px;
-  /* z-index: 10000; */
 }
 
 
@@ -119,6 +168,7 @@ body{
   display: flex;
   align-items: center;
   justify-content: center;
+  pointer-events: none;
   height: 100%;
   width: 100%;
 }
@@ -126,8 +176,6 @@ body{
 .card-title {
   display: flex;
   justify-content: center;
-  width: 100%;
-  height: 100%;
   text-align: center;
 }
 
@@ -165,7 +213,7 @@ select option {
 
 
 .vega-container {
-  display: flex !important;
+  display: flex;
   align-items: center;
   justify-content: center;
   height: 100%;

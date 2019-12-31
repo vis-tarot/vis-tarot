@@ -95,6 +95,7 @@ function computeCards(data) {
   // majorArcanaData.concat(emptyMinorArcana())
   const deck = majorArcanaData.concat(emptyMinorArcana());
   // const deck = emptyMinorArcana();
+  // const deck = majorArcanaData;
   return shuffle(deck).map((x, idx) => ({
     // eslint appears to not like this line
     ...x,
@@ -130,9 +131,8 @@ function main() {
   };
 
   // initialize everything
-  const svg = d3.select('#main-container');
+  const mainContainer = d3.select('#main-container');
   const container = document.querySelector('.main-content');
-  const {height, width} = container.getBoundingClientRect();
 
   // update the state of the system based on changed inputs
   function stateUpdate() {
@@ -149,11 +149,13 @@ function main() {
       placeHolder.remove();
     }
 
-    // size the svg correctly
-    svg.attr('height', height).attr('width', width);
+    // size the mainContainer correctly
+    const {height, width} = container.getBoundingClientRect();
+    mainContainer.style('height', `${height}px`);
+    mainContainer.style('width', `${width}px`);
 
     // draw the layout
-    buildLayout(svg, state.layout, state.cards);
+    buildLayout(mainContainer, state.layout, state.cards);
   }
 
   // listener for the layout selector
@@ -186,16 +188,11 @@ function main() {
         // TODO also do the data processing here
         stateUpdate();
       });
-
-      // update the description text
-      setDescription(
-        '#dataset-description',
-        tarotData.datasetAnnotations[state.datasetName]
-      );
       stateUpdate();
     });
 
   // TODO add listeners that allow user to upload a file here
+  window.onresize = stateUpdate;
 }
 
 // start the application after the content has loaded

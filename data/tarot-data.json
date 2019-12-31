@@ -1,7 +1,4 @@
 {
-  "datasetAnnotations": {
-    "per_game_data.csv": "Per season data about player performance in the NBA."
-  },
   "layoutAnnotations": {
     "One Card": "A single card providing context to a current situation.",
     "Three Card": "A simple divinatory layout presenting past, present, and future.",
