@@ -181,11 +181,11 @@ function drawCards(svg, cards, scales, positions) {
  */
 function oneCard(svg) {
   // TODO select what we want EXAMPLE to be instead
-  const labels = ['*', 'EXAMPLE', '*'];
+  const labels = ['*', 'Problem', '*'];
   const scales = makeScales(svg, labels);
   return {
     scales,
-    positions: [{x: scales.xScale('EXAMPLE'), y: 0.4, label: 'EXAMPLE'}]
+    positions: [{x: scales.xScale('EXAMPLE'), y: 0.4, label: 'Problem'}]
   };
 }
 
@@ -208,13 +208,13 @@ function threeCard(svg) {
  */
 function celticCross(svg) {
   const positions = [
-    {x: 1, y: 1.9, label: 'Challenges', rotate: true},
     {x: 1, y: 1.5, label: 'Present'},
+    {x: 1, y: 1.9, label: 'Challenges', rotate: true},
     {x: 2, y: 1.5, label: 'Goal'},
     {x: 1, y: 2.5, label: 'Past'},
     {x: 1, y: 0.5, label: 'Context'},
     {x: 0, y: 1.5, label: 'Future'},
-    {x: 3, y: 3, label: 'Querent'},
+    {x: 3, y: 3, label: 'Influence'},
     {x: 3, y: 2, label: 'Environment'},
     {x: 3, y: 1, label: 'Mind'},
     {x: 3, y: 0, label: 'Outcome'}
