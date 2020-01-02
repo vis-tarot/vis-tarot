@@ -33,6 +33,7 @@ const CHARTTYPE_MAP = {
 };
 const chooseRandom = arr => arr[Math.floor(Math.random() * arr.length)];
 function emptyMinorArcana(columnTypes) {
+  console.log(columnTypes);
   return ['swords', 'wands', 'pentacles', 'cups'].reduce((acc, suit) => {
     const suitOfCards = values.map((value, idx) => {
       return {
@@ -100,7 +101,7 @@ function computeCards(data) {
   // const deck = emptyMinorArcana();
   // const deck = majorArcanaData;
 
- /* return shuffle(deck).map((x, idx) => ({
+  /* return shuffle(deck).map((x, idx) => ({
     // eslint appears to not like this line
     ...x,
     pos: idx,
@@ -111,7 +112,7 @@ function computeCards(data) {
   }));
   */
 
-  const deck = {"major": majorArcanaData, "minor": emptyMinorArcana(groupedTypes)};
+  const deck = {major: majorArcanaData, minor: emptyMinorArcana(groupedTypes)};
   return deck;
 }
 
