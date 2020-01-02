@@ -94,10 +94,13 @@ function computeCards(data) {
     {dimension: [], measure: [], null: []}
   );
 
-  const deck = majorArcanaData.concat(emptyMinorArcana(groupedTypes));
+  //const deck = majorArcanaData.concat(emptyMinorArcana(groupedTypes));
+  // return cards in order,  shuffle later
+  // makes sampling easier
   // const deck = emptyMinorArcana();
   // const deck = majorArcanaData;
-  return shuffle(deck).map((x, idx) => ({
+
+ /* return shuffle(deck).map((x, idx) => ({
     // eslint appears to not like this line
     ...x,
     pos: idx,
@@ -106,6 +109,10 @@ function computeCards(data) {
     // reversed: Math.random() > 0.5
     reversed: false
   }));
+  */
+
+  const deck = {"major": majorArcanaData, "minor": emptyMinorArcana(groupedTypes)};
+  return deck;
 }
 
 /**

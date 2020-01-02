@@ -207,5 +207,16 @@ function buildLayout(container, layout, cards, dataset) {
   container.selectAll('*').remove();
   const {scales, positions} = layoutMethod[layout](container);
   drawCardSpaces(container, positions, scales);
-  drawCards(container, positions, scales, cards, dataset);
+
+  //shuffle cards
+  if(layout == 'One Card'){
+    deck = shuffleCards(cards.minor);
+  }else{
+    // sub-sample the major arcana so that it mathces
+    // number of possible minor arcana cards
+    let samp_size = cards.major.length > cards.minor.length ? cards.minor.length : cards.major.length
+    let majorSubsample= cards.major.sample(samp_size); // 
+    deck = shuffleCards(majorSubSample.concat(cards.minor));
+  }
+  drawCards(container, positions, scales, deck, dataset);
 }

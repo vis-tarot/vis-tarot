@@ -91,3 +91,22 @@ function toRomanNumeral(idx) {
 String.prototype.capitalize = function() {
   return this.charAt(0).toUpperCase() + this.slice(1);
 };
+
+
+//moving card shuffling to a general purpose util
+function shuffleCards(deck) {
+  return shuffle(deck).map((x, idx) => ({
+  // eslint appears to not like this line
+  ...x,
+  pos: idx,
+  index: Math.random(),
+  // for now reversed is hard to read, so its disabled
+  // reversed: Math.random() > 0.5
+  reversed: false
+}));
+}
+
+// Sampling without replacement
+Array.prototype.sample = function(n) {
+  return shuffleCards(this).slice(0,n);
+};
