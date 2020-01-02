@@ -39,6 +39,7 @@ function cardCommon(domNode, card, scales, cardContent) {
   const container = d3
     .select(domNode)
     .attr('id', `card-${card.pos}`)
+    .attr('class', 'card drawn-card')
     .on('mousemove', function tooltip() {
       const event = d3.event;
       const targetingChart = event.vegaType;
