@@ -133,11 +133,15 @@ function drawCards(container, positions, scales, cards) {
  */
 function oneCard(container) {
   // TODO select what we want EXAMPLE to be instead
-  const labels = ['*', 'Problem', '*'];
-  const scales = makeScales(svg, labels);
+  const labels = ['*', 'EXAMPLE', '*'];
+  const scales = makeScales(container, labels);
   return {
     scales,
-    positions: [{x: scales.xScale('EXAMPLE'), y: 0.4, label: 'Problem'}]
+    positions: [labels[1]].map(label => ({
+      x: scales.xScale(label),
+      y: 0.4,
+      label
+    }))
   };
 }
 
