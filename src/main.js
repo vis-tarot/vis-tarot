@@ -24,36 +24,15 @@ const values = [
   'queen',
   'king'
 ];
-const EXAMPLES = {
-  swords: {
-    charttype: 'boxplot',
-    dims: {
-      yDim: 'Pg Blocks'
-    }
-  },
-  cups: {
-    charttype: 'scatterplot',
-    dims: {
-      xDim: 'Pg Assists',
-      yDim: 'Pg Blocks'
-    }
-  },
-  pentacles: {
-    charttype: 'scatterplot',
-    dims: {
-      xDim: 'Pg Assists',
-      yDim: 'Pg Blocks'
-    }
-  },
-  wands: {
-    charttype: 'scatterplot',
-    dims: {
-      xDim: 'Pg Assists',
-      yDim: 'Pg Blocks'
-    }
-  }
+
+const CHARTTYPE_MAP = {
+  swords: 'boxplot',
+  cups: 'scatterplot',
+  pentacles: 'scatterplot',
+  wands: 'scatterplot'
 };
-function emptyMinorArcana() {
+const chooseRandom = arr => arr[Math.floor(Math.random() * arr.length)];
+function emptyMinorArcana(columnTypes) {
   return ['swords', 'wands', 'pentacles', 'cups'].reduce((acc, suit) => {
     const suitOfCards = values.map((value, idx) => {
       return {
@@ -61,7 +40,12 @@ function emptyMinorArcana() {
         cardtitle: `${value.capitalize()} of ${suit.capitalize()}`,
         cardvalue: idx,
         tip: `This is the ${value} of ${suit}`,
-        ...EXAMPLES[suit]
+        charttype: CHARTTYPE_MAP[suit],
+        dims: {
+          // xDim will be ignored if not used (e.g. in boxplot)
+          xDim: chooseRandom(columnTypes.measure),
+          yDim: chooseRandom(columnTypes.measure)
+        }
       };
     });
 
@@ -92,8 +76,25 @@ function emptyMinorArcana() {
  * data - the the data be analyzed by the system
  */
 function computeCards(data) {
-  // majorArcanaData.concat(emptyMinorArcana())
-  const deck = majorArcanaData.concat(emptyMinorArcana());
+  const simplerTypeMap = {
+    string: 'dimension',
+    integer: 'measure',
+    number: 'measure'
+  };
+  const types = dl.type.inferAll(data);
+  const groupedTypes = Object.entries(types).reduce(
+    (acc, [field, type]) => {
+      if (!simplerTypeMap[type]) {
+        acc.null.push(field);
+        return acc;
+      }
+      acc[simplerTypeMap[type]].push(field);
+      return acc;
+    },
+    {dimension: [], measure: [], null: []}
+  );
+
+  const deck = majorArcanaData.concat(emptyMinorArcana(groupedTypes));
   // const deck = emptyMinorArcana();
   // const deck = majorArcanaData;
   return shuffle(deck).map((x, idx) => ({
@@ -125,7 +126,6 @@ function main() {
   const state = {
     layout: null,
     data: null,
-    datasetName: null,
     loading: false,
     cards: []
   };
@@ -155,7 +155,7 @@ function main() {
     mainContainer.style('width', `${width}px`);
 
     // draw the layout
-    buildLayout(mainContainer, state.layout, state.cards);
+    buildLayout(mainContainer, state.layout, state.cards, state.data);
   }
 
   // listener for the layout selector
@@ -178,14 +178,12 @@ function main() {
     .addEventListener('change', event => {
       const datasetName = event.target.value;
       // update the chosen name
-      state.datasetName = datasetName;
       state.loading = true;
 
       // start loading the data
       d3.csv(`data/${datasetName}`).then(d => {
         state.loading = true;
         state.data = d;
-        // TODO also do the data processing here
         stateUpdate();
       });
       stateUpdate();
@@ -196,7 +194,19 @@ function main() {
     .querySelector('#reset-button')
     .addEventListener('click', stateUpdate);
 
-  // TODO add listeners that allow user to upload a file here
+  // listener for data upload
+  document.querySelector('#upload-file').addEventListener('change', event => {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+    reader.onload = event => {
+      const output = d3.csvParse(event.target.result);
+      state.loading = true;
+      state.data = output;
+      stateUpdate();
+    };
+
+    reader.readAsText(file);
+  });
   window.onresize = stateUpdate;
 }
 

@@ -66,6 +66,10 @@ body{
   pointer-events: none;
 
 }
+.upload-subtitle {
+  font-family: 'Playfair Display', serif;
+  font-size: 10px;
+}
 
 
 /* SECTIONS */

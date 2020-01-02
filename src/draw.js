@@ -64,8 +64,9 @@ function drawCardSpaces(container, positions, scales) {
  * cards - an array of object with each individual card data
  * scales - an object of scales
  * positions - an array of objects describing the positioning and metadata with the card spaces
+ * dataset - array of objects
  */
-function drawCards(container, positions, scales, cards) {
+function drawCards(container, positions, scales, cards, dataset) {
   const {h, w} = getCardHeightWidth(scales);
   const {xWindow, yWindow} = scales;
   // stateful incrementer of how deep into the draw we are, as the user draws more cards we increment this idx
@@ -77,8 +78,7 @@ function drawCards(container, positions, scales, cards) {
     if (!nextCardPos) {
       return;
     }
-    console.log(card);
-    renderAppropriateCard(this, card, scales);
+    renderAppropriateCard(this, card, scales, dataset);
     d3.select(this)
       .transition(t)
       .style('left', null)
@@ -200,11 +200,12 @@ const layoutMethod = {
  * container - the d3 selection for the full container pane
  * layout - a string specifying the layout
  * cards - an array of object with each individual card data
+ * dataset - array of objects
  */
-function buildLayout(container, layout, cards) {
+function buildLayout(container, layout, cards, dataset) {
   // clear the contents of teh previous layout
   container.selectAll('*').remove();
   const {scales, positions} = layoutMethod[layout](container);
   drawCardSpaces(container, positions, scales);
-  drawCards(container, positions, scales, cards);
+  drawCards(container, positions, scales, cards, dataset);
 }
