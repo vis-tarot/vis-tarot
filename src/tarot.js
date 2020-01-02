@@ -31,7 +31,7 @@ const emojii = [
  * card - an object containing the cards data
  * scales - an object of the scales for positioning things
  * cardContent - function to construct the content in the middle of the card
- * dataset - string (if pointing to a csv) or an array of objects
+ * dataset - array of objects
  */
 function cardCommon(domNode, card, scales, cardContent, dataset) {
   const {xWindow, yWindow} = scales;
@@ -90,7 +90,7 @@ function cardCommon(domNode, card, scales, cardContent, dataset) {
  * domNode - the dom node that is relevent to the card
  * card - an object containing the cards data
  * scales - an object of the scales for positioning things
- * dataset - string (if pointing to a csv) or an array of objects
+ * dataset - array of objects
  */
 function minorArcana(domNode, card, scales, dataset) {
   const {xWindow, yWindow} = scales;
@@ -139,7 +139,7 @@ function exampleCardFrontEmoji(domNode, card) {
  * domNode - the dom node that is relevent to the card
  * card - an object containing the cards data
  * scales - an object of the scales for positioning things
- * dataset - string (if pointing to a csv) or an array of objects
+ * dataset - array of objects
  */
 function majorArcana(domNode, card) {
   domNode
@@ -159,7 +159,7 @@ function majorArcana(domNode, card) {
  * domNode - the dom node that is relevent to the card
  * card - an object containing the cards data
  * scales - an object of the scales for positioning things
- * dataset - string (if pointing to a csv) or an array of objects
+ * dataset - array of objects
  */
 function renderAppropriateCard(domNode, card, scales, dataset) {
   cardCommon(

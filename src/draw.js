@@ -64,7 +64,7 @@ function drawCardSpaces(container, positions, scales) {
  * cards - an array of object with each individual card data
  * scales - an object of scales
  * positions - an array of objects describing the positioning and metadata with the card spaces
- * dataset - string (if pointing to a csv) or an array of objects
+ * dataset - array of objects
  */
 function drawCards(container, positions, scales, cards, dataset) {
   const {h, w} = getCardHeightWidth(scales);
@@ -200,7 +200,7 @@ const layoutMethod = {
  * container - the d3 selection for the full container pane
  * layout - a string specifying the layout
  * cards - an array of object with each individual card data
- * dataset - string (if pointing to a csv) or an array of objects
+ * dataset - array of objects
  */
 function buildLayout(container, layout, cards, dataset) {
   // clear the contents of teh previous layout

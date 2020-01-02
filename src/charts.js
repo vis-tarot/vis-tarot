@@ -8,7 +8,6 @@
 function vegaliteCommon(height, width, dataset) {
   return {
     $schema: 'https://vega.github.io/schema/vega-lite/v4.json',
-    // TODO this should also support user uploaded dataset
     data: {values: dataset},
     height: height,
     width: 0.9 * width,
