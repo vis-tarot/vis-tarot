@@ -26,6 +26,8 @@ var outlierStrength = function(data,accessor){
 
 var profileFields = function(data){
   const summary = dl.summary(data);
+  const types = dl.type.inferAll(data);
+  summary.forEach(d => d.type = types[d.field]);
   //returns array of summaries
   //field
   //unique
@@ -41,5 +43,4 @@ var profileFields = function(data){
   //q1
   //q3
   //modeskew
-
 }
