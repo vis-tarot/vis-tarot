@@ -179,6 +179,11 @@ body{
   text-align: center;
 }
 
+#reset-button {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
 /* SELECT STYLING */
 .select-label {
   white-space: nowrap;
