@@ -191,6 +191,11 @@ function main() {
       stateUpdate();
     });
 
+  // listener for reset
+  document
+    .querySelector('#reset-button')
+    .addEventListener('click', stateUpdate);
+
   // TODO add listeners that allow user to upload a file here
   window.onresize = stateUpdate;
 }
