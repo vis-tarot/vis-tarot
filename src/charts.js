@@ -3,13 +3,13 @@
  *
  * height - the height of the chart
  * width - the width of the chart
- * datasetName - the name of the dataset
+ * dataset - the dataset
  */
-function vegaliteCommon(height, width, datasetName) {
+function vegaliteCommon(height, width, dataset) {
   return {
     $schema: 'https://vega.github.io/schema/vega-lite/v4.json',
     // TODO this should also support user uploaded dataset
-    data: {url: `data/${datasetName}.csv`},
+    data: {values: dataset},
     height: height,
     width: 0.9 * width,
 
@@ -26,9 +26,9 @@ function vegaliteCommon(height, width, datasetName) {
  * dimensions - object containing the necessary configuration to specify the chart
  * height - the height of the chart
  * width - the width of the chart
- * datasetName - the name of the dataset
+ * dataset - the dataset
  */
-function scatterplot(dimensions, height, width, datasetName) {
+function scatterplot(dimensions, height, width, dataset) {
   const {xDim, yDim} = dimensions;
   return {
     mark: {type: 'circle', tooltip: true},
@@ -44,7 +44,7 @@ function scatterplot(dimensions, height, width, datasetName) {
         scale: {zero: false}
       }
     },
-    ...vegaliteCommon(height, width, datasetName)
+    ...vegaliteCommon(height, width, dataset)
   };
 }
 
@@ -54,9 +54,9 @@ function scatterplot(dimensions, height, width, datasetName) {
  * dimensions - object containing the necessary configuration to specify the chart
  * height - the height of the chart
  * width - the width of the chart
- * datasetName - the name of the dataset
+ * dataset - the dataset
  */
-function boxplot(dimensions, height, width, datasetName) {
+function boxplot(dimensions, height, width, dataset) {
   const {yDim, aggregate = 'mean'} = dimensions;
   return {
     mark: 'boxplot',
@@ -64,7 +64,7 @@ function boxplot(dimensions, height, width, datasetName) {
       y: {field: yDim, type: 'quantitative'},
       tooltip: {field: yDim, type: 'quantitative', aggregate}
     },
-    ...vegaliteCommon(height, width, datasetName)
+    ...vegaliteCommon(height, width, dataset)
   };
 }
 

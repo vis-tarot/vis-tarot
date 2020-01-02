@@ -31,8 +31,9 @@ const emojii = [
  * card - an object containing the cards data
  * scales - an object of the scales for positioning things
  * cardContent - function to construct the content in the middle of the card
+ * dataset - string (if pointing to a csv) or an array of objects
  */
-function cardCommon(domNode, card, scales, cardContent) {
+function cardCommon(domNode, card, scales, cardContent, dataset) {
   const {xWindow, yWindow} = scales;
   const {h, w} = getCardHeightWidth(scales);
 
@@ -80,7 +81,7 @@ function cardCommon(domNode, card, scales, cardContent) {
         : card.cardtitle
     );
 
-  cardContent(mainCardContents, card, scales);
+  cardContent(mainCardContents, card, scales, dataset);
 }
 
 /**
@@ -89,11 +90,12 @@ function cardCommon(domNode, card, scales, cardContent) {
  * domNode - the dom node that is relevent to the card
  * card - an object containing the cards data
  * scales - an object of the scales for positioning things
+ * dataset - string (if pointing to a csv) or an array of objects
  */
-function minorArcana(domNode, card, scales) {
+function minorArcana(domNode, card, scales, dataset) {
   const {xWindow, yWindow} = scales;
   const {h, w} = getCardHeightWidth(scales);
-
+  console.log(card);
   domNode
     .append('div')
     .style('height', `${yWindow(h)}`)
@@ -106,7 +108,7 @@ function minorArcana(domNode, card, scales) {
     card.dims,
     yWindow(h) * 0.8,
     xWindow(w),
-    'per_game_data'
+    dataset
   );
   setTimeout(() => {
     vegaEmbed(`#card-${card.pos} .vega-container`, spec, {
@@ -137,6 +139,7 @@ function exampleCardFrontEmoji(domNode, card) {
  * domNode - the dom node that is relevent to the card
  * card - an object containing the cards data
  * scales - an object of the scales for positioning things
+ * dataset - string (if pointing to a csv) or an array of objects
  */
 function majorArcana(domNode, card) {
   domNode
@@ -156,12 +159,14 @@ function majorArcana(domNode, card) {
  * domNode - the dom node that is relevent to the card
  * card - an object containing the cards data
  * scales - an object of the scales for positioning things
+ * dataset - string (if pointing to a csv) or an array of objects
  */
-function renderAppropriateCard(domNode, card, scales) {
+function renderAppropriateCard(domNode, card, scales, dataset) {
   cardCommon(
     domNode,
     card,
     scales,
-    card.suit === 'major arcana' ? majorArcana : minorArcana
+    card.suit === 'major arcana' ? majorArcana : minorArcana,
+    dataset
   );
 }

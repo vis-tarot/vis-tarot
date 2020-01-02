@@ -38,17 +38,17 @@
           <select id="dataset-selector">
             <option disabled selected value> select a dataset </option>
             <option>per_game_data.csv</option>
-            <option>per_game_data.csv</option>
+            <option>dairyglance.csv</option>
             <option>per_game_data.csv</option>
             <option>per_game_data.csv</option>
           </select>
         </div>
-
-        <!-- <div class="description margin-bottom">
-          <h3>Description</h3>
-          <div id="dataset-description">Select a layout & Dataset to begin</div>
-        </div> -->
-
+        <div class="flex-down margin-bottom">
+          <div class="flex-down">
+            <div class="select-label">Upload (only csvs are supported)</div>
+            <input id="upload-file" type="file"/>
+          </div>
+        </div>
         <div class="flex">
           <div class="select-label">Layout</div>
           <select id="layout-selector">
@@ -58,12 +58,13 @@
             <option value="Celtic Cross">Celtic Cross</option>
           </select>
         </div>
-        <div id="reset-button">Reset current draw</div>
 
-        <div class="description">
+
+        <div class="description margin-bottom">
           <h3>Description</h3>
           <div id="layout-description">Select a layout & Dataset to begin</div>
         </div>
+        <div id="reset-button">Reset current draw</div>
       </div>
       <div class="main-content">
         <h1 id="load-msg">SELECT A DATASET & LAYOUT TO BEGIN</h1>
