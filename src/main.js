@@ -33,7 +33,6 @@ const CHARTTYPE_MAP = {
 };
 const chooseRandom = arr => arr[Math.floor(Math.random() * arr.length)];
 function emptyMinorArcana(columnTypes) {
-  console.log(columnTypes);
   return ['swords', 'wands', 'pentacles', 'cups'].reduce((acc, suit) => {
     const suitOfCards = values.map((value, idx) => {
       return {
@@ -112,8 +111,7 @@ function computeCards(data) {
   }));
   */
 
-  const deck = {major: majorArcanaData, minor: emptyMinorArcana(groupedTypes)};
-  return deck;
+  return {major: majorArcanaData, minor: emptyMinorArcana(groupedTypes)};
 }
 
 /**
