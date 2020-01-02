@@ -4,12 +4,12 @@
  *
  * the xWindow and yWindow scales refer to the full viewing pane, and use index coordinates (e.g. 0 to 1)
  *
- * svg - the d3 selection for the full svg pane
+ * container - the d3 selection for the full container pane
  * labels - an array of entities (strings, numbers whatever) to determine the behaviour of the band scale
  */
-function makeScales(svg, labels) {
-  const width = parseInt(svg.style('width'));
-  const height = parseInt(svg.style('height'));
+function makeScales(container, labels) {
+  const width = parseInt(container.style('width'));
+  const height = parseInt(container.style('height'));
   const margin = {
     left: 0,
     right: 0,
@@ -18,7 +18,7 @@ function makeScales(svg, labels) {
   };
   const xWindow = d3
     .scaleLinear()
-    .domain([0, 1.2])
+    .domain([0, 1])
     .range([margin.left, width - margin.left - margin.right]);
   const yWindow = d3
     .scaleLinear()
@@ -37,12 +37,14 @@ function makeScales(svg, labels) {
 
 /**
  * Util method for determining the size in index space of the cards, returns an object
+ * scales object that comes from make scales
  */
-function getCardHeightWidth() {
-  const size = 0.3;
-  let h = size;
-  let w = (57.15 / 88.9) * size;
-  return {h, w};
+function getCardHeightWidth(scales) {
+  const DESIRED_WIDTH = 175;
+  return {
+    h: scales.yWindow.invert(DESIRED_WIDTH * (88.9 / 57.15)),
+    w: scales.xWindow.invert(DESIRED_WIDTH)
+  };
 }
 
 /**
@@ -88,4 +90,23 @@ function toRomanNumeral(idx) {
 // https://flaviocopes.com/how-to-uppercase-first-letter-javascript/
 String.prototype.capitalize = function() {
   return this.charAt(0).toUpperCase() + this.slice(1);
+};
+
+
+//moving card shuffling to a general purpose util
+function shuffleCards(deck) {
+  return shuffle(deck).map((x, idx) => ({
+  // eslint appears to not like this line
+  ...x,
+  pos: idx,
+  index: Math.random(),
+  // for now reversed is hard to read, so its disabled
+  // reversed: Math.random() > 0.5
+  reversed: false
+}));
+}
+
+// Sampling without replacement
+Array.prototype.sample = function(n) {
+  return shuffleCards(this).slice(0,n);
 };
