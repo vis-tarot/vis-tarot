@@ -23,18 +23,19 @@ dims: {
   yDim: chooseRandom(columnTypes.measure)
 }
 */
-var generateAllMinorArcana = function(data){
+
+var generateAllMinorArcana = function(data) {
+  values.reverse();
   const summary = profileFields(data);
   const pentacles = generatePentacles(data, summary);
   const wands = generateWands(data, summary);
   const cups = generateCups(data, summary);
   const swords = generateSwords(data, summary);
 
-  const all = pentacles.concat(wands,cups,swords);
+  const all = pentacles.concat(wands, cups, swords);
   console.log(all);
   return all;
-}
-
+};
 
 //largest z score difference between values
 var outlierStrength = function(data, accessor) {
@@ -57,7 +58,7 @@ var categoryVarianceStrength = function(data, x, y, groupFunc = 'mean') {
     .summarize([{name: y, ops: [groupFunc], as: ['val']}])
     .execute(data);
 
-  const range = dl.max(vals, "val");
+  const range = dl.max(vals, 'val');
 
   return barSD === 0 ? 0 : barSD / range;
 };
@@ -75,9 +76,18 @@ var generateSwords = function(data, summary) {
   let swords = [];
   summary.forEach(function(field) {
     let missing = field.count === 0 ? 0 : field.missing;
-    missing = field.unique.hasOwnProperty("") ? missing+field.unique[""] : missing;
+    missing = field.unique.hasOwnProperty('')
+      ? missing + field.unique['']
+      : missing;
     const strength = field.count === 0 ? 0 : missing / field.count;
-    const swordObj = {suit: "swords", field: field.field, strength: strength};
+    const swordObj = {
+      suit: 'swords',
+      xDim: field.field,
+      yDim: field.field,
+      strength: strength,
+      charttype: 'histogram',
+      tip: 'This field has data quality issues.'
+    };
     swords.push(swordObj);
   });
 
@@ -88,7 +98,13 @@ var generateSwords = function(data, summary) {
   swords.sort(dl.comparator('-strength'));
 
   //Only return the top 13, since that's all the slots we have
-  swords = swords.length <= 13 ? swords : swords.filter((d, i) => i <= 12);
+  swords = swords.length <= 14 ? swords : swords.filter((d, i) => i <= 13);
+  swords.forEach(function(d, i) {
+    const value = values[i];
+    const suit = d.suit;
+    d.cardtitle = `${value.capitalize()} of ${suit.capitalize()}`;
+    d.cardvalue = value;
+  });
   return swords;
 };
 
@@ -100,7 +116,14 @@ var generatePentacles = function(data, summary) {
     .filter(d => d.type == 'number' || d.type == 'integer')
     .forEach(function(field) {
       const strength = outlierStrength(data, field.field);
-      const pentacleObj = {suit: "pentacles", field: field.field, strength: strength};
+      const pentacleObj = {
+        suit: 'pentacles',
+        xDim: field.field,
+        yDim: field.field,
+        charttype: 'boxplot',
+        strength: strength,
+        tip: 'There is at least one extreme value in this field.'
+      };
       pentacles.push(pentacleObj);
     });
 
@@ -112,7 +135,13 @@ var generatePentacles = function(data, summary) {
 
   //Only return the top 13, since that's all the slots we have
   pentacles =
-    pentacles.length <= 13 ? pentacles : pentacles.filter((d, i) => i <= 12);
+    pentacles.length <= 14 ? pentacles : pentacles.filter((d, i) => i <= 13);
+  pentacles.forEach(function(d, i) {
+    const value = values[i];
+    const suit = d.suit;
+    d.cardtitle = `${value.capitalize()} of ${suit.capitalize()}`;
+    d.cardvalue = value;
+  });
   return pentacles;
 };
 
@@ -123,7 +152,9 @@ var generateWands = function(data, summary) {
   const qs = summary.filter(d => d.type == 'number' || d.type == 'integer');
   //only want nominal fields where there's at least some aggregation to do
   const ns = summary.filter(
-    d => (d.type == 'boolean' || d.type == 'string' || d.distinct==2) && d.distinct < d.count
+    d =>
+      (d.type == 'boolean' || d.type == 'string' || d.distinct == 2) &&
+      d.distinct < d.count
   );
 
   //could potentially check median, max, min, stdev and so on but let's keep it simple for now.
@@ -135,7 +166,15 @@ var generateWands = function(data, summary) {
     qs.forEach(function(y) {
       ns.forEach(function(x) {
         const strength = categoryVarianceStrength(data, x.field, y.field, func);
-        const wandObj = {suit: "wands", x: x.field, y: y.field, func: func, strength: strength};
+        const wandObj = {
+          suit: 'wands',
+          xDim: x.field,
+          yDim: y.field,
+          charttype: 'barchart',
+          func: func,
+          strength: strength,
+          tip: 'There is high variably in values in these fields'
+        };
         wands.push(wandObj);
       });
     });
@@ -148,7 +187,13 @@ var generateWands = function(data, summary) {
   wands.sort(dl.comparator('-strength'));
 
   //Only return the top 13, since that's all the slots we have
-  wands = wands.length <= 13 ? wands : wands.filter((d, i) => i <= 12);
+  wands = wands.length <= 14 ? wands : wands.filter((d, i) => i <= 13);
+  wands.forEach(function(d, i) {
+    const value = values[i];
+    const suit = d.suit;
+    d.cardtitle = `${value.capitalize()} of ${suit.capitalize()}`;
+    d.cardvalue = value;
+  });
   return wands;
 };
 
@@ -160,18 +205,33 @@ var generateCups = function(data, summary) {
     //don't check self-correlation.
     qs.filter((d, j) => i != j).forEach(function(y) {
       const strength = dl.cor(data, x.field, y.field);
-      const cupObj = {suit: "cups", x: x.field, y: y.field, strength: strength};
+      const cupObj = {
+        suit: 'cups',
+        xDim: x.field,
+        yDim: y.field,
+        charttype: 'scatterplot',
+        strength: strength,
+        tip: 'These fields are highly correlated.'
+      };
       cups.push(cupObj);
     });
   });
 
   //remove fields with no correlation, but also fields that are perfectly correlated
-  cups = cups.filter(d => d.strength > 0 && isFinite(d.strength) && d.strength < 1);
+  cups = cups.filter(
+    d => d.strength > 0 && isFinite(d.strength) && d.strength < 1
+  );
 
   //Sort in descending order of quasi-F statistic.
   cups.sort(dl.comparator('-strength'));
 
   //Only return the top 13, since that's all the slots we have
-  cups = cups.length <= 13 ? cups : cups.filter((d, i) => i <= 12);
+  cups = cups.length <= 14 ? cups : cups.filter((d, i) => i <= 13);
+  cups.forEach(function(d, i) {
+    const value = values[i];
+    const suit = d.suit;
+    d.cardtitle = `${value.capitalize()} of ${suit.capitalize()}`;
+    d.cardvalue = value;
+  });
   return cups;
 };
