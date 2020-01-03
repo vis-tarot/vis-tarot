@@ -10,6 +10,33 @@
 //Swords: missing data or nulls
 // Visualization: histogram with nulls/missing data on the side
 
+/*
+Stuff that needs to be in our card objects
+suit,
+cardtitle: `${value.capitalize()} of ${suit.capitalize()}`,
+cardvalue: idx,
+tip: `This is the ${value} of ${suit}`,
+charttype: CHARTTYPE_MAP[suit],
+dims: {
+  // xDim will be ignored if not used (e.g. in boxplot)
+  xDim: chooseRandom(columnTypes.measure),
+  yDim: chooseRandom(columnTypes.measure)
+}
+*/
+var generateAllMinorArcana = function(data){
+  const summary = profileFields(data);
+
+  const pentacles = generatePentacles(data, summary);
+  const wands = generateWands(data, summary);
+  const cups = generateCups(data, summary);
+  const swords = generateSwords(data, summary);
+
+  const all = pentacles.concat(wands,cups,swords);
+  console.log(all);
+  return all;
+}
+
+
 //largest z score difference between values
 var outlierStrength = function(data, accessor) {
   //largest z scores
@@ -40,14 +67,16 @@ var profileFields = function(data) {
   const summary = dl.summary(data);
   const types = dl.type.inferAll(data);
   summary.forEach(d => (d.type = types[d.field]));
+
+  return summary;
 };
 
 //Build out all of our swords. The more invalid/missing values, the higher position the field takes
-var generateSwords = function(summary) {
+var generateSwords = function(data, summary) {
   let swords = [];
   summary.forEach(function(field) {
     const strength = field.count === 0 ? 0 : field.missing / field.count;
-    const swordObj = {field: field.field, strength: strength};
+    const swordObj = {suit: "swords", field: field.field, strength: strength};
     swords.push(swordObj);
   });
 
@@ -70,7 +99,7 @@ var generatePentacles = function(data, summary) {
     .filter(d => d.type == 'number' || d.type == 'integer')
     .forEach(function(field) {
       const strength = outlierStrength(data, field.field);
-      const pentacleObj = {field: field.field, strength: strength};
+      const pentacleObj = {suit: "pentacles", field: field.field, strength: strength};
       pentacles.push(pentacleObj);
     });
 
@@ -93,7 +122,7 @@ var generateWands = function(data, summary) {
   const qs = summary.filter(d => d.type == 'number' || d.type == 'integer');
   //only want nominal fields where there's at least some aggregation to do
   const ns = summary.filter(
-    (d => d.type == 'boolean' || d.type == 'string') && d.uniques < d.length
+    d => (d.type == 'boolean' || d.type == 'string') && d.uniques < d.length
   );
 
   //could potentially check median, max, min, stdev and so on but let's keep it simple for now.
@@ -104,8 +133,8 @@ var generateWands = function(data, summary) {
   funcs.forEach(function(func) {
     qs.forEach(function(y) {
       ns.forEach(function(x) {
-        const strength = categoryVarianceStrength(data, x, y, func);
-        const wandObj = {x: x, y: y, func: func, strength: strength};
+        const strength = categoryVarianceStrength(data, x.field, y.field, func);
+        const wandObj = {suit: "wands", x: x.field, y: y.field, func: func, strength: strength};
         wands.push(wandObj);
       });
     });
@@ -123,20 +152,20 @@ var generateWands = function(data, summary) {
 };
 
 //Build out our cups. The higher the correlation between two fields, the higher the position.
-var generateCups = function(summary) {
+var generateCups = function(data, summary) {
   let cups = [];
   const qs = summary.filter(d => d.type == 'number' || d.type == 'integer');
   qs.forEach(function(x, i) {
     //don't check self-correlation.
     qs.filter((d, j) => i != j).forEach(function(y) {
-      const strength = dl.corr(data, x, y);
-      const cupObj = {x: x, y: y, strength: strength};
+      const strength = dl.cor(data, x.field, y.field);
+      const cupObj = {suit: "cups", x: x.field, y: y.field, strength: strength};
       cups.push(cupObj);
     });
   });
 
-  //remove fields with no correlation
-  cups = cups.filter(d => d.strength > 0);
+  //remove fields with no correlation, but also fields that are perfectly correlated
+  cups = cups.filter(d => d.strength > 0 && isFinite(d.strength) && d.strength < 1);
 
   //Sort in descending order of quasi-F statistic.
   cups.sort(dl.comparator('-strength'));
