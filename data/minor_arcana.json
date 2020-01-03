@@ -1,0 +1,18 @@
+[
+  {
+    "suit": "pentacles",
+    "tip": "There is at least one extreme value in this field."
+  },
+  {
+    "suit": "wands",
+    "tip": "There is high variance in values in these fields."
+  },
+  {
+    "suit": "cups",
+    "tip": "These fields are highly correlated."
+  },
+  {
+    "suit": "swords",
+    "tip": "This field has data quality issues."
+  }
+]
