@@ -75,7 +75,9 @@ var profileFields = function(data) {
 var generateSwords = function(data, summary) {
   let swords = [];
   summary.forEach(function(field) {
-    const strength = field.count === 0 ? 0 : field.missing / field.count;
+    let missing = field.count === 0 ? 0 : field.missing;
+    missing = field.unique.hasOwnProperty("") ? missing+field.unique[""] : missing;
+    const strength = field.count === 0 ? 0 : missing / field.count;
     const swordObj = {suit: "swords", field: field.field, strength: strength};
     swords.push(swordObj);
   });
