@@ -25,7 +25,6 @@ dims: {
 */
 var generateAllMinorArcana = function(data){
   const summary = profileFields(data);
-
   const pentacles = generatePentacles(data, summary);
   const wands = generateWands(data, summary);
   const cups = generateCups(data, summary);
@@ -49,18 +48,18 @@ var outlierStrength = function(data, accessor) {
     : Math.max(Math.abs(min - mean) / stdev, Math.max(max - mean) / stdev);
 };
 
-//Ratio of intra-group variance / inter-group variance
+//Ratio of intra-group variance / range
 var categoryVarianceStrength = function(data, x, y, groupFunc = 'mean') {
-  const interSD = dl.stdev(data, y);
+  const barSD = dl.stdev(data, y);
 
   const vals = dl
     .groupby(x)
     .summarize([{name: y, ops: [groupFunc], as: ['val']}])
     .execute(data);
 
-  const intraSD = dl.stdev(vals, 'val');
+  const range = dl.max(vals, "val");
 
-  return interSD === 0 ? 0 : intraSD / interSD;
+  return barSD === 0 ? 0 : barSD / range;
 };
 
 var profileFields = function(data) {
@@ -124,7 +123,7 @@ var generateWands = function(data, summary) {
   const qs = summary.filter(d => d.type == 'number' || d.type == 'integer');
   //only want nominal fields where there's at least some aggregation to do
   const ns = summary.filter(
-    d => (d.type == 'boolean' || d.type == 'string') && d.uniques < d.length
+    d => (d.type == 'boolean' || d.type == 'string' || d.distinct==2) && d.distinct < d.count
   );
 
   //could potentially check median, max, min, stdev and so on but let's keep it simple for now.
