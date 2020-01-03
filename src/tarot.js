@@ -80,7 +80,6 @@ function cardCommon(domNode, card, scales, cardContent, dataset) {
         ? `${toRomanNumeral(d.cardnum)}. ${d.tradname}`
         : card.cardtitle
     );
-
   cardContent(mainCardContents, card, scales, dataset);
 }
 
@@ -95,7 +94,6 @@ function cardCommon(domNode, card, scales, cardContent, dataset) {
 function minorArcana(domNode, card, scales, dataset) {
   const {xWindow, yWindow} = scales;
   const {h, w} = getCardHeightWidth(scales);
-  console.log(card);
   domNode
     .append('div')
     .style('height', `${yWindow(h)}`)
@@ -151,6 +149,12 @@ function majorArcana(domNode, card) {
     .append('div')
     .attr('class', 'card-title')
     .text(card.cardtitle);
+
+  // just for making a figure
+  domNode
+    .append('div')
+    .attr('class', 'card-tip')
+    .text(card.tip);
 }
 
 /**
