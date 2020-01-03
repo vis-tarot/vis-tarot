@@ -241,6 +241,7 @@ function buildLayout(container, layout, cards, dataset) {
   drawCardSpaces(container, positions, scales);
 
   //shuffle cards
+
   if(layout == 'One Card'){
     //Mostly edge case handling
     if(cards.minor.length > 1){
@@ -280,6 +281,7 @@ function buildLayout(container, layout, cards, dataset) {
     }
 
     
+
   }
   drawCards(container, positions, scales, deck, dataset);
 }

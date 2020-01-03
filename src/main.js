@@ -100,7 +100,7 @@ function computeCards(data) {
   // const deck = emptyMinorArcana();
   // const deck = majorArcanaData;
 
- /* return shuffle(deck).map((x, idx) => ({
+  /* return shuffle(deck).map((x, idx) => ({
     // eslint appears to not like this line
     ...x,
     pos: idx,
@@ -111,8 +111,7 @@ function computeCards(data) {
   }));
   */
 
-  const deck = {"major": majorArcanaData, "minor": emptyMinorArcana(groupedTypes)};
-  return deck;
+  return {major: majorArcanaData, minor: emptyMinorArcana(groupedTypes)};
 }
 
 /**
