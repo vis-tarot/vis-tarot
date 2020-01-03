@@ -2,6 +2,7 @@
   "layoutAnnotations": {
     "One Card": "A single card providing context to a current situation.",
     "Three Card": "A simple divinatory layout presenting past, present, and future.",
+    "Five Card": "A more nuanced layout relating the current context to advice.",
     "Celtic Cross": "A spread of ten cards presenting additional context about a situation."
   },
   "layouts": {

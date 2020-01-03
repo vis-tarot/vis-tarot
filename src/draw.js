@@ -148,7 +148,7 @@ function oneCard(container) {
 /**
  * The three card layout
  * container - the d3 selection for the full container pane
- * 
+ *
  * Note : In Lieu of past, present, future, changed to context, hidden influences, advice
  *  it makes a little bit more sense in an analysis context
  */
@@ -165,13 +165,13 @@ function threeCard(container) {
  * The five card cross layout
  * container - the d3 selection for the full container pane
  */
-function fiveCard(container){
+function fiveCard(container) {
   const positions = [
     {x: 1, y: 1.5, label: 'Present'},
     {x: 0, y: 1.5, label: 'Context'}, // context
     {x: 2, y: 1.5, label: 'Hidden Influences'}, // Hidden Influences
     {x: 1, y: 2.5, label: 'Challenges'}, // Chanllgenes
-    {x: 1, y: 0.5, label: 'Advice'}, // Advice
+    {x: 1, y: 0.5, label: 'Advice'} // Advice
   ];
   const scales = makeScales(container, [0, 1, 2, 3]);
   return {
@@ -184,7 +184,6 @@ function fiveCard(container){
     }))
   };
 }
-
 
 /**
  * The celtic cross layout
@@ -215,12 +214,9 @@ function celticCross(container) {
   };
 }
 
-
-
-
 const layoutMethod = {
   'Celtic Cross': celticCross,
-  'Five Card' : fiveCard,
+  'Five Card': fiveCard,
   'Three Card': threeCard,
   'One Card': oneCard
 };
@@ -242,46 +238,50 @@ function buildLayout(container, layout, cards, dataset) {
 
   //shuffle cards
 
-  if(layout == 'One Card'){
+  if (layout == 'One Card') {
     //Mostly edge case handling
-    if(cards.minor.length > 1){
+    if (cards.minor.length > 1) {
       deck = shuffleCards(cards.minor);
-    }else{
-      deck = shuffleCards(cards.major)
+    } else {
+      deck = shuffleCards(cards.major);
     }
-    
-  }else{
+  } else {
     // sub-sample the major arcana so that it mathces
     // number of possible minor arcana cards
-    let samp_size = cards.major.length > cards.minor.length ? cards.minor.length : cards.major.length
-    let majorSubsample= cards.major.sample(samp_size);
+    let samp_size =
+      cards.major.length > cards.minor.length
+        ? cards.minor.length
+        : cards.major.length;
+    let majorSubsample = cards.major.sample(samp_size);
 
-    if (layout == "Three Card"){
+    if (layout == 'Three Card') {
       // Three Card Rule:
       // First and Second Positions are Minor Arcana Only
       // Third Position is Major Arcana Only
       // Major arcana is already shuffled from prior sampling
-      deck  = cards.minor.sample(2).concat(majorSubsample[0])
+      deck = cards.minor.sample(2).concat(majorSubsample[0]);
       //add random cards (that won't be draw in three card layout)
       //just to make the deck look bigger in the UI.
-      deck = deck.concat(shuffleCards(majorSubsample.concat(cards.minor))).reverse();
-    }else if(layout == "Five Card"){
+      deck = deck
+        .concat(shuffleCards(majorSubsample.concat(cards.minor)))
+        .reverse();
+    } else if (layout == 'Five Card') {
       //Last position (advice) must be a major arcana card
-      let advice = majorSubsample[0]
-      let tmp = majorSubsample.slice(1,majorSubsample.length - 1).concat(cards.minor)
-      
-      deck = tmp.sample(4).concat(advice)
-       
+      let advice = majorSubsample[0];
+      let tmp = majorSubsample
+        .slice(1, majorSubsample.length - 1)
+        .concat(cards.minor);
+
+      deck = tmp.sample(4).concat(advice);
+
       //add random cards (that won't be draw in three card layout)
       //just to make the deck look bigger in the UI.
-      deck = deck.concat(shuffleCards(majorSubsample.concat(cards.minor))).reverse();
+      deck = deck
+        .concat(shuffleCards(majorSubsample.concat(cards.minor)))
+        .reverse();
+    } else {
+      deck = shuffleCards(majorSubsample.concat(cards.minor));
     }
-    else{
-      deck = shuffleCards(majorSubsample.concat(cards.minor))
-    }
-
-    
-
   }
   drawCards(container, positions, scales, deck, dataset);
 }
