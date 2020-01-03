@@ -2,6 +2,7 @@
   "layoutAnnotations": {
     "One Card": "A single card providing context to a current situation.",
     "Three Card": "A simple divinatory layout presenting past, present, and future.",
+    "Five Card": "A more nuanced layout relating the current context to advice.",
     "Celtic Cross": "A spread of ten cards presenting additional context about a situation."
   },
   "layouts": {
@@ -14,7 +15,7 @@
     "Past": "Past history or context.",
     "Context": "The basis of the situation.",
     "Future": "Future trajectories.",
-    "Influence": "Your influence or attitude about the situation.",
+    "Hidden Influence": "Hidden factors that are potentially influencing the analysis",
     "Environment": "The surrounding environment.",
     "Mind": "Your hopes and fears.",
     "Outcome": "The eventual outcome."
