@@ -26,7 +26,8 @@ var outlierStrength = function(data, accessor) {
 var categoryVarianceStrength = function(data, x, y, groupFunc = 'mean') {
   const interSD = dl.stdev(data, y);
 
-  const vals = dl.groupby(x)
+  const vals = dl
+    .groupby(x)
     .summarize([{name: y, ops: [groupFunc], as: ['val']}])
     .execute(data);
 
@@ -65,11 +66,13 @@ var generateSwords = function(summary) {
 // the higher position the field takes
 var generatePentacles = function(data, summary) {
   let pentacles = [];
-  summary.filter(d => d.type == 'number' || d.type == 'integer').forEach(function(field) {
+  summary
+    .filter(d => d.type == 'number' || d.type == 'integer')
+    .forEach(function(field) {
       const strength = outlierStrength(data, field.field);
       const pentacleObj = {field: field.field, strength: strength};
       pentacles.push(pentacleObj);
-  });
+    });
 
   //remove fields with no variation
   pentacles = pentacles.filter(d => d.strength > 0);
@@ -78,7 +81,8 @@ var generatePentacles = function(data, summary) {
   pentacles.sort(dl.comparator('-strength'));
 
   //Only return the top 13, since that's all the slots we have
-  pentacles = pentacles.length <= 13 ? pentacles : pentacles.filter((d, i) => i <= 12);
+  pentacles =
+    pentacles.length <= 13 ? pentacles : pentacles.filter((d, i) => i <= 12);
   return pentacles;
 };
 
@@ -88,21 +92,23 @@ var generateWands = function(data, summary) {
   let wands = [];
   const qs = summary.filter(d => d.type == 'number' || d.type == 'integer');
   //only want nominal fields where there's at least some aggregation to do
-  const ns = summary.filter((d => d.type == 'boolean' || d.type == 'string') && d.uniques < d.length);
+  const ns = summary.filter(
+    (d => d.type == 'boolean' || d.type == 'string') && d.uniques < d.length
+  );
 
   //could potentially check median, max, min, stdev and so on but let's keep it simple for now.
   const funcs = ['mean', 'count'];
 
   //this sucks, stylistically.
   // I don't really want to build the correlation matrix though, since we're just grabbing the top n.
-  funcs.forEach(function(func){
-    qs.forEach(function(y){
-      ns.forEach(function(x){
+  funcs.forEach(function(func) {
+    qs.forEach(function(y) {
+      ns.forEach(function(x) {
         const strength = categoryVarianceStrength(data, x, y, func);
         const wandObj = {x: x, y: y, func: func, strength: strength};
         wands.push(wandObj);
-      })
-    })
+      });
+    });
   });
 
   //remove fields with no variation
@@ -114,19 +120,19 @@ var generateWands = function(data, summary) {
   //Only return the top 13, since that's all the slots we have
   wands = wands.length <= 13 ? wands : wands.filter((d, i) => i <= 12);
   return wands;
-}
+};
 
 //Build out our cups. The higher the correlation between two fields, the higher the position.
 var generateCups = function(summary) {
   let cups = [];
   const qs = summary.filter(d => d.type == 'number' || d.type == 'integer');
-  qs.forEach(function(x,i){
+  qs.forEach(function(x, i) {
     //don't check self-correlation.
-    qs.filter((d,j) => i!=j).forEach(function(y){
+    qs.filter((d, j) => i != j).forEach(function(y) {
       const strength = dl.corr(data, x, y);
       const cupObj = {x: x, y: y, strength: strength};
       cups.push(cupObj);
-    })
+    });
   });
 
   //remove fields with no correlation
@@ -138,4 +144,4 @@ var generateCups = function(summary) {
   //Only return the top 13, since that's all the slots we have
   cups = cups.length <= 13 ? cups : cups.filter((d, i) => i <= 12);
   return cups;
-}
+};
