@@ -154,7 +154,7 @@
   {
     "cardnum": 19,
     "tradname": "The Sun",
-    "cardtitle": "Representativness",
+    "cardtitle": "Representation",
     "tip": "How representative is your data sample relative to the population it was drawn from?",
     "suit": "major arcana",
     "image": "19_sun.svg"

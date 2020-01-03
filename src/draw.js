@@ -214,11 +214,93 @@ function celticCross(container) {
   };
 }
 
+/**
+ * The major aracana only layout, used just for a figure generator
+ * container - the d3 selection for the full container pane
+ */
+function majorArcanaLayout(container) {
+  const ROW_WIDTH = 8;
+  return {
+    scales: makeScales(container, [0, 1, 2, 3, 4, 6]),
+    positions: [...new Array(22)].map((_, idx) => {
+      return {
+        x: (idx % ROW_WIDTH) / (ROW_WIDTH + 1) + 0.05,
+        y: Math.floor(idx / ROW_WIDTH) / 3 + 0.05
+      };
+    })
+  };
+}
+
 const layoutMethod = {
   'Celtic Cross': celticCross,
   'Five Card': fiveCard,
-  'Three Card': threeCard,
-  'One Card': oneCard
+  'Major Arcana': majorArcanaLayout,
+  'One Card': oneCard,
+  'Three Card': threeCard
+};
+
+//Mostly edge case handling
+function oneCardSampling(cards) {
+  return shuffleCards(cards.minor.length > 1 ? cards.minor : cards.major);
+}
+
+// sub-sample the major arcana so that it mathces
+// number of possible minor arcana cards
+function generateMajorsubsample(cards) {
+  const samp_size =
+    cards.major.length > cards.minor.length
+      ? cards.minor.length
+      : cards.major.length;
+  return cards.major.sample(samp_size);
+}
+
+// Three Card Rule:
+// First and Second Positions are Minor Arcana Only
+// Third Position is Major Arcana Only
+// Major arcana is already shuffled from prior sampling
+function threeCardSampling(cards) {
+  const majorSubsample = generateMajorsubsample(cards);
+  const deck = cards.minor.sample(2).concat(majorSubsample[0]);
+  //add random cards (that won't be draw in three card layout)
+  //just to make the deck look bigger in the UI.
+  return deck
+    .concat(shuffleCards(majorSubsample.concat(cards.minor)))
+    .reverse();
+}
+
+function fiveCardSampling(cards) {
+  const majorSubsample = generateMajorsubsample(cards);
+
+  //Last position (advice) must be a major arcana card
+  const advice = majorSubsample[0];
+  const tmp = majorSubsample
+    .slice(1, majorSubsample.length - 1)
+    .concat(cards.minor);
+
+  const deck = tmp.sample(4).concat(advice);
+
+  //add random cards (that won't be draw in three card layout)
+  //just to make the deck look bigger in the UI.
+  return deck
+    .concat(shuffleCards(majorSubsample.concat(cards.minor)))
+    .reverse();
+}
+
+function celticSampling(cards) {
+  const majorSubsample = generateMajorsubsample(cards);
+  return shuffleCards(majorSubsample.concat(cards.minor));
+}
+
+function majorArcanaSampling(cards) {
+  return cards.major.sort((a, b) => b.cardnum - a.cardnum);
+}
+
+const samplingMethod = {
+  'Celtic Cross': celticSampling,
+  'Five Card': fiveCardSampling,
+  'Major Arcana': majorArcanaSampling,
+  'One Card': oneCardSampling,
+  'Three Card': threeCardSampling
 };
 
 /**
@@ -232,56 +314,14 @@ const layoutMethod = {
  */
 function buildLayout(container, layout, cards, dataset) {
   // clear the contents of teh previous layout
+
   container.selectAll('*').remove();
+  d3.select('#main-container').attr(
+    'class',
+    `${layout.replace(/\s+/g, '-').toLowerCase()}-layout`
+  );
   const {scales, positions} = layoutMethod[layout](container);
   drawCardSpaces(container, positions, scales);
-
-  //shuffle cards
-
-  if (layout == 'One Card') {
-    //Mostly edge case handling
-    if (cards.minor.length > 1) {
-      deck = shuffleCards(cards.minor);
-    } else {
-      deck = shuffleCards(cards.major);
-    }
-  } else {
-    // sub-sample the major arcana so that it mathces
-    // number of possible minor arcana cards
-    let samp_size =
-      cards.major.length > cards.minor.length
-        ? cards.minor.length
-        : cards.major.length;
-    let majorSubsample = cards.major.sample(samp_size);
-
-    if (layout == 'Three Card') {
-      // Three Card Rule:
-      // First and Second Positions are Minor Arcana Only
-      // Third Position is Major Arcana Only
-      // Major arcana is already shuffled from prior sampling
-      deck = cards.minor.sample(2).concat(majorSubsample[0]);
-      //add random cards (that won't be draw in three card layout)
-      //just to make the deck look bigger in the UI.
-      deck = deck
-        .concat(shuffleCards(majorSubsample.concat(cards.minor)))
-        .reverse();
-    } else if (layout == 'Five Card') {
-      //Last position (advice) must be a major arcana card
-      let advice = majorSubsample[0];
-      let tmp = majorSubsample
-        .slice(1, majorSubsample.length - 1)
-        .concat(cards.minor);
-
-      deck = tmp.sample(4).concat(advice);
-
-      //add random cards (that won't be draw in three card layout)
-      //just to make the deck look bigger in the UI.
-      deck = deck
-        .concat(shuffleCards(majorSubsample.concat(cards.minor)))
-        .reverse();
-    } else {
-      deck = shuffleCards(majorSubsample.concat(cards.minor));
-    }
-  }
+  const deck = samplingMethod[layout](cards);
   drawCards(container, positions, scales, deck, dataset);
 }

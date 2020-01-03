@@ -186,6 +186,19 @@ body{
   text-align: center;
 }
 
+/* just for generating a figure */
+.card-tip {
+  display: none;
+}
+
+.major-arcana-layout .card-tip {
+  display: block;
+  font-size: 10px;
+  position: absolute;
+  text-align: center;
+  top: 100%;
+}
+
 #reset-button {
   cursor: pointer;
   text-decoration: underline;
