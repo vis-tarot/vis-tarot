@@ -49,18 +49,23 @@ var outlierStrength = function(data, accessor) {
     : Math.max(Math.abs(min - mean) / stdev, Math.max(max - mean) / stdev);
 };
 
-//Ratio of intra-group variance / range
+//Variance of bar charts
 var categoryVarianceStrength = function(data, x, y, groupFunc = 'mean') {
-  const barSD = dl.stdev(data, y);
 
   const vals = dl
     .groupby(x)
     .summarize([{name: y, ops: [groupFunc], as: ['val']}])
     .execute(data);
 
+  //Normalize values so fields with bigger numbers have bigger strengths.
   const range = dl.max(vals, 'val');
+  vals.forEach(function(d){
+    d.val/= range;
+  });
 
-  return barSD === 0 ? 0 : barSD / range;
+  const barVar = dl.variance(vals, 'val');
+
+  return barVar === 0 ? 0 : barVar;
 };
 
 var profileFields = function(data) {
