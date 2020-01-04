@@ -67,7 +67,29 @@ function boxplot(dimensions, height, width, dataset) {
   };
 }
 
+/**
+ * Build a vega-lite barchart
+ *
+ * dimensions - object containing the necessary configuration to specify the chart
+ * height - the height of the chart
+ * width - the width of the chart
+ * dataset - the dataset
+ */
+function barchart(dimensions, height, width, dataset) {
+  const {xDim, yDim, aggregate = 'mean'} = dimensions;
+  return {
+    mark: {type: 'rect', tooltip: true},
+    encoding: {
+      x: {field: xDim, type: 'ordinal'},
+      y: {field: yDim, type: 'quantitative', aggregate}
+    },
+
+    ...vegaliteCommon(height, width, dataset)
+  };
+}
+
 const CHART_LOOKUP = {
   scatterplot,
-  boxplot
+  boxplot,
+  barchart
 };

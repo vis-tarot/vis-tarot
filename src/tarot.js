@@ -102,8 +102,9 @@ function minorArcana(domNode, card, scales, dataset) {
     .append('div')
     .attr('class', 'lds-dual-ring');
 
+  console.log(card.charttype);
   const spec = CHART_LOOKUP[card.charttype](
-    card.dims,
+    card.dimensions,
     yWindow(h) * 0.8,
     xWindow(w),
     dataset
