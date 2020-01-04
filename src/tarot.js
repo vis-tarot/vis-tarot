@@ -112,6 +112,7 @@ function minorArcana(domNode, card, scales, dataset) {
   setTimeout(() => {
     vegaEmbed(`#card-${card.pos} .vega-container`, spec, {
       actions: false
+      // renderer: 'svg'
     }).catch(console.error);
   }, 750);
 }

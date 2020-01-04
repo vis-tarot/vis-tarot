@@ -24,7 +24,12 @@ function main() {
       if (!(state.layout && state.data)) {
         return;
       }
-      d3.select('#load-msg').text('PROCESSING');
+      // remove the placeholder content
+      const placeHolder = document.querySelector('#load-msg');
+      if (placeHolder) {
+        placeHolder.remove();
+      }
+      d3.select('#processing-indicator').attr('class', 'visible');
       // compute the cards
       // HACK: settime out allows the message alteration step to finish,
       // TODO: computation should happen in a worker
@@ -41,11 +46,7 @@ function main() {
       computationCache[state.datasetName] = cards;
       state.cards = cards;
 
-      // remove the placeholder content
-      const placeHolder = document.querySelector('#load-msg');
-      if (placeHolder) {
-        placeHolder.remove();
-      }
+      d3.select('#processing-indicator').attr('class', 'hidden');
 
       // size the mainContainer correctly
       const {height, width} = container.getBoundingClientRect();

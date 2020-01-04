@@ -26,7 +26,7 @@ const orderedTarotValues = [
 ];
 
 //Pentacles: outlier strength
-// Visualization: histogram with red outlier glyph
+// Visualization: boxplot with red outlier glyph
 
 //Wands: category variance
 // Visualization: bar chart
@@ -36,20 +36,6 @@ const orderedTarotValues = [
 
 //Swords: missing data or nulls
 // Visualization: histogram with nulls/missing data on the side
-
-/*
-Stuff that needs to be in our card objects
-suit,
-cardtitle: `${value.capitalize()} of ${suit.capitalize()}`,
-cardvalue: idx,
-tip: `This is the ${value} of ${suit}`,
-charttype: CHARTTYPE_MAP[suit],
-dimensions: {
-  // xDim will be ignored if not used (e.g. in boxplot)
-  xDim: chooseRandom(columnTypes.measure),
-  yDim: chooseRandom(columnTypes.measure)
-}
-*/
 
 /**
  * Entry point for the minor arcana analyses
@@ -63,7 +49,12 @@ function generateAllMinorArcana(data) {
   const cups = generateCups(data, summary);
   const swords = generateSwords(data, summary);
 
-  const all = [...pentacles, ...swords, ...cups, ...wands];
+  const all = [
+    // ...pentacles
+    ...swords
+    // ...cups,
+    //  ...wands
+  ].filter(d => d);
   console.log(all);
   return all;
 }
@@ -99,11 +90,7 @@ function categoryVarianceStrength(data, x, y, groupFunc = 'mean') {
 
   //Normalize values so fields with bigger numbers have bigger strengths.
   const range = dl.max(vals, 'val');
-  vals.forEach(function(d) {
-    d.val /= range;
-  });
-
-  const barVar = dl.variance(vals, 'val');
+  const barVar = dl.variance(vals.map(({val}) => val / range));
 
   return barVar === 0 ? 0 : barVar;
 }
@@ -142,11 +129,9 @@ function generateSwords(_, summary) {
       suit: 'swords',
       strength: field.count === 0 ? 0 : missing / field.count,
       charttype: 'histogram',
+      // TODO: this tip change based on the card value
       tip: 'This field has data quality issues.',
-      dimensions: {
-        xDim: field.field,
-        yDim: field.field
-      }
+      dimensions: {xDim: field.field, yDim: field.field}
     };
   });
 
@@ -173,11 +158,9 @@ function generatePentacles(data, summary) {
       suit: 'pentacles',
       charttype: 'boxplot',
       strength: outlierStrength(data, field.field),
+      // TODO: this tip change based on the card value
       tip: 'There is at least one extreme value in this field.',
-      dimensions: {
-        xDim: field.field,
-        yDim: field.field
-      }
+      dimensions: {xDim: field.field, yDim: field.field}
     }));
 
   //remove fields with no variation
@@ -221,6 +204,7 @@ function generateWands(data, summary) {
           charttype: 'barchart',
           func,
           strength: categoryVarianceStrength(data, x.field, y.field, func),
+          // TODO: this tip change based on the card value
           tip: 'There is high variably in values in these fields',
           dimensions: {xDim: x.field, yDim: y.field}
         };
@@ -257,6 +241,7 @@ function generateCups(data, summary) {
         suit: 'cups',
         charttype: 'scatterplot',
         strength: strength,
+        // TODO: this tip change based on the card value
         tip: 'These fields are highly correlated.',
         dimensions: {
           xDim: x.field,
@@ -320,10 +305,7 @@ function computeCards(data) {
     } = card;
     return {
       ...card,
-      dimensions: {
-        xDim: unsanitizeKey(xDim),
-        yDim: unsanitizeKey(yDim)
-      }
+      dimensions: {xDim: unsanitizeKey(xDim), yDim: unsanitizeKey(yDim)}
     };
   });
   return {major: majorArcanaData, minor};

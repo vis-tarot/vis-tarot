@@ -35,12 +35,14 @@ function scatterplot(dimensions, height, width, dataset) {
       x: {
         field: xDim,
         type: 'quantitative',
-        scale: {zero: false}
+        scale: {zero: false},
+        axis: {format: '.2s'}
       },
       y: {
         field: yDim,
         type: 'quantitative',
-        scale: {zero: false}
+        scale: {zero: false},
+        axis: {format: '.2s'}
       }
     },
     ...vegaliteCommon(height, width, dataset)
@@ -60,7 +62,12 @@ function boxplot(dimensions, height, width, dataset) {
   return {
     mark: 'boxplot',
     encoding: {
-      y: {field: yDim, type: 'quantitative'},
+      y: {
+        field: yDim,
+        type: 'quantitative',
+        scale: {zero: false},
+        axis: {format: '.2s'}
+      },
       tooltip: {field: yDim, type: 'quantitative', aggregate}
     },
     ...vegaliteCommon(height, width, dataset)
@@ -81,7 +88,7 @@ function barchart(dimensions, height, width, dataset) {
     mark: {type: 'rect', tooltip: true},
     encoding: {
       x: {field: xDim, type: 'ordinal'},
-      y: {field: yDim, type: 'quantitative', aggregate}
+      y: {field: yDim, type: 'quantitative', aggregate, axis: {format: '.2s'}}
     },
 
     ...vegaliteCommon(height, width, dataset)
@@ -102,7 +109,7 @@ function histogram(dimensions, height, width, dataset) {
     mark: {type: 'rect', tooltip: true},
     encoding: {
       x: {bin: true, field: xDim, type: 'quantitative'},
-      y: {aggregate, type: 'quantitative'}
+      y: {aggregate, type: 'quantitative', axis: {title: false, format: '.2s'}}
     },
 
     ...vegaliteCommon(height, width, dataset)
@@ -112,5 +119,6 @@ function histogram(dimensions, height, width, dataset) {
 const CHART_LOOKUP = {
   scatterplot,
   boxplot,
-  barchart
+  barchart,
+  histogram
 };
