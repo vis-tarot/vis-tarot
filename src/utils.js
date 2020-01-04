@@ -109,3 +109,13 @@ function shuffleCards(deck) {
 Array.prototype.sample = function(n) {
   return shuffleCards(this).slice(0, n);
 };
+
+/**
+ * add text to a target query selector
+ *
+ * queryString - the selector to be queried
+ * description - the text to be added
+ */
+function setDescription(queryString, description) {
+  document.querySelector(queryString).innerHTML = description;
+}

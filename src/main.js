@@ -1,130 +1,3 @@
-// load in the major arcana data, make it available in the global name space
-let majorArcanaData = null;
-let majorArcanaLoaded = false;
-fetch('./data/major_arcana.json')
-  .then(d => d.json())
-  .then(d => {
-    majorArcanaData = d;
-    majorArcanaLoaded = true;
-  });
-
-const values = [
-  '1',
-  '2',
-  '3',
-  '4',
-  '5',
-  '6',
-  '7',
-  '8',
-  '9',
-  '10',
-  'page',
-  'knight',
-  'queen',
-  'king'
-];
-
-const CHARTTYPE_MAP = {
-  swords: 'boxplot',
-  cups: 'scatterplot',
-  pentacles: 'scatterplot',
-  wands: 'scatterplot'
-};
-const chooseRandom = arr => arr[Math.floor(Math.random() * arr.length)];
-function emptyMinorArcana(columnTypes) {
-  return ['swords', 'wands', 'pentacles', 'cups'].reduce((acc, suit) => {
-    const suitOfCards = values.map((value, idx) => {
-      return {
-        suit,
-        cardtitle: `${value.capitalize()} of ${suit.capitalize()}`,
-        cardvalue: idx,
-        tip: `This is the ${value} of ${suit}`,
-        charttype: CHARTTYPE_MAP[suit],
-        dims: {
-          // xDim will be ignored if not used (e.g. in boxplot)
-          xDim: chooseRandom(columnTypes.measure),
-          yDim: chooseRandom(columnTypes.measure)
-        }
-      };
-    });
-
-    return acc.concat(suitOfCards);
-  }, []);
-}
-
-/**
- * Compute the cards in the deck
- * cards have types like
-   {
-     common to all:
-       "cardtitle": string, (our name for the card)
-       "tip": string, (the associated tooltip)
-       "suit": string (cups, pentacles, wands, swords, "major arcana")
-
-     if major arcana:
-       "cardnum": number,
-       "tradname": string,
-       "image": image name
-
-     if minor arcana:
-      "charttype": the chart type to be used, see charts.js
-       "dims": {ANY} the necessary information to render teh relevant chart
-       "cardvalue": number, the value of the card
-   },
- *
- * data - the the data be analyzed by the system
- */
-function computeCards(data) {
-  const simplerTypeMap = {
-    string: 'dimension',
-    boolean: 'dimension',
-    integer: 'measure',
-    number: 'measure'
-  };
-  const types = dl.type.inferAll(data);
-  const groupedTypes = Object.entries(types).reduce(
-    (acc, [field, type]) => {
-      if (!simplerTypeMap[type]) {
-        acc.null.push(field);
-        return acc;
-      }
-      acc[simplerTypeMap[type]].push(field);
-      return acc;
-    },
-    {dimension: [], measure: [], null: []}
-  );
-
-  //const deck = majorArcanaData.concat(emptyMinorArcana(groupedTypes));
-  // return cards in order,  shuffle later
-  // makes sampling easier
-  // const deck = emptyMinorArcana();
-  // const deck = majorArcanaData;
-
-  /* return shuffle(deck).map((x, idx) => ({
-    // eslint appears to not like this line
-    ...x,
-    pos: idx,
-    index: Math.random(),
-    // for now reversed is hard to read, so its disabled
-    // reversed: Math.random() > 0.5
-    reversed: false
-  }));
-  */
-
-  return {major: majorArcanaData, minor: emptyMinorArcana(groupedTypes)};
-}
-
-/**
- * add text to a target query selector
- *
- * queryString - the selector to be queried
- * description - the text to be added
- */
-function setDescription(queryString, description) {
-  document.querySelector(queryString).innerHTML = description;
-}
-
 /**
  * the main method of the application, all subsequent calls should eminante from here
  */
@@ -133,38 +6,56 @@ function main() {
   const state = {
     layout: null,
     data: null,
+    datasetName: null,
     loading: false,
     cards: []
   };
+  // holds on to processed data so that if the user switches layouts we don't need to reprocess
+  const computationCache = {};
 
   // initialize everything
   const mainContainer = d3.select('#main-container');
   const container = document.querySelector('.main-content');
 
   // update the state of the system based on changed inputs
-  function stateUpdate() {
-    // if layout and data aren't specified don't do anything
-    if (!(state.layout && state.data)) {
-      return;
-    }
-    // compute the cards
-    state.cards = computeCards(state.data);
+  const stateUpdate = () =>
+    new Promise(resolve => {
+      // if layout and data aren't specified don't do anything
+      if (!(state.layout && state.data)) {
+        return;
+      }
+      // remove the placeholder content
+      const placeHolder = document.querySelector('#load-msg');
+      if (placeHolder) {
+        placeHolder.remove();
+      }
+      d3.select('#processing-indicator').attr('class', 'visible');
+      // compute the cards
+      // HACK: settime out allows the message alteration step to finish,
+      // TODO: computation should happen in a worker
+      setTimeout(() => {
+        // if the computation has been cached, dont do it!
+        if (computationCache[state.datasetName]) {
+          resolve(computationCache[state.datasetName]);
+          return;
+        }
+        // otherwise do the computation
+        resolve(computeCards(state.data));
+      }, 100);
+    }).then(cards => {
+      computationCache[state.datasetName] = cards;
+      state.cards = cards;
 
-    // remove the placeholder content
-    const placeHolder = document.querySelector('#load-msg');
-    if (placeHolder) {
-      placeHolder.remove();
-    }
+      d3.select('#processing-indicator').attr('class', 'hidden');
 
-    // size the mainContainer correctly
-    const {height, width} = container.getBoundingClientRect();
-    mainContainer.style('height', `${height}px`);
-    mainContainer.style('width', `${width}px`);
+      // size the mainContainer correctly
+      const {height, width} = container.getBoundingClientRect();
+      mainContainer.style('height', `${height}px`);
+      mainContainer.style('width', `${width}px`);
 
-    // draw the layout
-    buildLayout(mainContainer, state.layout, state.cards, state.data);
-  }
-
+      // draw the layout
+      buildLayout(mainContainer, state.layout, state.cards, state.data);
+    });
   // listener for the layout selector
   document
     .querySelector('#layout-selector')
@@ -184,6 +75,7 @@ function main() {
     .querySelector('#dataset-selector')
     .addEventListener('change', event => {
       const datasetName = event.target.value;
+      state.datasetName = datasetName;
       // update the chosen name
       state.loading = true;
 
@@ -204,6 +96,7 @@ function main() {
   // listener for data upload
   document.querySelector('#upload-file').addEventListener('change', event => {
     const file = event.target.files[0];
+    state.datasetName = file.name;
     const reader = new FileReader();
     reader.onload = event => {
       const output = d3.csvParse(event.target.result);

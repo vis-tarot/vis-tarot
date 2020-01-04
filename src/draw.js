@@ -322,6 +322,6 @@ function buildLayout(container, layout, cards, dataset) {
   );
   const {scales, positions} = layoutMethod[layout](container);
   drawCardSpaces(container, positions, scales);
-  const deck = samplingMethod[layout](cards);
+  const deck = samplingMethod[layout](cards).filter(d => d);
   drawCards(container, positions, scales, deck, dataset);
 }
