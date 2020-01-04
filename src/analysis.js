@@ -150,7 +150,6 @@ function generateSwords(_, summary) {
     };
   });
 
-  // TODO i suspect this line is deleting all of the swords?
   //Remove fields with no nulls or missing values
   swords = swords.filter(d => d.strength > 0);
 
@@ -200,13 +199,12 @@ function generatePentacles(data, summary) {
  * summary - field profile object
  */
 function generateWands(data, summary) {
-  let wands = [];
-  const qs = summary.filter(d => d.type == 'number' || d.type == 'integer');
+  const qsAllowedTypes = new Set(['number', 'integer']);
+  const qs = summary.filter(d => qsAllowedTypes.has(d.type));
   // only want nominal fields where there's at least some aggregation to do
+  const nsAllowedTypes = new Set(['boolean', 'string']);
   const ns = summary.filter(
-    d =>
-      (d.type == 'boolean' || d.type == 'string' || d.distinct == 2) &&
-      d.distinct < d.count
+    d => (nsAllowedTypes.has(d.type) || d.distinct == 2) && d.distinct < d.count
   );
 
   //could potentially check median, max, min, stdev and so on but let's keep it simple for now.
@@ -214,6 +212,7 @@ function generateWands(data, summary) {
 
   // this sucks, stylistically.
   // I don't really want to build the correlation matrix though, since we're just grabbing the top n.
+  let wands = [];
   funcs.forEach(func =>
     qs.forEach(y =>
       ns.forEach(x => {
@@ -223,10 +222,7 @@ function generateWands(data, summary) {
           func,
           strength: categoryVarianceStrength(data, x.field, y.field, func),
           tip: 'There is high variably in values in these fields',
-          dimensions: {
-            xDim: x.field,
-            yDim: y.field
-          }
+          dimensions: {xDim: x.field, yDim: y.field}
         };
         wands.push(wandObj);
       })
