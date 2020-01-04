@@ -8,6 +8,23 @@ fetch('./data/major_arcana.json')
     majorArcanaLoaded = true;
   });
 
+const orderedTarotValues = [
+  '1',
+  '2',
+  '3',
+  '4',
+  '5',
+  '6',
+  '7',
+  '8',
+  '9',
+  '10',
+  'page',
+  'knight',
+  'queen',
+  'king'
+];
+
 //Pentacles: outlier strength
 // Visualization: histogram with red outlier glyph
 
@@ -91,15 +108,13 @@ function categoryVarianceStrength(data, x, y, groupFunc = 'mean') {
   return barVar === 0 ? 0 : barVar;
 }
 
-function attachValue(data) {
-  return function(d, i) {
-    const value = data[i];
-    const suit = d.suit;
-    return {
-      ...d,
-      cardtitle: `${`${value}`.capitalize()} of ${suit.capitalize()}`,
-      cardvalue: value
-    };
+function attachValue(d, i) {
+  const value = orderedTarotValues[i];
+  const suit = d.suit;
+  return {
+    ...d,
+    cardtitle: `${`${value}`.capitalize()} of ${suit.capitalize()}`,
+    cardvalue: value
   };
 }
 /**
@@ -117,7 +132,7 @@ function profileFields(data) {
  * data - array of objects
  * summary - field profile object
  */
-function generateSwords(data, summary) {
+function generateSwords(_, summary) {
   let swords = summary.map(function(field) {
     let missing = field.count === 0 ? 0 : field.missing;
     missing = field.unique.hasOwnProperty('')
@@ -143,7 +158,7 @@ function generateSwords(data, summary) {
   swords.sort(dl.comparator('-strength'));
 
   //Only return the top 13, since that's all the slots we have
-  return swords.slice(0, 14).map(attachValue(data));
+  return swords.slice(0, 14).map(attachValue);
 }
 
 /**
@@ -173,7 +188,7 @@ function generatePentacles(data, summary) {
   pentacles.sort(dl.comparator('-strength'));
 
   //Only return the top 13, since that's all the slots we have
-  return pentacles.slice(0, 14).map(attachValue(data));
+  return pentacles.slice(0, 14).map(attachValue);
 }
 
 /**
@@ -225,7 +240,7 @@ function generateWands(data, summary) {
   wands.sort(dl.comparator('-strength'));
 
   //Only return the top 13, since that's all the slots we have
-  return wands.slice(0, 14).map(attachValue(data));
+  return wands.slice(0, 14).map(attachValue);
 }
 
 /**
@@ -265,7 +280,7 @@ function generateCups(data, summary) {
   cups.sort(dl.comparator('-strength'));
 
   // Only return the top 13, since that's all the slots we have
-  return cups.slice(0, 14).map(attachValue(data));
+  return cups.slice(0, 14).map(attachValue);
 }
 
 // hacks to get around how datalib doesn't like .s in field names

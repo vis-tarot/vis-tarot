@@ -88,6 +88,27 @@ function barchart(dimensions, height, width, dataset) {
   };
 }
 
+/**
+ * Build a vega-lite histogram
+ *
+ * dimensions - object containing the necessary configuration to specify the chart
+ * height - the height of the chart
+ * width - the width of the chart
+ * dataset - the dataset
+ */
+function histogram(dimensions, height, width, dataset) {
+  const {xDim, aggregate = 'count'} = dimensions;
+  return {
+    mark: {type: 'rect', tooltip: true},
+    encoding: {
+      x: {bin: true, field: xDim, type: 'quantitative'},
+      y: {aggregate, type: 'quantitative'}
+    },
+
+    ...vegaliteCommon(height, width, dataset)
+  };
+}
+
 const CHART_LOOKUP = {
   scatterplot,
   boxplot,
