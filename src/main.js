@@ -78,6 +78,7 @@ function emptyMinorArcana(columnTypes) {
 function computeCards(data) {
   const simplerTypeMap = {
     string: 'dimension',
+    boolean: 'dimension',
     integer: 'measure',
     number: 'measure'
   };
