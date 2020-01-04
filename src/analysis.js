@@ -49,12 +49,7 @@ function generateAllMinorArcana(data) {
   const cups = generateCups(data, summary);
   const swords = generateSwords(data, summary);
 
-  const all = [
-    // ...pentacles
-    ...swords
-    // ...cups,
-    //  ...wands
-  ].filter(d => d);
+  const all = [...pentacles, ...swords, ...cups, ...wands].filter(d => d);
   console.log(all);
   return all;
 }
@@ -104,6 +99,13 @@ function attachValue(d, i) {
     cardvalue: value
   };
 }
+
+function attachTitle(d) {
+  return {
+    ...d,
+    cardMainTitle: `"${d.dimensions.xDim}" vs "${d.dimensions.yDim}"`
+  };
+}
 /**
  * Generate a basic summary of all of the data fields
  * data - array of objects
@@ -142,7 +144,10 @@ function generateSwords(_, summary) {
   swords.sort(dl.comparator('-strength'));
 
   //Only return the top 13, since that's all the slots we have
-  return swords.slice(0, 14).map(attachValue);
+  return swords
+    .slice(0, 14)
+    .map(attachValue)
+    .map(attachTitle);
 }
 
 /**
@@ -170,7 +175,13 @@ function generatePentacles(data, summary) {
   pentacles.sort(dl.comparator('-strength'));
 
   //Only return the top 13, since that's all the slots we have
-  return pentacles.slice(0, 14).map(attachValue);
+  return pentacles
+    .slice(0, 14)
+    .map(attachValue)
+    .map(d => ({
+      ...d,
+      cardMainTitle: `${d.dimensions.yDim}`
+    }));
 }
 
 /**
@@ -220,7 +231,10 @@ function generateWands(data, summary) {
   wands.sort(dl.comparator('-strength'));
 
   //Only return the top 13, since that's all the slots we have
-  return wands.slice(0, 14).map(attachValue);
+  return wands
+    .slice(0, 14)
+    .map(attachValue)
+    .map(attachTitle);
 }
 
 /**
@@ -261,7 +275,10 @@ function generateCups(data, summary) {
   cups.sort(dl.comparator('-strength'));
 
   // Only return the top 13, since that's all the slots we have
-  return cups.slice(0, 14).map(attachValue);
+  return cups
+    .slice(0, 14)
+    .map(attachValue)
+    .map(attachTitle);
 }
 
 // hacks to get around how datalib doesn't like .s in field names

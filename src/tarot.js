@@ -111,10 +111,15 @@ function minorArcana(domNode, card, scales, dataset) {
   );
   setTimeout(() => {
     vegaEmbed(`#card-${card.pos} .vega-container`, spec, {
-      actions: false
+      actions: false,
+      config: VEGA_CONFIG
       // renderer: 'svg'
     }).catch(console.error);
   }, 750);
+  domNode
+    .append('div')
+    .attr('class', 'card-title card-title--minor-arcana')
+    .text(card.cardMainTitle);
 }
 
 /**
@@ -149,7 +154,7 @@ function majorArcana(domNode, card) {
     .attr('src', `assets/major-arcana-imgs/${card.image}`);
   domNode
     .append('div')
-    .attr('class', 'card-title')
+    .attr('class', 'card-title card-title--major-arcana')
     .text(card.cardtitle);
 
   // just for making a figure
