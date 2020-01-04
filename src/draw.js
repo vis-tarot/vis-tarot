@@ -94,7 +94,6 @@ function drawCards(container, positions, scales, cards, dataset) {
 
   // give the cards initial positioning to make it look like are in a pile
   cards.forEach((card, idx) => {
-    console.log(card);
     card.x = idx;
     card.y = idx;
   });
