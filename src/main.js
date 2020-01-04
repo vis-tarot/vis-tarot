@@ -80,9 +80,12 @@ function main() {
   const state = {
     layout: null,
     data: null,
+    datasetName: null,
     loading: false,
     cards: []
   };
+  // holds on to processed data so that if the user switches layouts we don't need to reprocess
+  const computationCache = {};
 
   // initialize everything
   const mainContainer = d3.select('#main-container');
@@ -100,9 +103,16 @@ function main() {
       // HACK: settime out allows the message alteration step to finish,
       // TODO: computation should happen in a worker
       setTimeout(() => {
+        // if the computation has been cached, dont do it!
+        if (computationCache[state.datasetName]) {
+          resolve(computationCache[state.datasetName]);
+          return;
+        }
+        // otherwise do the computation
         resolve(computeCards(state.data));
       }, 100);
     }).then(cards => {
+      computationCache[state.datasetName] = cards;
       state.cards = cards;
 
       // remove the placeholder content
@@ -138,6 +148,7 @@ function main() {
     .querySelector('#dataset-selector')
     .addEventListener('change', event => {
       const datasetName = event.target.value;
+      state.datasetName = datasetName;
       // update the chosen name
       state.loading = true;
 
@@ -158,6 +169,7 @@ function main() {
   // listener for data upload
   document.querySelector('#upload-file').addEventListener('change', event => {
     const file = event.target.files[0];
+    state.datasetName = file.name;
     const reader = new FileReader();
     reader.onload = event => {
       const output = d3.csvParse(event.target.result);
