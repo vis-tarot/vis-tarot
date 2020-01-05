@@ -103,14 +103,7 @@ function cardCommon(domNode, card, scales, cardContent, dataset) {
     .append('img')
     .attr('class', 'cardfront-fullsize')
     .attr('src', 'assets/full_size.svg');
-  // mainCardContents
-  //   .append('div')
-  //   .attr('class', 'cardfront-label')
-  //   .text(d =>
-  //     card.suit === 'major arcana'
-  //       ? `${toRomanNumeral(d.cardnum)}. ${d.tradname}`
-  //       : card.cardtitle
-  //   );
+
   cardContent(mainCardContents, card, scales, dataset);
 }
 
@@ -133,7 +126,6 @@ function minorArcana(domNode, card, scales, dataset) {
     .append('div')
     .attr('class', 'lds-dual-ring');
 
-  console.log(card.charttype);
   const spec = CHART_LOOKUP[card.charttype](
     card.dimensions,
     yWindow(h) * 0.8,
