@@ -25,16 +25,16 @@ const orderedTarotValues = [
   'king'
 ];
 
-//Pentacles: outlier strength
+// Pentacles: outlier strength
 // Visualization: boxplot with red outlier glyph
 
-//Wands: category variance
+// Wands: category variance
 // Visualization: bar chart
 
-//Cups: correlation
+// Cups: correlation
 // Visualization: scatterplot
 
-//Swords: missing data or nulls
+// Swords: missing data or nulls
 // Visualization: histogram with nulls/missing data on the side
 
 /**
@@ -133,7 +133,7 @@ function generateSwords(_, summary) {
       charttype: 'histogram',
       // TODO: this tip change based on the card value
       tip: 'This field has data quality issues.',
-      dimensions: {xDim: field.field, yDim: field.field}
+      dimensions: {xDim: field.field}
     };
   });
 
@@ -147,7 +147,7 @@ function generateSwords(_, summary) {
   return swords
     .slice(0, 14)
     .map(attachValue)
-    .map(attachTitle);
+    .map(d => ({...d, cardMainTitle: `${d.dimensions.xDim}`}));
 }
 
 /**
@@ -165,7 +165,7 @@ function generatePentacles(data, summary) {
       strength: outlierStrength(data, field.field),
       // TODO: this tip change based on the card value
       tip: 'There is at least one extreme value in this field.',
-      dimensions: {xDim: field.field, yDim: field.field}
+      dimensions: {yDim: field.field}
     }));
 
   //remove fields with no variation
@@ -178,10 +178,7 @@ function generatePentacles(data, summary) {
   return pentacles
     .slice(0, 14)
     .map(attachValue)
-    .map(d => ({
-      ...d,
-      cardMainTitle: `${d.dimensions.yDim}`
-    }));
+    .map(d => ({...d, cardMainTitle: `${d.dimensions.yDim}`}));
 }
 
 /**
@@ -322,7 +319,10 @@ function computeCards(data) {
     } = card;
     return {
       ...card,
-      dimensions: {xDim: unsanitizeKey(xDim), yDim: unsanitizeKey(yDim)}
+      dimensions: {
+        xDim: xDim && unsanitizeKey(xDim),
+        yDim: yDim && unsanitizeKey(yDim)
+      }
     };
   });
   return {major: majorArcanaData, minor};
