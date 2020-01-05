@@ -128,8 +128,8 @@ function histogram(dimensions, height, width, dataset) {
   return {
     $schema: 'https://vega.github.io/schema/vega/v5.json',
     height: 0.9 * height,
+    // little adjustment to fill space just right
     width: width - 10,
-    // padding: 5,
     autosize: {type: 'fit', resize: true},
 
     signals: [
@@ -158,7 +158,11 @@ function histogram(dimensions, height, width, dataset) {
         name: 'counts',
         source: 'table',
         transform: [
-          {type: 'filter', expr: `datum['${xDim}'] != null`},
+          {
+            type: 'filter',
+            expr: `isNumber(toNumber(datum['${xDim}']))`
+          },
+          // {type: 'filter', expr: `datum['${xDim}'] != null`},
           {type: 'aggregate', groupby: ['bin0', 'bin1']}
         ]
       },
@@ -166,7 +170,10 @@ function histogram(dimensions, height, width, dataset) {
         name: 'nulls',
         source: 'table',
         transform: [
-          {type: 'filter', expr: `datum['${xDim}'] == null`},
+          {
+            type: 'filter',
+            expr: `!isNumber(toNumber(datum['${xDim}']))`
+          },
           {type: 'aggregate'}
         ]
       }

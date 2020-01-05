@@ -44,6 +44,7 @@ const orderedTarotValues = [
 function generateAllMinorArcana(data) {
   data.reverse();
   const summary = profileFields(data);
+  console.log(summary);
   const pentacles = generatePentacles(data, summary);
   const wands = generateWands(data, summary);
   const cups = generateCups(data, summary);
