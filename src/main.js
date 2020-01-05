@@ -80,11 +80,14 @@ function main() {
       state.loading = true;
 
       // start loading the data
-      d3.csv(`data/${datasetName}`).then(d => {
-        state.loading = true;
-        state.data = d;
-        stateUpdate();
-      });
+      fetch(`data/${datasetName}`)
+        .then(d => d.text())
+        .then(d => d3.csvParse(d, d3.autoType))
+        .then(d => {
+          state.loading = true;
+          state.data = d;
+          stateUpdate();
+        });
       stateUpdate();
     });
 
@@ -99,7 +102,7 @@ function main() {
     state.datasetName = file.name;
     const reader = new FileReader();
     reader.onload = event => {
-      const output = d3.csvParse(event.target.result);
+      const output = d3.csvParse(event.target.result, d3.autoType);
       state.loading = true;
       state.data = output;
       stateUpdate();
