@@ -116,6 +116,15 @@ body{
 #deck-holder {
   position: absolute;
 }
+#deck-label {
+  opacity: 0;
+  /* top: 400px; */
+  position: relative;
+}
+#deck-label.label-visible,
+#reset-button.label-visible {
+  opacity: 1;
+}
 
 .main-content {
   align-items: center;
@@ -249,6 +258,7 @@ body{
 #reset-button {
   cursor: pointer;
   text-decoration: underline;
+  opacity: 0;
 }
 
 /* SELECT STYLING */

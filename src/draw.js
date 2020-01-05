@@ -323,6 +323,9 @@ function buildLayout(container, layout, cards, dataset) {
     'class',
     `${layout.replace(/\s+/g, '-').toLowerCase()}-layout`
   );
+  d3.select('#reset-button').attr('class', 'label-visible');
+  d3.select('#deck-label').attr('class', 'label-visible');
+
   const {scales, positions} = layoutMethod[layout](container);
   drawCardSpaces(container, positions, scales);
   const deck = samplingMethod[layout](cards).filter(d => d);
