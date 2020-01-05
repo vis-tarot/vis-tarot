@@ -158,7 +158,7 @@ body{
 }
 .cardfront-background {
   background: white;
-  border: 7px solid black;
+  border: 5px solid black;
   border-radius: 10px;
   height: 100%;
   position: absolute;
