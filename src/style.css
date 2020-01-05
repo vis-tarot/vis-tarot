@@ -200,7 +200,13 @@ body{
   height: 25px;
 }
 .cardfront-fullsize {
+  opacity: 0;
   width: 20px;
+  transition: opacity 0.5s;
+}
+
+.cardfront-main:hover .cardfront-fullsize {
+  opacity: 1;
 }
 
 .card {

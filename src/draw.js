@@ -74,6 +74,9 @@ function drawCards(container, positions, scales, cards, dataset) {
   // the function governing the interaction with the card
   // card - an object describing a card
   function onCardClick(card) {
+    if (card.posInformation) {
+      return;
+    }
     const nextCardPos = positions[nextCardIdx];
     if (!nextCardPos) {
       return;
