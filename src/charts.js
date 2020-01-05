@@ -34,7 +34,13 @@ function vegaliteCommon(height, width, dataset) {
 function scatterplot(dimensions, height, width, dataset) {
   const {xDim, yDim} = dimensions;
   return {
-    mark: {type: 'circle', tooltip: true, stroke: '#333', opacity: 0.6},
+    mark: {
+      type: 'circle',
+      tooltip: true,
+      stroke: '#333',
+      opacity: 0.6,
+      fill: null
+    },
     encoding: {
       x: {
         field: xDim,
