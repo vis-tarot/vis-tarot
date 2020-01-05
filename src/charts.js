@@ -123,16 +123,156 @@ function barchart(dimensions, height, width, dataset) {
  * width - the width of the chart
  * dataset - the dataset
  */
-function histogram(dimensions, height, width, dataset) {
-  const {xDim, aggregate = 'count'} = dimensions;
-  return {
-    mark: {type: 'rect', tooltip: true},
-    encoding: {
-      x: {bin: true, field: xDim, type: 'quantitative', axis: {title: null}},
-      y: {aggregate, type: 'quantitative', axis: {title: null, format: '.2s'}}
-    },
+// function histogram(dimensions, height, width, dataset) {
+//   const {xDim, aggregate = 'count'} = dimensions;
+//   return {
+//     mark: {type: 'rect', tooltip: true},
+//     encoding: {
+//       x: {bin: true, field: xDim, type: 'quantitative', axis: {title: null}},
+//       y: {aggregate, type: 'quantitative', axis: {title: null, format: '.2s'}}
+//     },
+//
+//     ...vegaliteCommon(height, width, dataset)
+//   };
+// }
 
-    ...vegaliteCommon(height, width, dataset)
+function histogram(dimensions, height, width, dataset) {
+  const {xDim} = dimensions;
+  return {
+    $schema: 'https://vega.github.io/schema/vega/v5.json',
+    height: 0.9 * height,
+    width: width - 10,
+    // padding: 5,
+    autosize: {type: 'fit', resize: true},
+
+    signals: [
+      {name: 'maxbins', value: 6},
+      {name: 'binCount', update: '(bins.stop - bins.start) / bins.step'},
+      {name: 'nullGap', value: 10},
+      {name: 'barStep', update: '(width - nullGap) / (1 + binCount)'}
+    ],
+
+    data: [
+      {
+        name: 'table',
+        values: dataset,
+        transform: [
+          {type: 'extent', field: xDim, signal: 'extent'},
+          {
+            type: 'bin',
+            signal: 'bins',
+            field: xDim,
+            extent: {signal: 'extent'},
+            maxbins: {signal: 'maxbins'}
+          }
+        ]
+      },
+      {
+        name: 'counts',
+        source: 'table',
+        transform: [
+          {type: 'filter', expr: `datum['${xDim}'] != null`},
+          {type: 'aggregate', groupby: ['bin0', 'bin1']}
+        ]
+      },
+      {
+        name: 'nulls',
+        source: 'table',
+        transform: [
+          {type: 'filter', expr: `datum['${xDim}'] == null`},
+          {type: 'aggregate'}
+        ]
+      }
+    ],
+
+    scales: [
+      {
+        name: 'yscale',
+        type: 'linear',
+        range: 'height',
+        round: true,
+        nice: true,
+        domain: {
+          fields: [
+            {data: 'counts', field: 'count'},
+            {data: 'nulls', field: 'count'}
+          ]
+        }
+      },
+      {
+        name: 'xscale',
+        type: 'linear',
+        range: [{signal: 'barStep + nullGap'}, {signal: 'width'}],
+        round: true,
+        domain: {signal: '[bins.start, bins.stop]'},
+        bins: {signal: 'bins'}
+      },
+      {
+        name: 'xscale-null',
+        type: 'band',
+        range: [0, {signal: 'barStep'}],
+        round: true,
+        domain: [null]
+      }
+    ],
+
+    axes: [
+      {
+        orient: 'bottom',
+        scale: 'xscale',
+        tickMinStep: 0.5,
+        format: '.2s',
+        labelOverlap: 'parity'
+      },
+      {orient: 'bottom', scale: 'xscale-null'},
+      {orient: 'left', scale: 'yscale', tickCount: 5, offset: 5, format: '.2s'}
+    ],
+
+    marks: [
+      {
+        type: 'rect',
+        from: {data: 'counts'},
+        encode: {
+          enter: {
+            tooltip: {
+              signal:
+                "{'count': datum.count, 'from': datum.bin0, 'to': datum.bin1}"
+            }
+          },
+          update: {
+            x: {scale: 'xscale', field: 'bin0', offset: 1},
+            x2: {scale: 'xscale', field: 'bin1'},
+            y: {scale: 'yscale', field: 'count'},
+            y2: {scale: 'yscale', value: 0},
+            fill: {value: '#333'}
+          }
+          // hover: {
+          //   fill: {value: '#888'}
+          // }
+        }
+      },
+      {
+        type: 'rect',
+        from: {data: 'nulls'},
+        encode: {
+          enter: {
+            tooltip: {
+              signal: "{'title': 'Nulls', 'count': datum.count}"
+            }
+          },
+          update: {
+            x: {scale: 'xscale-null', value: null, offset: 1},
+            x2: {scale: 'xscale-null', band: 1},
+            y: {scale: 'yscale', field: 'count'},
+            y2: {scale: 'yscale', value: 0},
+            fill: {value: '#D62728'}
+          }
+          // hover: {
+          //   fill: {value: '#888'}
+          // }
+        }
+      }
+    ]
   };
 }
 
@@ -164,7 +304,7 @@ const VEGA_CONFIG = {
   },
   axisBand: {grid: false},
   background: '#fff',
-  group: {fill: '#333'},
+  // group: {fill: '#333'},
   legend: {
     labelColor: '#333',
     labelFontSize: 11,
