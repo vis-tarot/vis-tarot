@@ -78,6 +78,11 @@ function outlierStrength(data, accessor) {
  * groupFunc - aggregation function for groupby, string
  */
 function categoryVarianceStrength(data, x, y, groupFunc = 'mean') {
+  //A field compared against itself should not have any strength
+  if(x===y){
+    return 0;
+  }
+
   const vals = dl
     .groupby(x)
     .summarize([{name: y, ops: [groupFunc], as: ['val']}])
