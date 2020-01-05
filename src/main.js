@@ -110,7 +110,8 @@ function main() {
 
     reader.readAsText(file);
   });
-  window.onresize = stateUpdate;
+  // TODO: fix smart resize, here disabled to stop the re-deal
+  // window.onresize = stateUpdate;
 }
 
 // start the application after the content has loaded
