@@ -116,26 +116,13 @@ function barchart(dimensions, height, width, dataset) {
 }
 
 /**
- * Build a vega-lite histogram
+ * Build a vega histogram
  *
  * dimensions - object containing the necessary configuration to specify the chart
  * height - the height of the chart
  * width - the width of the chart
  * dataset - the dataset
  */
-// function histogram(dimensions, height, width, dataset) {
-//   const {xDim, aggregate = 'count'} = dimensions;
-//   return {
-//     mark: {type: 'rect', tooltip: true},
-//     encoding: {
-//       x: {bin: true, field: xDim, type: 'quantitative', axis: {title: null}},
-//       y: {aggregate, type: 'quantitative', axis: {title: null, format: '.2s'}}
-//     },
-//
-//     ...vegaliteCommon(height, width, dataset)
-//   };
-// }
-
 function histogram(dimensions, height, width, dataset) {
   const {xDim} = dimensions;
   return {
@@ -246,9 +233,6 @@ function histogram(dimensions, height, width, dataset) {
             y2: {scale: 'yscale', value: 0},
             fill: {value: '#333'}
           }
-          // hover: {
-          //   fill: {value: '#888'}
-          // }
         }
       },
       {
@@ -267,9 +251,6 @@ function histogram(dimensions, height, width, dataset) {
             y2: {scale: 'yscale', value: 0},
             fill: {value: '#D62728'}
           }
-          // hover: {
-          //   fill: {value: '#888'}
-          // }
         }
       }
     ]
@@ -304,7 +285,6 @@ const VEGA_CONFIG = {
   },
   axisBand: {grid: false},
   background: '#fff',
-  // group: {fill: '#333'},
   legend: {
     labelColor: '#333',
     labelFontSize: 11,

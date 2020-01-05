@@ -198,10 +198,8 @@ body{
 }
 .cardfront-suit {
   height: 25px;
-  /* width: 40px; */
 }
 .cardfront-fullsize {
-  /* height: 25px; */
   width: 20px;
 }
 

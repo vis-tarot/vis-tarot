@@ -49,12 +49,7 @@ function generateAllMinorArcana(data) {
   const cups = generateCups(data, summary);
   const swords = generateSwords(data, summary);
 
-  const all = [
-    // ...pentacles,
-    ...swords
-    // ...cups
-    // ...wands
-  ].filter(d => d);
+  const all = [...pentacles, ...swords, ...cups, ...wands].filter(d => d);
   console.log(all);
   return all;
 }
