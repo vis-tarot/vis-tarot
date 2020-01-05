@@ -9,7 +9,7 @@ fetch('./data/major_arcana.json')
   });
 
 const orderedTarotValues = [
-  '1',
+  'ace',
   '2',
   '3',
   '4',
