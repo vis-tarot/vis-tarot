@@ -78,6 +78,7 @@ function drawCards(container, positions, scales, cards, dataset) {
     if (!nextCardPos) {
       return;
     }
+    card.posInformation = nextCardPos;
     renderAppropriateCard(this, card, scales, dataset);
     d3.select(this)
       .transition(t)
@@ -287,8 +288,7 @@ function fiveCardSampling(cards) {
 }
 
 function celticSampling(cards) {
-  const majorSubsample = generateMajorsubsample(cards);
-  return shuffleCards(majorSubsample.concat(cards.minor));
+  return shuffleCards(generateMajorsubsample(cards).concat(cards.minor));
 }
 
 function majorArcanaSampling(cards) {

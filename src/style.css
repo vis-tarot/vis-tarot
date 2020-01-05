@@ -146,6 +146,7 @@ body{
   padding: 10px;
   position: absolute;
   pointer-events: none;
+  white-space: pre-line;
   width: 200px;
   z-index: 1000;
 }
@@ -203,6 +204,10 @@ body{
   display: flex;
   justify-content: center;
   text-align: center;
+}
+
+.card-title--minor-arcana {
+  font-size: 12px;
 }
 
 /* just for generating a figure */

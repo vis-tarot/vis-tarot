@@ -37,6 +37,8 @@ function cardCommon(domNode, card, scales, cardContent, dataset) {
   const {xWindow, yWindow} = scales;
   const {h, w} = getCardHeightWidth(scales);
 
+  const pos = card.posInformation.label;
+  const posAnnotation = tarotData.layouts[pos];
   const container = d3
     .select(domNode)
     .attr('id', `card-${card.pos}`)
@@ -46,11 +48,14 @@ function cardCommon(domNode, card, scales, cardContent, dataset) {
       const targetingChart = event.vegaType;
       const xPos = event.layerX;
       const yPos = event.layerY;
+      const titleTip = `${card.cardtitle}: ${card.tip}`;
       d3.select('#tooltip')
         .style('display', targetingChart ? 'none' : 'block')
         .style('left', `${xPos}px`)
         .style('top', `${yPos}px`)
-        .text(`${card.cardtitle}: ${card.tip}`);
+        .text(
+          `${titleTip} \n\n It is in the "${pos}" position, which denotes "${posAnnotation}"`
+        );
     })
     .on('mouseout', () => d3.select('#tooltip').style('display', 'none'));
 
@@ -111,10 +116,15 @@ function minorArcana(domNode, card, scales, dataset) {
   );
   setTimeout(() => {
     vegaEmbed(`#card-${card.pos} .vega-container`, spec, {
-      actions: false
+      actions: false,
+      config: VEGA_CONFIG
       // renderer: 'svg'
     }).catch(console.error);
   }, 750);
+  domNode
+    .append('div')
+    .attr('class', 'card-title card-title--minor-arcana')
+    .text(card.cardMainTitle);
 }
 
 /**
@@ -149,7 +159,7 @@ function majorArcana(domNode, card) {
     .attr('src', `assets/major-arcana-imgs/${card.image}`);
   domNode
     .append('div')
-    .attr('class', 'card-title')
+    .attr('class', 'card-title card-title--major-arcana')
     .text(card.cardtitle);
 
   // just for making a figure
