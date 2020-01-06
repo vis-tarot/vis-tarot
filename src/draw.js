@@ -336,10 +336,7 @@ function minorArcanaSampling(cards) {
     'queen',
     'king'
   ].reverse();
-  const suits = [
-    'wands'
-    // 'cups', 'pentacles', 'swords'
-  ];
+  const suits = ['wands', 'cups', 'pentacles', 'swords'];
   const cardLookUp = cards.minor.reduce((acc, card) => {
     acc[`${card.suit}-${card.cardvalue}`] = card;
     return acc;

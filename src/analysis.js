@@ -109,10 +109,10 @@ function attachValue(d, i, arr) {
   return {
     ...d,
     // uncomment to add strength to titile, just for debugging
-    cardtitle: `${`${value}`.capitalize()} of ${suit.capitalize()} (${Math.floor(
-      d.strength * 100
-    ) / 100})`,
-    // cardtitle: `${`${value}`.capitalize()} of ${suit.capitalize()}`,
+    // cardtitle: `${`${value}`.capitalize()} of ${suit.capitalize()} (${Math.floor(
+    //   d.strength * 100
+    // ) / 100})`,
+    cardtitle: `${`${value}`.capitalize()} of ${suit.capitalize()}`,
     cardvalue: value
   };
 }
