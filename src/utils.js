@@ -92,6 +92,11 @@ function toRomanNumeral(idx) {
   return ROMAN_NUM_LOOKUP[idx];
 }
 
+// https://stackoverflow.com/questions/18082/validate-decimal-numbers-in-javascript-isnumeric
+function isNumeric(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
 // monkey patchting but was available as copy pasta so whatever
 // https://flaviocopes.com/how-to-uppercase-first-letter-javascript/
 String.prototype.capitalize = function() {
@@ -131,6 +136,11 @@ function nullifyRow(row) {
   return Object.entries(row).reduce((acc, [key, value]) => {
     if (typeof value === 'string') {
       acc[key] = value.replace(/['"]+/g, '').length ? value : null;
+      // B is included here as hack to make the worldindicators dataset work in case anyone checks
+      const symbolClear = value.replace(/[\$\%'"B]+/g, '');
+      if (isNumeric(symbolClear)) {
+        acc[key] = Number(symbolClear);
+      }
     } else {
       acc[key] = value;
     }
