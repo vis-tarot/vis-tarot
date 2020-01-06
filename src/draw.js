@@ -235,10 +235,31 @@ function majorArcanaLayout(container) {
   };
 }
 
+/**
+ * The minor aracana only layout, used just for a figure generator
+ * container - the d3 selection for the full container pane
+ */
+function minorArcanaLayout(container) {
+  const ROW_WIDTH = 14;
+  return {
+    scales: makeScales(
+      container,
+      [...new Array(ROW_WIDTH)].map((_, idx) => idx)
+    ),
+    positions: [...new Array(56)].map((_, idx) => {
+      return {
+        x: (idx % ROW_WIDTH) / (ROW_WIDTH + 0.1) + 0.01,
+        y: Math.floor(idx / ROW_WIDTH) / 5 + 0.01
+      };
+    })
+  };
+}
+
 const layoutMethod = {
   'Celtic Cross': celticCross,
   'Five Card': fiveCard,
   'Major Arcana': majorArcanaLayout,
+  'Minor Arcana': minorArcanaLayout,
   'One Card': oneCard,
   'Three Card': threeCard
 };
@@ -298,10 +319,16 @@ function majorArcanaSampling(cards) {
   return cards.major.sort((a, b) => b.cardnum - a.cardnum);
 }
 
+function minorArcanaSampling(cards) {
+  console.log(cards);
+  return cards.minor;
+}
+
 const samplingMethod = {
   'Celtic Cross': celticSampling,
   'Five Card': fiveCardSampling,
   'Major Arcana': majorArcanaSampling,
+  'Minor Arcana': minorArcanaSampling,
   'One Card': oneCardSampling,
   'Three Card': threeCardSampling
 };

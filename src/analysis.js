@@ -23,7 +23,7 @@ const orderedTarotValues = [
   'knight',
   'queen',
   'king'
-];
+].reverse();
 
 // Pentacles: outlier strength
 // Visualization: boxplot with red outlier glyph
@@ -100,6 +100,9 @@ function attachValue(d, i) {
   const suit = d.suit;
   return {
     ...d,
+    // cardtitle: `${`${value}`.capitalize()} of ${suit.capitalize()} (${Math.floor(
+    //   d.strength * 100
+    // ) / 100})`,
     cardtitle: `${`${value}`.capitalize()} of ${suit.capitalize()}`,
     cardvalue: value
   };
@@ -146,7 +149,7 @@ function generateSwords(_, summary) {
   swords = swords.filter(d => d.strength > 0);
 
   //Sort in descending order of %missing.
-  swords.sort(dl.comparator('-strength'));
+  swords = swords.sort(dl.comparator('-strength'));
 
   //Only return the top 13, since that's all the slots we have
   return swords
@@ -178,7 +181,7 @@ function generatePentacles(data, summary) {
   pentacles = pentacles.filter(d => d.strength > 0);
 
   //Sort in descending order of %missing.
-  pentacles.sort(dl.comparator('-strength'));
+  pentacles = pentacles.sort(dl.comparator('-strength'));
 
   //Only return the top 13, since that's all the slots we have
   return pentacles
@@ -232,7 +235,7 @@ function generateWands(data, summary) {
   wands = wands.filter(d => d.strength > 0);
 
   //Sort in descending order of quasi-F statistic.
-  wands.sort(dl.comparator('-strength'));
+  wands = wands.sort(dl.comparator('-strength'));
 
   //Only return the top 13, since that's all the slots we have
   return wands
@@ -277,7 +280,7 @@ function generateCups(data, summary) {
   );
 
   //Sort in descending order of quasi-F statistic.
-  cups.sort(dl.comparator('-strength'));
+  cups = cups.sort(dl.comparator('-strength'));
 
   // Only return the top 13, since that's all the slots we have
   return cups

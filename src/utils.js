@@ -40,7 +40,7 @@ function makeScales(container, labels) {
  * scales object that comes from make scales
  */
 function getCardHeightWidth(scales) {
-  const DESIRED_WIDTH = 175;
+  const DESIRED_WIDTH = 120;
   return {
     h: scales.yWindow.invert(DESIRED_WIDTH * (88.9 / 57.15)),
     w: scales.xWindow.invert(DESIRED_WIDTH)
