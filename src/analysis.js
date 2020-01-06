@@ -219,7 +219,7 @@ function generateWands(data, summary) {
   );
 
   //could potentially check median, max, min, stdev and so on but let's keep it simple for now.
-  const funcs = ['sum', 'mean', 'count'];
+  const funcs = ['sum', 'mean'];
 
   // this sucks, stylistically.
   // I don't really want to build the correlation matrix though, since we're just grabbing the top n.
