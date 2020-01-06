@@ -95,8 +95,16 @@ function categoryVarianceStrength(data, x, y, groupFunc = 'mean') {
   return barVar === 0 ? 0 : barVar;
 }
 
-function attachValue(d, i) {
-  const value = orderedTarotValues[i];
+/**
+ * Perform common cardtitle and cardvalue assignment operations,
+ * the inner part of a map
+ *
+ * d - the card
+ * i - the index of the current iteration
+ * arr - the original array
+ */
+function attachValue(d, i, arr) {
+  const value = orderedTarotValues[i + (14 - arr.length)];
   const suit = d.suit;
   return {
     ...d,
