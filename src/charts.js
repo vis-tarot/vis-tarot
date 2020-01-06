@@ -125,6 +125,14 @@ function barchart(dimensions, height, width, dataset) {
  */
 function histogram(dimensions, height, width, dataset) {
   const {xDim} = dimensions;
+  // console.log(
+  //   dataset
+  //     .map(d => d[xDim])
+  //     .reduce((acc, d) => {
+  //       acc[d] = (acc[d] || 0) + 1;
+  //       return acc;
+  //     }, {})
+  // );
   return {
     $schema: 'https://vega.github.io/schema/vega/v5.json',
     height: 0.9 * height,
@@ -160,7 +168,8 @@ function histogram(dimensions, height, width, dataset) {
         transform: [
           {
             type: 'filter',
-            expr: `isNumber(toNumber(datum['${xDim}']))`
+            // expr: `isNumber(toNumber(datum['${xDim}']))`
+            expr: `datum['${xDim}'] != null`
           },
           {type: 'aggregate', groupby: ['bin0', 'bin1']}
         ]
@@ -171,7 +180,8 @@ function histogram(dimensions, height, width, dataset) {
         transform: [
           {
             type: 'filter',
-            expr: `!isNumber(toNumber(datum['${xDim}']))`
+            // expr: `isNumber(toNumber(datum['${xDim}'])) != true`
+            expr: `datum['${xDim}'] == null`
           },
           {type: 'aggregate'}
         ]

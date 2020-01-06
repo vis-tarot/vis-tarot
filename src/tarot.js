@@ -137,8 +137,8 @@ function minorArcana(domNode, card, scales, dataset) {
       actions: false,
       config: VEGA_CONFIG
       // renderer: 'svg'
-    }).catch(console.error);
-  }, 750);
+    }).catch(e => console.error(e));
+  }, 10);
   domNode
     .append('div')
     .attr('class', 'card-title card-title--minor-arcana')

@@ -1,3 +1,15 @@
+function nullifyRow(row) {
+  // delete empty strings
+  return Object.entries(row).reduce((acc, [key, value]) => {
+    if (typeof value === 'string') {
+      acc[key] = value.replace(/['"]+/g, '').length ? value : null;
+    } else {
+      acc[key] = value;
+    }
+    return acc;
+  }, {});
+}
+
 /**
  * the main method of the application, all subsequent calls should eminante from here
  */
@@ -85,7 +97,7 @@ function main() {
         .then(d => d3.csvParse(d, d3.autoType))
         .then(d => {
           state.loading = true;
-          state.data = d;
+          state.data = d.map(nullifyRow);
           stateUpdate();
         });
       stateUpdate();
@@ -104,7 +116,7 @@ function main() {
     reader.onload = event => {
       const output = d3.csvParse(event.target.result, d3.autoType);
       state.loading = true;
-      state.data = output;
+      state.data = output.map(nullifyRow);
       stateUpdate();
     };
 

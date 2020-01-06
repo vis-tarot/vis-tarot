@@ -255,6 +255,19 @@ body{
   top: 100%;
 }
 
+.minor-arcana-layout .cardfront-suit {
+  height: 15px;
+}
+
+.minor-arcana-layout .cardfront-label {
+  font-size: 8px;
+  white-space: nowrap;
+}
+
+.minor-arcana-layout .card-title {
+  font-size: 8.5px;
+}
+
 #reset-button {
   cursor: pointer;
   text-decoration: underline;
