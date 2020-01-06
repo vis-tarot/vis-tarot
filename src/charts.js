@@ -46,13 +46,19 @@ function scatterplot(dimensions, height, width, dataset) {
         field: xDim,
         type: 'quantitative',
         scale: {zero: false},
-        axis: {format: '.2s', title: null}
+        axis: {
+          // format: '.2s',
+          title: null
+        }
       },
       y: {
         field: yDim,
         type: 'quantitative',
         scale: {zero: false},
-        axis: {format: '.2s', title: null}
+        axis: {
+          // format: '.2s',
+          title: null
+        }
       }
     },
     ...vegaliteCommon(height, width, dataset)
@@ -81,7 +87,10 @@ function boxplot(dimensions, height, width, dataset) {
         field: yDim,
         type: 'quantitative',
         scale: {zero: false},
-        axis: {format: '.2s', title: null}
+        axis: {
+          // format: '.2s',
+          title: null
+        }
       },
       tooltip: {field: yDim, type: 'quantitative', aggregate}
     },
@@ -107,7 +116,10 @@ function barchart(dimensions, height, width, dataset) {
         field: yDim,
         type: 'quantitative',
         aggregate,
-        axis: {format: '.2s', title: null}
+        axis: {
+          // format: '.2s',
+          title: null
+        }
       }
     },
 
@@ -160,7 +172,7 @@ function histogram(dimensions, height, width, dataset) {
         transform: [
           {
             type: 'filter',
-            expr: `isNumber(toNumber(datum['${xDim}']))`
+            expr: `datum['${xDim}'] != null`
           },
           {type: 'aggregate', groupby: ['bin0', 'bin1']}
         ]
@@ -171,7 +183,7 @@ function histogram(dimensions, height, width, dataset) {
         transform: [
           {
             type: 'filter',
-            expr: `!isNumber(toNumber(datum['${xDim}']))`
+            expr: `datum['${xDim}'] == null`
           },
           {type: 'aggregate'}
         ]
@@ -214,11 +226,16 @@ function histogram(dimensions, height, width, dataset) {
         orient: 'bottom',
         scale: 'xscale',
         tickMinStep: 0.5,
-        format: '.2s',
         labelOverlap: 'parity'
       },
       {orient: 'bottom', scale: 'xscale-null'},
-      {orient: 'left', scale: 'yscale', tickCount: 5, offset: 5, format: '.2s'}
+      {
+        orient: 'left',
+        scale: 'yscale',
+        tickCount: 5,
+        offset: 5
+        // format: '.2s'
+      }
     ],
 
     marks: [

@@ -4,7 +4,8 @@
     "Three Card": "A simple divinatory layout presenting past, present, and future.",
     "Five Card": "A more nuanced layout relating the current context to advice.",
     "Celtic Cross": "A spread of ten cards presenting additional context about a situation.",
-    "Major Arcana": "A simple way to see all of the major arcana in the deck."
+    "Major Arcana": "A simple way to see all of the major arcana in the deck.",
+    "Minor Arcana": "A simple way to see all of the minor arcana in the deck."
   },
   "layouts": {
     "Background" : "Context or past history about the situation.",

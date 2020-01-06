@@ -49,7 +49,7 @@ function generateAllMinorArcana(data) {
   const cups = generateCups(data, summary);
   const swords = generateSwords(data, summary);
 
-  const all = [...pentacles, ...swords, ...cups, ...wands].filter(d => d);
+  const all = [...swords, ...pentacles, ...cups, ...wands].filter(d => d);
   console.log(all);
   return all;
 }
@@ -79,7 +79,7 @@ function outlierStrength(data, accessor) {
  */
 function categoryVarianceStrength(data, x, y, groupFunc = 'mean') {
   //A field compared against itself should not have any strength
-  if(x===y){
+  if (x === y) {
     return 0;
   }
 
@@ -100,6 +100,10 @@ function attachValue(d, i) {
   const suit = d.suit;
   return {
     ...d,
+    // uncomment to add strength to titile, just for debugging
+    // cardtitle: `${`${value}`.capitalize()} of ${suit.capitalize()} (${Math.floor(
+    //   d.strength * 100
+    // ) / 100})`,
     cardtitle: `${`${value}`.capitalize()} of ${suit.capitalize()}`,
     cardvalue: value
   };
@@ -126,12 +130,13 @@ function profileFields(data) {
  * data - array of objects
  * summary - field profile object
  */
-function generateSwords(_, summary) {
-  let swords = summary.map(function(field) {
+function generateSwords(data, summary) {
+  let swords = summary.map(field => {
     let missing = field.count === 0 ? 0 : field.missing;
     missing = field.unique.hasOwnProperty('')
       ? missing + field.unique['']
       : missing;
+
     return {
       suit: 'swords',
       strength: field.count === 0 ? 0 : missing / field.count,
@@ -146,7 +151,7 @@ function generateSwords(_, summary) {
   swords = swords.filter(d => d.strength > 0);
 
   //Sort in descending order of %missing.
-  swords.sort(dl.comparator('-strength'));
+  swords = swords.sort(dl.comparator('-strength'));
 
   //Only return the top 13, since that's all the slots we have
   return swords
@@ -178,7 +183,7 @@ function generatePentacles(data, summary) {
   pentacles = pentacles.filter(d => d.strength > 0);
 
   //Sort in descending order of %missing.
-  pentacles.sort(dl.comparator('-strength'));
+  pentacles = pentacles.sort(dl.comparator('-strength'));
 
   //Only return the top 13, since that's all the slots we have
   return pentacles
@@ -232,7 +237,7 @@ function generateWands(data, summary) {
   wands = wands.filter(d => d.strength > 0);
 
   //Sort in descending order of quasi-F statistic.
-  wands.sort(dl.comparator('-strength'));
+  wands = wands.sort(dl.comparator('-strength'));
 
   //Only return the top 13, since that's all the slots we have
   return wands
@@ -277,7 +282,7 @@ function generateCups(data, summary) {
   );
 
   //Sort in descending order of quasi-F statistic.
-  cups.sort(dl.comparator('-strength'));
+  cups = cups.sort(dl.comparator('-strength'));
 
   // Only return the top 13, since that's all the slots we have
   return cups
@@ -318,7 +323,11 @@ function computeCards(data) {
   const colNames = data.columns || Object.keys(data[0]);
   const santizedData = data.map(row =>
     colNames.reduce((acc, key) => {
-      acc[sanitizeKey(key)] = row[key] || null;
+      if (row[key] || row[key] === 0) {
+        acc[sanitizeKey(key)] = row[key];
+      } else {
+        acc[sanitizeKey(key)] = null;
+      }
       return acc;
     }, {})
   );

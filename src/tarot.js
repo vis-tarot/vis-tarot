@@ -137,8 +137,8 @@ function minorArcana(domNode, card, scales, dataset) {
       actions: false,
       config: VEGA_CONFIG
       // renderer: 'svg'
-    }).catch(console.error);
-  }, 750);
+    }).catch(e => console.error(e));
+  }, 10);
   domNode
     .append('div')
     .attr('class', 'card-title card-title--minor-arcana')
@@ -196,6 +196,10 @@ function majorArcana(domNode, card) {
  * dataset - array of objects
  */
 function renderAppropriateCard(domNode, card, scales, dataset) {
+  // allows for placeholder cards, which are only used to generate the minor arcana spread
+  if (card.isFalse) {
+    return;
+  }
   cardCommon(
     domNode,
     card,

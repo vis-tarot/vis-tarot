@@ -60,6 +60,8 @@ function main() {
   document
     .querySelector('#layout-selector')
     .addEventListener('change', event => {
+      // breaking encapsulation ugh
+      window.layoutName = event.target.value;
       state.layout = event.target.value;
       // update the description text
       setDescription(
@@ -85,7 +87,7 @@ function main() {
         .then(d => d3.csvParse(d, d3.autoType))
         .then(d => {
           state.loading = true;
-          state.data = d;
+          state.data = d.map(nullifyRow);
           stateUpdate();
         });
       stateUpdate();
@@ -104,7 +106,7 @@ function main() {
     reader.onload = event => {
       const output = d3.csvParse(event.target.result, d3.autoType);
       state.loading = true;
-      state.data = output;
+      state.data = output.map(nullifyRow);
       stateUpdate();
     };
 
