@@ -23,7 +23,7 @@ const orderedTarotValues = [
   'knight',
   'queen',
   'king'
-].reverse();
+];
 
 // Pentacles: outlier strength
 // Visualization: boxplot with red outlier glyph
@@ -79,7 +79,7 @@ function outlierStrength(data, accessor) {
  */
 function categoryVarianceStrength(data, x, y, groupFunc = 'mean') {
   //A field compared against itself should not have any strength
-  if(x===y){
+  if (x === y) {
     return 0;
   }
 
