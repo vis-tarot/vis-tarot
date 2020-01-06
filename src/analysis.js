@@ -151,6 +151,7 @@ function generateSwords(_, summary) {
   //Only return the top 13, since that's all the slots we have
   return swords
     .slice(0, 14)
+    .reverse()
     .map(attachValue)
     .map(d => ({...d, cardMainTitle: `${d.dimensions.xDim}`}));
 }
@@ -182,6 +183,7 @@ function generatePentacles(data, summary) {
   //Only return the top 13, since that's all the slots we have
   return pentacles
     .slice(0, 14)
+    .reverse()
     .map(attachValue)
     .map(d => ({...d, cardMainTitle: `${d.dimensions.yDim}`}));
 }
@@ -235,6 +237,7 @@ function generateWands(data, summary) {
   //Only return the top 13, since that's all the slots we have
   return wands
     .slice(0, 14)
+    .reverse()
     .map(attachValue)
     .map(attachTitle);
 }
@@ -279,6 +282,7 @@ function generateCups(data, summary) {
   // Only return the top 13, since that's all the slots we have
   return cups
     .slice(0, 14)
+    .reverse()
     .map(attachValue)
     .map(attachTitle);
 }
