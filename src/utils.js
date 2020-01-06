@@ -36,7 +36,7 @@ function makeScales(container, labels) {
 }
 
 const SPECIAL_LAYOUTS = {
-  'Major Arcana': 120,
+  'Major Arcana': 140,
   'Minor Arcana': 120
 };
 

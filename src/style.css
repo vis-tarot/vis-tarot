@@ -182,7 +182,7 @@ body{
   justify-content: space-between;
   height: 100%;
   width: 100%;
-  overflow: hidden;
+  /* overflow: hidden; */
   padding-top: 5px;
   padding-left: 5px;
 }
@@ -237,7 +237,7 @@ body{
   display: flex;
   justify-content: center;
   text-align: center;
-  white-space: pre;
+  white-space: pre-line;
 }
 
 .card-title--minor-arcana {
@@ -254,7 +254,12 @@ body{
   font-size: 10px;
   position: absolute;
   text-align: center;
-  top: 100%;
+  top: 103%;
+}
+
+.major-arcana-layout  .card-title {
+  white-space: pre-line;
+  width: 90%;
 }
 
 .minor-arcana-layout .cardfront-suit {
@@ -263,6 +268,10 @@ body{
 
 .minor-arcana-layout .cardfront-label {
   font-size: 8px;
+  white-space: nowrap;
+}
+
+.major-arcana-layout .cardfront-label {
   white-space: nowrap;
 }
 
