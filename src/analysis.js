@@ -95,8 +95,16 @@ function categoryVarianceStrength(data, x, y, groupFunc = 'mean') {
   return barVar === 0 ? 0 : barVar;
 }
 
-function attachValue(d, i) {
-  const value = orderedTarotValues[i];
+/**
+ * Perform common cardtitle and cardvalue assignment operations,
+ * the inner part of a map
+ *
+ * d - the card
+ * i - the index of the current iteration
+ * arr - the original array
+ */
+function attachValue(d, i, arr) {
+  const value = orderedTarotValues[i + (14 - arr.length)];
   const suit = d.suit;
   return {
     ...d,
@@ -211,7 +219,7 @@ function generateWands(data, summary) {
   );
 
   //could potentially check median, max, min, stdev and so on but let's keep it simple for now.
-  const funcs = ['mean', 'count'];
+  const funcs = ['sum', 'mean', 'count'];
 
   // this sucks, stylistically.
   // I don't really want to build the correlation matrix though, since we're just grabbing the top n.
@@ -226,7 +234,7 @@ function generateWands(data, summary) {
           strength: categoryVarianceStrength(data, x.field, y.field, func),
           // TODO: this tip change based on the card value
           tip: 'There is high variably in values in these fields',
-          dimensions: {xDim: x.field, yDim: y.field}
+          dimensions: {xDim: x.field, yDim: y.field, aggregate: func}
         };
         wands.push(wandObj);
       })
@@ -244,7 +252,10 @@ function generateWands(data, summary) {
     .slice(0, 14)
     .reverse()
     .map(attachValue)
-    .map(attachTitle);
+    .map(d => ({
+      ...d,
+      cardMainTitle: `${d.dimensions.aggregate} of "${d.dimensions.yDim}" \n by "${d.dimensions.xDim}"`
+    }));
 }
 
 /**
@@ -338,6 +349,7 @@ function computeCards(data) {
     return {
       ...card,
       dimensions: {
+        ...card.dimensions,
         xDim: xDim && unsanitizeKey(xDim),
         yDim: yDim && unsanitizeKey(yDim)
       }
