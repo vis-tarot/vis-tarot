@@ -320,8 +320,35 @@ function majorArcanaSampling(cards) {
 }
 
 function minorArcanaSampling(cards) {
-  console.log(cards);
-  return cards.minor;
+  const orderedTarotValues = [
+    'ace',
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+    '7',
+    '8',
+    '9',
+    '10',
+    'page',
+    'knight',
+    'queen',
+    'king'
+  ].reverse();
+  const suits = ['wands', 'cups', 'pentacles', 'swords'];
+  const cardLookUp = cards.minor.reduce((acc, card) => {
+    acc[`${card.suit}-${card.cardvalue}`] = card;
+    return acc;
+  }, {});
+  return suits.reduce((acc, suit) => {
+    const row = orderedTarotValues.map(
+      val => cardLookUp[`${suit}-${val}`] || {isFalse: true}
+    );
+    return acc.concat(row);
+  }, []);
+  // console.log(cards);
+  // return cards.minor;
 }
 
 const samplingMethod = {

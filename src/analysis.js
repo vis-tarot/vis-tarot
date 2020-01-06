@@ -49,12 +49,7 @@ function generateAllMinorArcana(data) {
   const cups = generateCups(data, summary);
   const swords = generateSwords(data, summary);
 
-  const all = [
-    // ...pentacles,
-    ...swords
-    // ...cups,
-    // ...wands
-  ].filter(d => d);
+  const all = [...swords, ...pentacles, ...cups, ...wands].filter(d => d);
   console.log(all);
   return all;
 }
@@ -105,10 +100,11 @@ function attachValue(d, i) {
   const suit = d.suit;
   return {
     ...d,
-    cardtitle: `${`${value}`.capitalize()} of ${suit.capitalize()} (${Math.floor(
-      d.strength * 100
-    ) / 100})`,
-    // cardtitle: `${`${value}`.capitalize()} of ${suit.capitalize()}`,
+    // uncomment to add strength to titile, just for debugging
+    // cardtitle: `${`${value}`.capitalize()} of ${suit.capitalize()} (${Math.floor(
+    //   d.strength * 100
+    // ) / 100})`,
+    cardtitle: `${`${value}`.capitalize()} of ${suit.capitalize()}`,
     cardvalue: value
   };
 }
@@ -125,20 +121,6 @@ function attachTitle(d) {
  */
 function profileFields(data) {
   const types = dl.type.inferAll(data);
-  // let nulls = new Set();
-  // const missingChecks = data.reduce(
-  //   (acc, row) => {
-  //     Object.keys(data[0]).forEach(key => {
-  //       if (row[key] === null) {
-  //         nulls.add(row[key]);
-  //         acc[key] += 1;
-  //       }
-  //     });
-  //     return acc;
-  //   },
-  //   Object.keys(data[0]).reduce((acc, key) => ({...acc, [key]: 0}))
-  // );
-  // console.log(nulls, missingChecks);
   return dl.summary(data).map(d => ({...d, type: types[d.field]}));
 }
 
@@ -154,13 +136,7 @@ function generateSwords(data, summary) {
     missing = field.unique.hasOwnProperty('')
       ? missing + field.unique['']
       : missing;
-    const altCount = data
-      .map(d => d[field.field])
-      .reduce((acc, d) => {
-        acc[d] = (acc[d] || 0) + 1;
-        return acc;
-      }, {});
-    console.log(field.field, field, missing, altCount);
+
     return {
       suit: 'swords',
       strength: field.count === 0 ? 0 : missing, // / field.count,
@@ -172,7 +148,7 @@ function generateSwords(data, summary) {
   });
 
   //Remove fields with no nulls or missing values
-  // swords = swords.filter(d => d.strength > 0);
+  swords = swords.filter(d => d.strength > 0);
 
   //Sort in descending order of %missing.
   swords = swords.sort(dl.comparator('-strength'));

@@ -46,13 +46,19 @@ function scatterplot(dimensions, height, width, dataset) {
         field: xDim,
         type: 'quantitative',
         scale: {zero: false},
-        axis: {format: '.2s', title: null}
+        axis: {
+          // format: '.2s',
+          title: null
+        }
       },
       y: {
         field: yDim,
         type: 'quantitative',
         scale: {zero: false},
-        axis: {format: '.2s', title: null}
+        axis: {
+          // format: '.2s',
+          title: null
+        }
       }
     },
     ...vegaliteCommon(height, width, dataset)
@@ -81,7 +87,10 @@ function boxplot(dimensions, height, width, dataset) {
         field: yDim,
         type: 'quantitative',
         scale: {zero: false},
-        axis: {format: '.2s', title: null}
+        axis: {
+          // format: '.2s',
+          title: null
+        }
       },
       tooltip: {field: yDim, type: 'quantitative', aggregate}
     },
@@ -107,7 +116,10 @@ function barchart(dimensions, height, width, dataset) {
         field: yDim,
         type: 'quantitative',
         aggregate,
-        axis: {format: '.2s', title: null}
+        axis: {
+          // format: '.2s',
+          title: null
+        }
       }
     },
 
@@ -125,14 +137,6 @@ function barchart(dimensions, height, width, dataset) {
  */
 function histogram(dimensions, height, width, dataset) {
   const {xDim} = dimensions;
-  // console.log(
-  //   dataset
-  //     .map(d => d[xDim])
-  //     .reduce((acc, d) => {
-  //       acc[d] = (acc[d] || 0) + 1;
-  //       return acc;
-  //     }, {})
-  // );
   return {
     $schema: 'https://vega.github.io/schema/vega/v5.json',
     height: 0.9 * height,
@@ -224,11 +228,16 @@ function histogram(dimensions, height, width, dataset) {
         orient: 'bottom',
         scale: 'xscale',
         tickMinStep: 0.5,
-        format: '.2s',
         labelOverlap: 'parity'
       },
       {orient: 'bottom', scale: 'xscale-null'},
-      {orient: 'left', scale: 'yscale', tickCount: 5, offset: 5, format: '.2s'}
+      {
+        orient: 'left',
+        scale: 'yscale',
+        tickCount: 5,
+        offset: 5
+        // format: '.2s'
+      }
     ],
 
     marks: [

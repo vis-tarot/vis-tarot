@@ -196,6 +196,10 @@ function majorArcana(domNode, card) {
  * dataset - array of objects
  */
 function renderAppropriateCard(domNode, card, scales, dataset) {
+  // allows for placeholder cards, which are only used to generate the minor arcana spread
+  if (card.isFalse) {
+    return;
+  }
   cardCommon(
     domNode,
     card,
