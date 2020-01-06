@@ -172,7 +172,6 @@ function histogram(dimensions, height, width, dataset) {
         transform: [
           {
             type: 'filter',
-            // expr: `isNumber(toNumber(datum['${xDim}']))`
             expr: `datum['${xDim}'] != null`
           },
           {type: 'aggregate', groupby: ['bin0', 'bin1']}
@@ -184,7 +183,6 @@ function histogram(dimensions, height, width, dataset) {
         transform: [
           {
             type: 'filter',
-            // expr: `isNumber(toNumber(datum['${xDim}'])) != true`
             expr: `datum['${xDim}'] == null`
           },
           {type: 'aggregate'}

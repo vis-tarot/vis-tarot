@@ -139,7 +139,7 @@ function generateSwords(data, summary) {
 
     return {
       suit: 'swords',
-      strength: field.count === 0 ? 0 : missing, // / field.count,
+      strength: field.count === 0 ? 0 : missing / field.count,
       charttype: 'histogram',
       // TODO: this tip change based on the card value
       tip: 'This field has data quality issues.',

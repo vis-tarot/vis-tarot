@@ -347,8 +347,6 @@ function minorArcanaSampling(cards) {
     );
     return acc.concat(row);
   }, []);
-  // console.log(cards);
-  // return cards.minor;
 }
 
 const samplingMethod = {
