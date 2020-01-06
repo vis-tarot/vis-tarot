@@ -1,15 +1,3 @@
-function nullifyRow(row) {
-  // delete empty strings
-  return Object.entries(row).reduce((acc, [key, value]) => {
-    if (typeof value === 'string') {
-      acc[key] = value.replace(/['"]+/g, '').length ? value : null;
-    } else {
-      acc[key] = value;
-    }
-    return acc;
-  }, {});
-}
-
 /**
  * the main method of the application, all subsequent calls should eminante from here
  */
@@ -72,6 +60,8 @@ function main() {
   document
     .querySelector('#layout-selector')
     .addEventListener('change', event => {
+      // breaking encapsulation ugh
+      window.layoutName = event.target.value;
       state.layout = event.target.value;
       // update the description text
       setDescription(

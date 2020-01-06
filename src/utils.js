@@ -35,12 +35,18 @@ function makeScales(container, labels) {
   return {xScale, xWindow, yWindow};
 }
 
+const SPECIAL_LAYOUTS = {
+  'Major Arcana': 120,
+  'Minor Arcana': 120
+};
+
 /**
  * Util method for determining the size in index space of the cards, returns an object
  * scales object that comes from make scales
  */
 function getCardHeightWidth(scales) {
-  const DESIRED_WIDTH = 120;
+  // breaking encapsulation, i'm sad
+  const DESIRED_WIDTH = SPECIAL_LAYOUTS[window.layoutName] || 175;
   return {
     h: scales.yWindow.invert(DESIRED_WIDTH * (88.9 / 57.15)),
     w: scales.xWindow.invert(DESIRED_WIDTH)
@@ -118,4 +124,16 @@ Array.prototype.sample = function(n) {
  */
 function setDescription(queryString, description) {
   document.querySelector(queryString).innerHTML = description;
+}
+
+function nullifyRow(row) {
+  // delete empty strings
+  return Object.entries(row).reduce((acc, [key, value]) => {
+    if (typeof value === 'string') {
+      acc[key] = value.replace(/['"]+/g, '').length ? value : null;
+    } else {
+      acc[key] = value;
+    }
+    return acc;
+  }, {});
 }
