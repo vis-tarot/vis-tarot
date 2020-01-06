@@ -6,7 +6,7 @@
 4,The Emperor,The Domain Expert,Have you engaged a domain expert to be sure you understand the data?,04_emporer.svg
 5,The Hierophant,Statistical Assumptions,Do you understand the assumptions made by the statistical analysis?,05_hierophant.svg
 6,The Lovers,Attribute Linkages,Did you consider the functional dependencies in your data?,06_lovers.svg
-7,The Chariot,Summarization,Is the level of aggregation data aggregation approperiate?,07_chariot.svg
+7,The Chariot,Summarization,Is the level of aggregation data aggregation appropriate?,07_chariot.svg
 8,Justice,Validity,Can you assess the internal and ecological validity of these results?,08_justice.svg
 9,The Hermit,Confounders,Have you accounted for the presence of hidden confounders in your data?,09_hermit.svg
 10,Wheel of Fortune,Reproducibility,Could you reproduce these results at a later date?,10_fortuna.svg
