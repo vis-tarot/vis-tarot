@@ -109,10 +109,10 @@ function attachValue(d, i, arr) {
   return {
     ...d,
     // uncomment to add strength to titile, just for debugging
-    // cardtitle: `${`${value}`.capitalize()} of ${suit.capitalize()} (${Math.floor(
-    //   d.strength * 100
-    // ) / 100})`,
-    cardtitle: `${`${value}`.capitalize()} of ${suit.capitalize()}`,
+    cardtitle: `${`${value}`.capitalize()} of ${suit.capitalize()} (${Math.floor(
+      d.strength * 100
+    ) / 100})`,
+    // cardtitle: `${`${value}`.capitalize()} of ${suit.capitalize()}`,
     cardvalue: value
   };
 }
@@ -219,7 +219,7 @@ function generateWands(data, summary) {
   );
 
   //could potentially check median, max, min, stdev and so on but let's keep it simple for now.
-  const funcs = ['mean', 'count'];
+  const funcs = ['sum', 'mean', 'count'];
 
   // this sucks, stylistically.
   // I don't really want to build the correlation matrix though, since we're just grabbing the top n.
@@ -234,7 +234,7 @@ function generateWands(data, summary) {
           strength: categoryVarianceStrength(data, x.field, y.field, func),
           // TODO: this tip change based on the card value
           tip: 'There is high variably in values in these fields',
-          dimensions: {xDim: x.field, yDim: y.field}
+          dimensions: {xDim: x.field, yDim: y.field, aggregate: func}
         };
         wands.push(wandObj);
       })
@@ -252,7 +252,10 @@ function generateWands(data, summary) {
     .slice(0, 14)
     .reverse()
     .map(attachValue)
-    .map(attachTitle);
+    .map(d => ({
+      ...d,
+      cardMainTitle: `${d.dimensions.aggregate} of "${d.dimensions.yDim}" \n by "${d.dimensions.xDim}"`
+    }));
 }
 
 /**
@@ -346,6 +349,7 @@ function computeCards(data) {
     return {
       ...card,
       dimensions: {
+        ...card.dimensions,
         xDim: xDim && unsanitizeKey(xDim),
         yDim: yDim && unsanitizeKey(yDim)
       }

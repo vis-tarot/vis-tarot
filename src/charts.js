@@ -108,6 +108,7 @@ function boxplot(dimensions, height, width, dataset) {
  */
 function barchart(dimensions, height, width, dataset) {
   const {xDim, yDim, aggregate = 'mean'} = dimensions;
+  console.log('????', aggregate);
   return {
     mark: {type: 'rect', tooltip: true},
     encoding: {
