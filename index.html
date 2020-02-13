@@ -28,7 +28,12 @@
 <body>
   <div class="flex-down full-height">
     <div class="header">
+      <div class="app-name">
       Sortilège
+      </div>
+      <div class="about-button">
+        <label class="btn" for="modal-1">About</label>
+      </div>
     </div>
     <div class="body flex full-height">
       <div class="side-bar">
@@ -79,6 +84,19 @@
       </div>
 
 
+    </div>
+  </div>
+  <input class="modal-state" id="modal-1" type="checkbox" />
+  <div class="modal">
+    <label class="modal__bg" for="modal-1"></label>
+    <div class="modal__inner">
+      <label class="modal__close" for="modal-1"></label>
+      <h2>About</h2>
+      <p>
+        Sortilège is a (satirical) visual analytics systems from Tableau Research that
+        demonstrates the power of black box "automatic insight" generation systems. We document this system
+        in our upcoming alt.chi paper <a href="https://research.tableau.com/paper/divining-insights-visual-analytics-through-cartomancy">Divining Insights: Visual Analytics Through Cartomancy</a>.
+      </p>
     </div>
   </div>
 </body>
