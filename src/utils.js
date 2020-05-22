@@ -62,6 +62,7 @@ function shuffle(arr) {
 }
 
 const ROMAN_NUM_LOOKUP = [
+  '0',
   'I',
   'II',
   'III',
