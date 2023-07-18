@@ -11,11 +11,3 @@ The concept of the tool is to replicate the process of "automatically" mining a 
 ## Development
 
 To run the application pick your favorite static asset server (I like live-server), run it! Done!
-
-To run the house keeping tools (linting) do
-
-```
-yarn
-yarn lint
-
-```

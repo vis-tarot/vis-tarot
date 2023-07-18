@@ -3,9 +3,7 @@
   "version": "1.0.0",
   "description": "Data Visualization Tarot",
   "main": "index.js",
-  "scripts": {
-    "lint": "eslint ."
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mcorrell/vis-tarot.git"
@@ -15,12 +13,5 @@
   "bugs": {
     "url": "https://github.com/mcorrell/vis-tarot/issues"
   },
-  "homepage": "https://github.com/mcorrell/vis-tarot#readme",
-  "devDependencies": {
-    "babel-eslint": "^10.0.3",
-    "eslint": "^6.7.2",
-    "eslint-config-prettier": "^6.7.0",
-    "eslint-plugin-prettier": "^3.1.2",
-    "prettier": "^1.19.1"
-  }
+  "homepage": "https://github.com/mcorrell/vis-tarot#readme"
 }
